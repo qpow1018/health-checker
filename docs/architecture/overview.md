@@ -1,6 +1,6 @@
-# Architecture Overview
+# 아키텍처 개요
 
-## Stack
+## 기술 스택
 
 - Expo
 - React Native
@@ -9,13 +9,13 @@
 - Supabase Postgres
 - Supabase Row Level Security
 - Supabase Edge Functions
-- OpenAI API through Edge Functions only
+- Edge Function을 통한 OpenAI API 호출
 
-## High-Level Flow
+## 전체 흐름
 
 ```mermaid
 flowchart TD
-  App["Expo React Native app"]
+  App["Expo React Native 앱"]
   Auth["Supabase Auth"]
   DB["Supabase Postgres"]
   Edge["Supabase Edge Function"]
@@ -29,64 +29,64 @@ flowchart TD
   Edge --> OpenAI
 ```
 
-## App Responsibilities
+## 앱의 책임
 
-The mobile app handles:
+모바일 앱이 담당하는 것:
 
-- Authentication UI.
-- One-tap record creation.
-- Optional detail editing.
-- Daily and recent record display.
-- Report request UI.
-- Rendering AI report text and source links.
+- 인증 UI.
+- 원탭 기록 생성.
+- 선택적 상세 정보 수정.
+- 일별 및 최근 기록 표시.
+- 리포트 요청 UI.
+- AI 리포트 텍스트와 출처 링크 렌더링.
 
-The app must not contain:
+앱에 포함하면 안 되는 것:
 
-- OpenAI API keys.
-- Supabase service role keys.
-- Medical reference generation logic.
+- OpenAI API key.
+- Supabase service role key.
+- 의학 참고 기준 생성 로직.
 
-## Supabase Responsibilities
+## Supabase의 책임
 
-Supabase handles:
+Supabase가 담당하는 것:
 
-- User authentication.
-- Allowed-user access control.
-- Health log storage.
-- Approved reference source storage.
-- RLS enforcement for all user-owned records.
+- 사용자 인증.
+- 허용 사용자 접근 제어.
+- 건강 기록 저장.
+- 승인된 참고 출처 저장.
+- 모든 사용자 소유 기록에 대한 RLS 적용.
 
-Every user-owned table must include a `user_id` column and RLS policies that restrict access to the owning authenticated user.
+모든 사용자 소유 테이블은 `user_id` 컬럼을 가져야 하며, RLS 정책은 인증된 사용자 본인의 행만 접근하도록 제한해야 한다.
 
-## Edge Function Responsibilities
+## Edge Function의 책임
 
-The AI report Edge Function handles:
+AI 리포트 Edge Function이 담당하는 것:
 
-- Verifying the Supabase session.
-- Rejecting unapproved users.
-- Loading only the calling user's records.
-- Loading only approved reference sources.
-- Calling OpenAI with a constrained prompt.
-- Returning report sections with source links.
+- Supabase 세션 검증.
+- 승인되지 않은 사용자 거부.
+- 호출한 사용자의 기록만 조회.
+- 승인된 참고 출처만 조회.
+- 제한된 프롬프트로 OpenAI 호출.
+- 리포트 섹션과 출처 링크 반환.
 
-The Edge Function is the only place where OpenAI credentials may exist.
+OpenAI 자격 증명은 Edge Function에만 존재할 수 있다.
 
-## Initial Data Model
+## 초기 데이터 모델
 
-Core tables:
+핵심 테이블:
 
-- `profiles`: one row per allowed user.
-- `bathroom_logs`: urine, bowel movement, or both.
-- `reference_sources`: approved or candidate reference links.
-- `ai_reports`: optional saved report outputs.
+- `profiles`: 허용 사용자별 1개 행.
+- `bathroom_logs`: 소변, 대변, 둘 다 기록.
+- `reference_sources`: 승인 또는 후보 상태의 참고 출처 링크.
+- `ai_reports`: 선택적으로 저장하는 리포트 결과.
 
-The MVP can start without saving generated reports if that keeps implementation simpler. In that case, reports are generated on demand and logs remain the source of truth.
+구현을 단순하게 유지하려면 MVP에서는 생성된 리포트를 저장하지 않아도 된다. 이 경우 리포트는 요청 시 생성하고, 기록이 source of truth로 남는다.
 
-## Deployment Notes
+## 배포 메모
 
-- GitHub repository starts private.
-- `main` is the default branch.
-- Feature work uses `feature/...` branches.
-- CI should run lint, typecheck, and tests.
-- Secrets are configured outside Git.
+- GitHub 저장소는 private으로 시작한다.
+- 기본 브랜치는 `main`이다.
+- 기능 작업은 `feature/...` 브랜치를 사용한다.
+- CI는 lint, typecheck, test를 실행한다.
+- secret은 Git 밖에서 관리한다.
 

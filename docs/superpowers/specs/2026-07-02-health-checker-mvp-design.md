@@ -1,71 +1,72 @@
-# Health Checker MVP Design
+# Health Checker MVP 설계
 
-## Summary
+## 요약
 
-Health Checker is a private Expo mobile app for logging urine and bowel movement visits and reviewing patterns over time. The MVP is intentionally narrow: fast records first, optional details second, AI reports only after data is collected, and every general health statement linked to approved references.
+Health Checker는 소변과 대변 방문을 기록하고 시간에 따른 패턴을 확인하는 비공개 Expo 모바일 앱이다. MVP는 의도적으로 좁게 유지한다. 빠른 기록이 먼저이고, 상세 입력은 선택 사항이며, AI 리포트는 기록이 쌓인 뒤 제공하고, 일반 건강 안내에는 승인된 출처 링크를 붙인다.
 
-## Decisions
+## 결정사항
 
-- Mobile stack: Expo, React Native, TypeScript.
-- Backend: Supabase Auth, Postgres, RLS, Edge Functions.
-- Repository: private GitHub repo.
-- Access: login required, allowed account only.
-- Data: urine, bowel movement, or both.
-- UX: record screen is the default screen.
-- Logging: one-tap save, then optional detail panel.
-- Baseline: first 7 days are baseline collection.
-- AI: generated through Supabase Edge Function, never from the app directly.
-- References: hybrid model. Approved sources are developer-managed in MVP; new candidates may be proposed but not used until approved.
+- 모바일 스택: Expo, React Native, TypeScript.
+- 백엔드: Supabase Auth, Postgres, RLS, Edge Functions.
+- 저장소: private GitHub repo.
+- 접근: 로그인 필수, 허용 계정만 접근.
+- 데이터: 소변, 대변, 둘 다.
+- UX: 기록 화면이 기본 화면.
+- 기록: 원탭 저장 후 선택적 상세 패널.
+- 기준선: 첫 7일은 기준선 수집 기간.
+- AI: 앱에서 직접 호출하지 않고 Supabase Edge Function에서 생성.
+- 출처: 혼합형. MVP에서는 승인된 출처를 개발자가 관리하고, 새 후보는 승인 전까지 사용하지 않는다.
 
-## Product Design
+## 제품 설계
 
-The first screen is optimized for the action the user will perform most often: recording a bathroom visit. The app opens to large actions for urine, bowel movement, and both. Each action saves immediately with the current timestamp. After saving, a small panel allows optional details. Records can be edited later from the list.
+첫 화면은 사용자가 가장 자주 할 행동인 화장실 방문 기록에 최적화한다. 앱은 소변, 대변, 둘 다에 대한 큰 액션으로 시작한다. 각 액션은 현재 시각으로 즉시 저장한다. 저장 후 작은 패널에서 상세 정보를 선택적으로 추가할 수 있다. 기록은 나중에 목록에서 수정할 수 있다.
 
-Reports are available separately. They summarize today, the last 7 days, or the last 30 days. The first 7 days are treated as baseline collection, so early reports must clearly say that personal comparison is limited.
+리포트는 별도 영역에서 제공한다. 오늘, 최근 7일, 최근 30일을 요약한다. 첫 7일은 기준선 수집 기간으로 취급하므로, 초기 리포트는 개인 비교가 제한적이라고 명시해야 한다.
 
-## Data Design
+## 데이터 설계
 
-The core record is `bathroom_logs`.
+핵심 기록은 `bathroom_logs`다.
 
-Each log stores:
+각 기록은 다음을 저장한다.
 
 - `user_id`
-- timestamp
-- type: urine, bowel movement, both
-- urgency
-- woke from sleep
-- note
-- urine pain
-- unusual urine color
-- stool state
-- bowel pain
-- possible blood in stool
+- 기록 시각
+- 유형: 소변, 대변, 둘 다
+- 긴급도
+- 자다가 깼음
+- 메모
+- 소변 통증
+- 소변 색 이상
+- 대변 상태
+- 대변 통증
+- 혈변 의심
 
-Reference sources are stored separately with title, organization, URL, topic, and approval status.
+참고 출처는 제목, 기관, URL, 주제, 승인 상태와 함께 별도로 저장한다.
 
-## Security Design
+## 보안 설계
 
-All user-owned data is protected by Supabase Auth and RLS. Public signup is out of scope. Only approved accounts may use the app. The mobile app may use public Supabase configuration, but service role keys and OpenAI credentials must exist only in server-side environments.
+모든 사용자 소유 데이터는 Supabase Auth와 RLS로 보호한다. 공개 회원가입은 범위 밖이다. 승인된 계정만 앱을 사용할 수 있다. 모바일 앱에는 공개 Supabase 설정만 둘 수 있으며, service role key와 OpenAI 자격 증명은 서버 측 환경에만 존재해야 한다.
 
-## AI Design
+## AI 설계
 
-The report Edge Function validates the session, loads only the caller's data, loads approved references, and calls OpenAI with constrained instructions.
+리포트 Edge Function은 세션을 검증하고, 호출한 사용자의 데이터만 조회하며, 승인된 참고 출처를 불러온 뒤 제한된 지침으로 OpenAI를 호출한다.
 
-AI output must distinguish:
+AI 출력은 다음을 구분해야 한다.
 
-- Personal record observations.
-- Personal baseline comparisons.
-- Approved-source general guidance.
+- 개인 기록 관찰.
+- 개인 기준선 비교.
+- 승인된 출처 기반 일반 안내.
 
-AI output must not diagnose, prescribe, or invent citations.
+AI 출력은 진단, 처방, 조작된 인용을 하지 않아야 한다.
 
-## Verification
+## 검증
 
-Implementation plans should verify:
+구현 계획은 다음을 검증해야 한다.
 
-- Login gate blocks unauthenticated users.
-- Unauthorized users cannot read or write logs.
-- One-tap logging saves the correct type and time.
-- Details can be added after save.
-- Reports do not run with unapproved sources.
-- OpenAI credentials are never exposed to the mobile app.
+- 로그인 gate가 미인증 사용자를 차단한다.
+- 허용되지 않은 사용자는 기록을 읽거나 쓸 수 없다.
+- 원탭 기록이 올바른 유형과 시간으로 저장된다.
+- 저장 후 상세 정보를 추가할 수 있다.
+- 리포트가 승인되지 않은 출처로 실행되지 않는다.
+- OpenAI 자격 증명이 모바일 앱에 노출되지 않는다.
+

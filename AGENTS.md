@@ -1,77 +1,76 @@
 # AGENTS.md
 
-Behavioral guidelines for working in this repository.
+이 저장소에서 작업할 때 따르는 지침입니다.
 
-## Core Principles
+## 핵심 원칙
 
-- State assumptions before implementing.
-- Ask when requirements are unclear.
-- Keep changes small and tied to the request.
-- Prefer simple code over speculative abstractions.
-- Verify changes before calling them complete.
+- 구현 전에 가정을 명시한다.
+- 요구사항이 애매하면 질문한다.
+- 변경은 작게 유지하고 사용자의 요청과 직접 연결한다.
+- 추측성 추상화보다 단순한 코드를 우선한다.
+- 완료라고 말하기 전에 검증한다.
 
-## Product Scope
+## 제품 범위
 
-This project is a private mobile app for bathroom pattern tracking.
+이 프로젝트는 화장실 패턴을 기록하는 개인 모바일 앱이다.
 
-The MVP records:
+MVP에서 기록하는 것:
 
-- Urine visits.
-- Bowel movement visits.
-- Visits that include both.
-- Optional details after quick logging.
-- AI reports based on personal records and approved references.
+- 소변 기록.
+- 대변 기록.
+- 소변과 대변을 모두 포함한 기록.
+- 빠른 기록 후 선택적으로 추가하는 상세 정보.
+- 개인 기록과 승인된 출처를 바탕으로 한 AI 리포트.
 
-Do not broaden the product into a general health platform unless explicitly asked.
+명시적인 요청 없이 이 제품을 범용 건강 플랫폼으로 확장하지 않는다.
 
-## Health Data Rules
+## 건강 데이터 규칙
 
-- Treat all records as sensitive health data.
-- Do not expose private records without authentication.
-- Do not add public signup flows unless explicitly requested.
-- Keep personal data collection minimal.
-- Do not add analytics or tracking for health records unless explicitly requested.
+- 모든 기록은 민감한 건강 데이터로 취급한다.
+- 인증 없이 개인 기록을 노출하지 않는다.
+- 명시적인 요청 없이 공개 회원가입 흐름을 추가하지 않는다.
+- 개인 데이터 수집은 최소화한다.
+- 명시적인 요청 없이 건강 기록에 대한 분석/추적 도구를 추가하지 않는다.
 
-## Supabase Rules
+## Supabase 규칙
 
-- Enable RLS on every user-owned table.
-- User-owned rows must be scoped by `user_id = auth.uid()`.
-- Write policies must prevent users from assigning rows to another user.
-- Never expose service role keys in the app.
-- OpenAI calls must go through Supabase Edge Functions or another server-side boundary.
+- 사용자 소유 테이블에는 반드시 RLS를 활성화한다.
+- 사용자 소유 행은 `user_id = auth.uid()` 기준으로 제한한다.
+- 쓰기 정책은 사용자가 행의 소유자를 다른 사용자로 바꾸지 못하게 해야 한다.
+- 앱에 service role key를 노출하지 않는다.
+- OpenAI 호출은 Supabase Edge Function 또는 다른 서버 측 경계를 통해서만 수행한다.
 
-## AI Safety Rules
+## AI 안전 규칙
 
-- AI reports summarize patterns; they do not diagnose.
-- Do not generate treatment, medication, or emergency instructions.
-- Mention uncertainty when records are sparse.
-- Before 7 days of records exist, say the personal baseline is still being collected.
-- Only approved reference sources may support general health guidance.
-- Do not invent source links.
+- AI 리포트는 패턴을 요약한다. 진단하지 않는다.
+- 치료, 약물, 응급 처치 지시를 생성하지 않는다.
+- 기록이 부족하면 불확실성을 명시한다.
+- 기록이 7일 미만이면 개인 기준선을 수집 중이라고 말한다.
+- 일반 건강 안내는 승인된 참고 출처만 근거로 사용할 수 있다.
+- 출처 링크를 지어내지 않는다.
 
-## UX Rules
+## UX 규칙
 
-- The record screen is the default first screen.
-- One-tap logging must remain fast.
-- Detail entry is optional after save.
-- Recent records must be correctable.
-- Use clear Korean product copy by default.
-- Avoid medical-diagnostic wording such as "normal" or "abnormal" as a conclusion.
+- 기록 화면이 기본 첫 화면이다.
+- 원탭 기록은 항상 빠르게 유지한다.
+- 상세 입력은 저장 후 선택 사항이다.
+- 최근 기록은 수정할 수 있어야 한다.
+- 제품 문구는 기본적으로 명확한 한국어를 사용한다.
+- 결론처럼 보이는 "정상" 또는 "비정상" 같은 의학적 판단 표현을 피한다.
 
-## Documentation Rules
+## 문서 규칙
 
-- Update docs when product, security, AI, or workflow decisions change.
-- Keep repository guidance concise.
-- Put deeper process notes under `docs/`.
+- 제품, 보안, AI, 작업 흐름 결정이 바뀌면 문서도 함께 갱신한다.
+- 저장소 지침은 간결하게 유지한다.
+- 자세한 절차는 `docs/` 아래에 둔다.
 
-## Verification
+## 검증
 
-For implementation work, run the smallest meaningful verification:
+구현 작업에는 가장 작은 의미 있는 검증을 실행한다.
 
-- Typecheck for TypeScript changes.
-- Tests for data helpers, policies, and AI prompt shaping.
-- Manual smoke checks for main mobile flows when available.
-- Supabase policy checks before trusting data access.
+- TypeScript 변경에는 typecheck.
+- 데이터 헬퍼, 정책, AI 프롬프트 구성에는 테스트.
+- 모바일 주요 흐름이 생긴 뒤에는 수동 smoke check.
+- 데이터 접근을 신뢰하기 전에 Supabase 정책 검증.
 
-For documentation changes, check for ambiguity, contradictions, and scope creep.
-
+문서 변경에는 모호함, 모순, 범위 확장을 점검한다.

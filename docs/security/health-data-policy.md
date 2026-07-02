@@ -1,71 +1,70 @@
-# Health Data and AI Safety Policy
+# 건강 데이터 및 AI 안전 정책
 
-## Data Sensitivity
+## 데이터 민감도
 
-Bathroom logs are personal health data. Treat them as sensitive even though this is a private app.
+화장실 기록은 개인 건강 데이터다. 개인앱이라도 민감 데이터로 취급한다.
 
-The app must default to privacy, minimal collection, and clear access boundaries.
+앱은 개인정보 보호, 최소 수집, 명확한 접근 경계를 기본값으로 가져야 한다.
 
-## Authentication
+## 인증
 
-- Login is required before any data is shown.
-- Public signup is not part of the MVP.
-- Only explicitly allowed accounts may access the app.
-- Unauthorized authenticated users must be blocked from app data and AI reports.
+- 어떤 데이터도 보여주기 전에 로그인이 필요하다.
+- 공개 회원가입은 MVP 범위가 아니다.
+- 명시적으로 허용된 계정만 앱에 접근할 수 있다.
+- 허용되지 않은 인증 사용자는 앱 데이터와 AI 리포트에서 차단해야 한다.
 
-## Database Security
+## 데이터베이스 보안
 
-- Enable RLS on every user-owned table.
-- Use `user_id = auth.uid()` ownership checks for all user-owned records.
-- Policies must include both `USING` and `WITH CHECK` where writes can change row ownership.
-- Do not expose service role keys to the app.
-- Do not use user-editable metadata for authorization decisions.
+- 모든 사용자 소유 테이블에 RLS를 활성화한다.
+- 모든 사용자 소유 기록은 `user_id = auth.uid()` 소유권 검사로 제한한다.
+- row ownership이 바뀔 수 있는 쓰기에는 `USING`과 `WITH CHECK`를 모두 포함한다.
+- service role key를 앱에 노출하지 않는다.
+- 권한 판단에 사용자 수정 가능한 metadata를 사용하지 않는다.
 
-## AI Safety
+## AI 안전
 
-The AI report system is a pattern-summary feature, not a medical device.
+AI 리포트 시스템은 패턴 요약 기능이지 의료기기가 아니다.
 
-Allowed AI behavior:
+허용되는 AI 동작:
 
-- Summarize records.
-- Compare recent data to the user's baseline.
-- Compare with approved general adult reference guidance.
-- Mention uncertainty and context.
-- Recommend professional consultation for warning signs.
+- 기록 요약.
+- 최근 데이터와 개인 기준선 비교.
+- 승인된 성인 일반 참고 기준과 비교.
+- 불확실성과 맥락 언급.
+- 주의 신호가 있을 때 전문가 상담 권장.
 
-Forbidden AI behavior:
+금지되는 AI 동작:
 
-- Diagnosis.
-- Treatment instructions.
-- Medication advice.
-- Emergency triage beyond recommending professional help for serious symptoms.
-- New medical thresholds without approved sources.
-- Fabricated citations or links.
+- 진단.
+- 치료 지시.
+- 약물 조언.
+- 심각한 증상에 대해 전문가 도움을 권장하는 수준을 넘어서는 응급 판단.
+- 승인된 출처가 없는 새 의학 기준 제시.
+- 조작된 인용 또는 링크.
 
-## Reference Source Policy
+## 참고 출처 정책
 
-- Reports may cite only approved sources.
-- New sources may be suggested as candidates but are not automatically approved.
-- MVP source approval is developer-managed through code or DB seed data.
-- In-app source approval UI is out of scope for MVP.
-- Report text must distinguish personal-record observations from source-based general guidance.
+- 리포트는 승인된 출처만 인용할 수 있다.
+- 새 출처는 후보로 제안할 수 있지만 자동 승인하지 않는다.
+- MVP에서 출처 승인은 코드 또는 DB seed를 통한 개발자 관리 방식이다.
+- 앱 내 출처 승인 UI는 MVP 범위 밖이다.
+- 리포트 문장은 개인 기록 기반 관찰과 출처 기반 일반 안내를 구분해야 한다.
 
-Initial source categories:
+초기 출처 카테고리:
 
-- Urination frequency and urinary symptoms.
-- Nighttime waking to urinate.
-- Bowel movement frequency and constipation.
-- Warning signs such as blood, pain, fever, severe diarrhea, or persistent constipation.
+- 소변 빈도와 소변 증상.
+- 자다가 깨서 소변을 보는 상황.
+- 배변 빈도와 변비.
+- 혈뇨, 혈변, 통증, 발열, 심한 설사, 지속되는 변비 같은 주의 신호.
 
-## Warning Signs
+## 주의 신호
 
-The app should recommend consulting a healthcare professional when records or notes include concerning signs such as:
+기록이나 메모에 다음과 같은 신호가 있으면 앱은 의료 전문가 상담을 권장해야 한다.
 
-- Blood in urine or stool.
-- Pain during urination or bowel movement.
-- Fever with urinary symptoms.
-- Severe or persistent diarrhea.
-- Constipation lasting multiple weeks.
-- Sudden major change from personal baseline.
-- Bathroom patterns that disrupt sleep or daily life.
-
+- 소변 또는 대변의 피.
+- 소변 또는 대변 시 통증.
+- 소변 증상과 함께 나타나는 발열.
+- 심하거나 지속되는 설사.
+- 여러 주 지속되는 변비.
+- 개인 기준선에서 갑작스럽고 큰 변화.
+- 수면이나 일상생활을 방해하는 화장실 패턴.

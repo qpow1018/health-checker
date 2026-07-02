@@ -1,86 +1,86 @@
 # Health Checker MVP
 
-## Purpose
+## 목적
 
-Health Checker is a private mobile app for recording bathroom visits and reviewing personal patterns over time.
+Health Checker는 화장실 방문을 기록하고 시간에 따른 개인 패턴을 확인하는 비공개 모바일 앱이다.
 
-The first MVP focuses on urine and bowel movement logs. It helps answer: "Am I going more often than usual, and is there a pattern worth paying attention to?"
+첫 MVP는 소변과 대변 기록에 집중한다. 앱이 답하려는 질문은 "내가 요즘 평소보다 자주 가는지, 주의 깊게 볼 만한 패턴이 있는지"이다.
 
-## Product Scope
+## 제품 범위
 
-Included in the MVP:
+MVP에 포함하는 것:
 
-- Private mobile app for one allowed user.
-- Supabase login required before any app data is shown.
-- One-tap logging for urine, bowel movement, or both.
-- Optional detail entry after the quick log is saved.
-- Daily, 7-day, and 30-day summaries.
-- AI reports generated from the user's own records and approved reference sources.
-- Source links shown with report statements that rely on general health references.
+- 허용된 사용자 1명을 위한 비공개 모바일 앱.
+- 앱 데이터 표시 전 Supabase 로그인 필수.
+- 소변, 대변, 둘 다에 대한 원탭 기록.
+- 빠른 기록 저장 후 선택적으로 추가하는 상세 입력.
+- 일별, 7일, 30일 요약.
+- 사용자의 개인 기록과 승인된 참고 출처를 바탕으로 생성하는 AI 리포트.
+- 일반 건강 참고 기준을 사용하는 리포트 문장에는 출처 링크 표시.
 
-Excluded from the MVP:
+MVP에서 제외하는 것:
 
-- Medical diagnosis.
-- Treatment recommendations.
-- Public signup or multi-user product flows.
-- Automatic use of unapproved medical references.
-- In-app approval UI for new reference sources.
-- Age- or sex-specific comparison logic.
+- 의학적 진단.
+- 치료 권장.
+- 공개 회원가입 또는 다중 사용자 제품 흐름.
+- 승인되지 않은 의학 참고 자료의 자동 사용.
+- 새 출처 승인을 위한 앱 내 UI.
+- 나이 또는 성별 기반 정밀 비교 로직.
 
-## Main User Flow
+## 주요 사용자 흐름
 
-1. The user opens the app and signs in.
-2. The default screen is the record screen.
-3. The user taps `urine`, `bowel movement`, or `both`.
-4. The app immediately saves the record with the current timestamp.
-5. A small post-save panel offers `add details`.
-6. The user can ignore the panel or add details.
-7. Recent records can be edited later from the record list.
+1. 사용자가 앱을 열고 로그인한다.
+2. 기본 화면은 기록 화면이다.
+3. 사용자가 `소변`, `대변`, `둘 다` 중 하나를 누른다.
+4. 앱은 현재 시각으로 즉시 기록을 저장한다.
+5. 작은 저장 후 패널에서 `상세 추가`를 제공한다.
+6. 사용자는 패널을 무시하거나 상세 정보를 추가할 수 있다.
+7. 최근 기록은 나중에 목록에서 수정할 수 있다.
 
-## Log Details
+## 기록 상세
 
-Common details:
+공통 상세:
 
-- Urgency: relaxed, ordinary, urgent.
-- Woke from sleep: yes, no, not recorded.
-- Note.
+- 긴급도: 여유, 보통, 급함.
+- 자다가 깼음: 예, 아니오, 미기록.
+- 메모.
 
-Urine details:
+소변 상세:
 
-- Pain.
-- Color seems unusual.
+- 통증.
+- 색이 평소와 다름.
 
-Bowel movement details:
+대변 상세:
 
-- Stool state: usual, loose, hard.
-- Pain.
-- Possible blood.
+- 상태: 평소와 비슷함, 묽음, 딱딱함.
+- 통증.
+- 혈변 의심.
 
-## Baseline
+## 기준선
 
-The first 7 days are treated as a baseline collection period.
+첫 7일은 기준선 수집 기간으로 본다.
 
-Before 7 days of records exist, the app may summarize records but must say that there is not enough personal baseline data for stronger comparison.
+기록이 7일 미만이면 앱은 기록 요약을 제공할 수 있지만, 강한 개인 비교를 하기에는 개인 기준선 데이터가 부족하다고 명시해야 한다.
 
-After the baseline period, reports compare:
+기준선 기간 이후 리포트는 다음을 비교한다.
 
-- Recent records against the user's own baseline.
-- Recent records against approved adult general reference ranges.
+- 최근 기록과 사용자의 개인 기준선.
+- 최근 기록과 승인된 성인 일반 참고 범위.
 
-## AI Report Behavior
+## AI 리포트 동작
 
-AI reports may:
+AI 리포트가 할 수 있는 것:
 
-- Summarize daily, 7-day, and 30-day patterns.
-- Compare recent records to the user's baseline.
-- Mention approved general reference ranges with source links.
-- Flag changes or recorded warning signs.
-- Recommend talking to a healthcare professional when warning signs appear.
+- 오늘, 7일, 30일 패턴 요약.
+- 최근 기록과 개인 기준선 비교.
+- 승인된 일반 참고 범위를 출처 링크와 함께 언급.
+- 변화나 기록된 주의 신호 표시.
+- 주의 신호가 있을 때 의료 전문가 상담 권장.
 
-AI reports must not:
+AI 리포트가 하면 안 되는 것:
 
-- Diagnose a condition.
-- Say a pattern is normal or abnormal as a medical conclusion.
-- Give treatment instructions.
-- Invent medical thresholds or source links.
-- Use unapproved references as evidence.
+- 질환 진단.
+- 의학적 결론으로서 정상/비정상 단정.
+- 치료 지시.
+- 의학 기준이나 출처 링크를 지어내기.
+- 승인되지 않은 출처를 근거로 사용.

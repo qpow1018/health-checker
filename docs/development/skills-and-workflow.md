@@ -1,78 +1,78 @@
-# Development Skills and Workflow
+# 개발 스킬 및 작업 흐름
 
-## Working Style
+## 작업 방식
 
-Use small, verifiable steps. Prefer the minimum implementation that satisfies the current request.
+작고 검증 가능한 단계로 작업한다. 현재 요청을 만족하는 최소 구현을 우선한다.
 
-Before coding:
+코딩 전에 다음을 확인한다.
 
-- State assumptions.
-- Name ambiguous decisions.
-- Keep scope narrow.
-- Define verification.
+- 가정 명시.
+- 애매한 결정 이름 붙이기.
+- 범위 좁히기.
+- 검증 방법 정의.
 
-## Project-Specific Skills To Develop
+## 이 프로젝트에서 발전시킬 스킬
 
-### Product Planning
+### 제품 기획
 
-Use this when changing product behavior, screens, or AI report scope.
+제품 동작, 화면, AI 리포트 범위를 바꿀 때 사용한다.
 
-Required output:
+필수 산출물:
 
-- What user problem changes?
-- What is included?
-- What is excluded?
-- How will success be verified?
+- 어떤 사용자 문제가 바뀌는가?
+- 무엇을 포함하는가?
+- 무엇을 제외하는가?
+- 성공을 어떻게 검증하는가?
 
-### Health Data Safety Review
+### 건강 데이터 안전 리뷰
 
-Use this when touching logs, profiles, references, AI reports, auth, or database policies.
+기록, 프로필, 참고 출처, AI 리포트, 인증, 데이터베이스 정책을 건드릴 때 사용한다.
 
-Required checks:
+필수 확인:
 
-- Does this collect only necessary data?
-- Does RLS protect user-owned rows?
-- Are secrets kept out of the app?
-- Does AI avoid diagnosis and treatment advice?
-- Are reference links approved before use?
+- 필요한 데이터만 수집하는가?
+- RLS가 사용자 소유 행을 보호하는가?
+- secret이 앱 밖에 있는가?
+- AI가 진단과 치료 조언을 피하는가?
+- 참고 링크가 사용 전에 승인되었는가?
 
-### Supabase Change Review
+### Supabase 변경 리뷰
 
-Use this when changing schema, policies, functions, or seeds.
+schema, policy, function, seed를 바꿀 때 사용한다.
 
-Required checks:
+필수 확인:
 
-- Migration is explicit and reviewable.
-- RLS is enabled for exposed user-owned tables.
-- Policies restrict by authenticated user ownership.
-- Edge Functions validate the caller.
-- Service role is never used in the mobile app.
+- migration이 명시적이고 리뷰 가능하다.
+- 노출된 사용자 소유 테이블에 RLS가 활성화되어 있다.
+- 정책이 인증 사용자 소유권으로 제한한다.
+- Edge Function이 호출자를 검증한다.
+- service role은 모바일 앱에서 절대 사용하지 않는다.
 
-### Mobile UX Review
+### 모바일 UX 리뷰
 
-Use this when changing the record screen or navigation.
+기록 화면이나 navigation을 바꿀 때 사용한다.
 
-Required checks:
+필수 확인:
 
-- One-tap logging remains fast.
-- Detail entry is optional.
-- Recent logs can be corrected.
-- Text is clear and not medical-diagnostic.
-- The most-used action stays on the first screen.
+- 원탭 기록이 빠르게 유지된다.
+- 상세 입력은 선택 사항이다.
+- 최근 기록을 수정할 수 있다.
+- 문구가 명확하고 의학적 진단처럼 보이지 않는다.
+- 가장 많이 쓰는 행동이 첫 화면에 남아 있다.
 
-## Verification Defaults
+## 기본 검증
 
-For code changes, prefer:
+코드 변경에는 다음을 우선한다.
 
 - Typecheck.
-- Unit tests for data and policy helpers.
-- Component tests for critical UI behavior.
-- Manual mobile smoke test when the app shell exists.
-- Supabase policy tests before trusting production data access.
+- 데이터 및 정책 helper 단위 테스트.
+- 핵심 UI 동작에 대한 component test.
+- 앱 shell이 생긴 뒤에는 모바일 수동 smoke test.
+- production 데이터 접근을 신뢰하기 전 Supabase policy test.
 
-For documentation-only changes:
+문서 변경에는 다음을 확인한다.
 
-- Check for contradictions.
-- Check that MVP scope remains narrow.
-- Check that health and AI safety language is explicit.
+- 모순이 없는가?
+- MVP 범위가 좁게 유지되는가?
+- 건강 및 AI 안전 문구가 명확한가?
 
