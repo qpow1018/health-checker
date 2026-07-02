@@ -10,13 +10,18 @@
 
 - 어떤 데이터도 보여주기 전에 로그인이 필요하다.
 - 공개 회원가입은 MVP 범위가 아니다.
+- Supabase Auth는 이메일 + 비밀번호 로그인을 사용한다.
+- 앱에는 회원가입 UI를 만들지 않는다.
+- 사용자 계정은 Supabase Dashboard에서 직접 생성한다.
 - 명시적으로 허용된 계정만 앱에 접근할 수 있다.
+- 허용 계정은 `allowed_users` 테이블의 이메일 allowlist로 관리한다.
 - 허용되지 않은 인증 사용자는 앱 데이터와 AI 리포트에서 차단해야 한다.
 
 ## 데이터베이스 보안
 
 - 모든 사용자 소유 테이블에 RLS를 활성화한다.
 - 모든 사용자 소유 기록은 `user_id = auth.uid()` 소유권 검사로 제한한다.
+- 로그인 성공과 앱 사용 권한은 별개다. 앱 진입 전에 `allowed_users`의 `is_active = true`를 확인한다.
 - row ownership이 바뀔 수 있는 쓰기에는 `USING`과 `WITH CHECK`를 모두 포함한다.
 - service role key를 앱에 노출하지 않는다.
 - 권한 판단에 사용자 수정 가능한 metadata를 사용하지 않는다.

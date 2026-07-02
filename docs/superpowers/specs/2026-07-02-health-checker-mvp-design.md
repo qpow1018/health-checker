@@ -10,7 +10,7 @@ Health Checker는 소변과 대변 방문을 기록하고 시간에 따른 패�
 - 모바일 shell: React Native WebView.
 - 백엔드: Supabase Auth, Postgres, RLS, Edge Functions.
 - 저장소: private GitHub repo.
-- 접근: 로그인 필수, 허용 계정만 접근.
+- 접근: 이메일 + 비밀번호 로그인 필수, `allowed_users`에 등록된 허용 계정만 접근.
 - 데이터: 소변, 대변, 둘 다.
 - UX: 기록 화면이 기본 화면.
 - 개발 방식: 개발 환경에서는 Next.js 화면을 브라우저에서 직접 열 수 있다.
@@ -48,7 +48,7 @@ Health Checker는 소변과 대변 방문을 기록하고 시간에 따른 패�
 
 ## 보안 설계
 
-모든 사용자 소유 데이터는 Supabase Auth와 RLS로 보호한다. 공개 회원가입은 범위 밖이다. 승인된 계정만 앱을 사용할 수 있다. Next.js 앱과 React Native shell에는 공개 Supabase 설정만 둘 수 있으며, service role key와 OpenAI 자격 증명은 서버 측 환경에만 존재해야 한다.
+모든 사용자 소유 데이터는 Supabase Auth와 RLS로 보호한다. 공개 회원가입은 범위 밖이고, 앱에도 회원가입 UI를 만들지 않는다. 사용자는 Supabase Dashboard에서 직접 생성하며, `allowed_users`에 등록된 활성 이메일만 앱을 사용할 수 있다. Next.js 앱과 React Native shell에는 공개 Supabase 설정만 둘 수 있으며, service role key와 OpenAI 자격 증명은 서버 측 환경에만 존재해야 한다.
 
 ## AI 설계
 
@@ -67,6 +67,7 @@ AI 출력은 진단, 처방, 조작된 인용을 하지 않아야 한다.
 구현 계획은 다음을 검증해야 한다.
 
 - 로그인 gate가 미인증 사용자를 차단한다.
+- 로그인한 사용자라도 `allowed_users`에 없으면 앱 진입을 차단한다.
 - 허용되지 않은 사용자는 기록을 읽거나 쓸 수 없다.
 - 원탭 기록이 올바른 유형과 시간으로 저장된다.
 - 저장 후 상세 정보를 추가할 수 있다.

@@ -76,7 +76,7 @@ WebView 통신은 꼭 필요한 native 기능에 한해 최소화한다.
 
 Supabase가 담당하는 것:
 
-- 사용자 인증.
+- 이메일 + 비밀번호 기반 사용자 인증.
 - 허용 사용자 접근 제어.
 - 건강 기록 저장.
 - 승인된 참고 출처 저장.
@@ -101,6 +101,7 @@ OpenAI 자격 증명은 Edge Function에만 존재할 수 있다.
 
 핵심 테이블:
 
+- `allowed_users`: 앱 접근이 허용된 이메일 목록.
 - `profiles`: 허용 사용자별 1개 행.
 - `bathroom_logs`: 소변, 대변, 둘 다 기록.
 - `reference_sources`: 승인 또는 후보 상태의 참고 출처 링크.
