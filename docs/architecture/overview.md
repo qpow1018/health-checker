@@ -2,8 +2,9 @@
 
 ## 기술 스택
 
-- Expo
-- React Native
+- Next.js
+- React
+- React Native WebView shell
 - TypeScript
 - Supabase Auth
 - Supabase Postgres
@@ -15,23 +16,25 @@
 
 ```mermaid
 flowchart TD
-  App["Expo React Native 앱"]
+  Shell["React Native WebView shell"]
+  Web["Next.js 모바일 웹 UI"]
   Auth["Supabase Auth"]
   DB["Supabase Postgres"]
   Edge["Supabase Edge Function"]
   OpenAI["OpenAI API"]
 
-  App --> Auth
-  App --> DB
-  App --> Edge
+  Shell --> Web
+  Web --> Auth
+  Web --> DB
+  Web --> Edge
   Edge --> Auth
   Edge --> DB
   Edge --> OpenAI
 ```
 
-## 앱의 책임
+## Next.js 앱의 책임
 
-모바일 앱이 담당하는 것:
+Next.js 모바일 웹 UI가 담당하는 것:
 
 - 인증 UI.
 - 원탭 기록 생성.
@@ -40,11 +43,34 @@ flowchart TD
 - 리포트 요청 UI.
 - AI 리포트 텍스트와 출처 링크 렌더링.
 
-앱에 포함하면 안 되는 것:
+Next.js 앱에 포함하면 안 되는 것:
 
 - OpenAI API key.
 - Supabase service role key.
 - 의학 참고 기준 생성 로직.
+
+운영 사용은 React Native WebView 안에서 하는 것을 기본으로 한다. 다만 개발 환경에서는 Next.js 앱을 브라우저에서 직접 열 수 있어야 한다.
+
+## React Native shell의 책임
+
+React Native shell은 얇게 유지한다.
+
+담당하는 것:
+
+- WebView 로드.
+- 앱 아이콘과 스플래시.
+- safe area와 기본 앱 chrome.
+- 외부 링크 열기 제어.
+- 추후 생체인증, 앱 잠금, push 알림 같은 native 기능 연결.
+
+담당하지 않는 것:
+
+- 건강 기록 비즈니스 로직.
+- Supabase 데이터 접근 로직의 중복 구현.
+- AI 리포트 생성.
+- WebView와 복잡한 상태 동기화.
+
+WebView 통신은 꼭 필요한 native 기능에 한해 최소화한다.
 
 ## Supabase의 책임
 
@@ -87,6 +113,7 @@ OpenAI 자격 증명은 Edge Function에만 존재할 수 있다.
 - GitHub 저장소는 private으로 시작한다.
 - 기본 브랜치는 `main`이다.
 - 기능 작업은 `feature/...` 브랜치를 사용한다.
-- CI는 lint, typecheck, test를 실행한다.
+- CI는 Next.js와 React Native shell의 lint, typecheck, test를 실행한다.
 - secret은 Git 밖에서 관리한다.
-
+- 실제 사용자는 모바일 앱을 통해 접근한다.
+- 개발자는 Next.js dev server를 브라우저에서 직접 열어 UI와 데이터 흐름을 빠르게 확인할 수 있다.

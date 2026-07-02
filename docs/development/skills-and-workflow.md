@@ -60,6 +60,18 @@ schema, policy, function, seed를 바꿀 때 사용한다.
 - 문구가 명확하고 의학적 진단처럼 보이지 않는다.
 - 가장 많이 쓰는 행동이 첫 화면에 남아 있다.
 
+### WebView 경계 리뷰
+
+Next.js 앱과 React Native shell 사이의 책임을 바꿀 때 사용한다.
+
+필수 확인:
+
+- 건강 기록 UI와 데이터 흐름이 Next.js 쪽에 남아 있는가?
+- React Native shell이 WebView와 native 기능 연결에 집중하는가?
+- WebView 통신이 꼭 필요한 기능으로 제한되는가?
+- 브라우저 개발 모드에서도 핵심 화면을 확인할 수 있는가?
+- 로그인, redirect, safe area, keyboard 동작을 WebView에서도 따로 확인할 계획이 있는가?
+
 ## 기본 검증
 
 코드 변경에는 다음을 우선한다.
@@ -67,7 +79,8 @@ schema, policy, function, seed를 바꿀 때 사용한다.
 - Typecheck.
 - 데이터 및 정책 helper 단위 테스트.
 - 핵심 UI 동작에 대한 component test.
-- 앱 shell이 생긴 뒤에는 모바일 수동 smoke test.
+- Next.js 화면은 브라우저에서 smoke test.
+- React Native shell이 생긴 뒤에는 WebView 모바일 수동 smoke test.
 - production 데이터 접근을 신뢰하기 전 Supabase policy test.
 
 문서 변경에는 다음을 확인한다.
@@ -75,4 +88,3 @@ schema, policy, function, seed를 바꿀 때 사용한다.
 - 모순이 없는가?
 - MVP 범위가 좁게 유지되는가?
 - 건강 및 AI 안전 문구가 명확한가?
-

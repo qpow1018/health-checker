@@ -14,6 +14,13 @@
 
 이 프로젝트는 화장실 패턴을 기록하는 개인 모바일 앱이다.
 
+현재 기술 방향:
+
+- 화면 본체는 Next.js, React, TypeScript로 만든다.
+- 실제 사용은 React Native WebView shell 안에서 한다.
+- 개발 환경에서는 Next.js 화면을 브라우저로 직접 열 수 있어야 한다.
+- React Native shell은 얇게 유지하고 WebView/native 기능만 담당한다.
+
 MVP에서 기록하는 것:
 
 - 소변 기록.
@@ -57,6 +64,14 @@ MVP에서 기록하는 것:
 - 최근 기록은 수정할 수 있어야 한다.
 - 제품 문구는 기본적으로 명확한 한국어를 사용한다.
 - 결론처럼 보이는 "정상" 또는 "비정상" 같은 의학적 판단 표현을 피한다.
+
+## WebView 경계 규칙
+
+- 건강 기록 UI와 데이터 흐름은 Next.js 앱이 담당한다.
+- React Native shell에 Supabase 기록 로직을 중복 구현하지 않는다.
+- WebView 통신은 생체인증, 앱 잠금, push 알림, 외부 링크 제어처럼 native 기능이 필요한 경우로 제한한다.
+- 브라우저 개발 모드와 WebView 운영 모드가 다르게 동작할 수 있는 로그인, redirect, safe area, keyboard 처리는 명시적으로 검증한다.
+- WebView localStorage를 건강 데이터의 장기 저장소로 사용하지 않는다. Supabase를 source of truth로 둔다.
 
 ## 문서 규칙
 
