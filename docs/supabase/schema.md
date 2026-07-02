@@ -6,6 +6,8 @@
 - 사용자 소유 테이블에는 RLS를 활성화한다.
 - 읽기/쓰기 정책은 `user_id = auth.uid()`를 기준으로 제한한다.
 - 허용 계정 여부는 `allowed_users`에서 관리한다.
+- 앱은 `is_allowed_user()` RPC로 현재 사용자의 허용 여부만 확인한다.
+- 제한된 문자열 값은 Postgres enum 대신 `text + check constraint`로 관리한다.
 - 참고 출처는 승인된 것만 AI 리포트 근거로 사용할 수 있다.
 
 ## `allowed_users`
@@ -28,6 +30,7 @@ RLS 방향:
 
 - 일반 클라이언트는 자신의 이메일 허용 여부만 확인할 수 있어야 한다.
 - 임의 사용자가 전체 allowlist를 나열하지 못하게 한다.
+- 실제 앱 접근 확인은 `is_allowed_user()` RPC를 사용한다.
 
 ## `profiles`
 
@@ -110,6 +113,13 @@ AI 리포트에서 사용할 수 있는 참고 출처 목록이다.
 - AI 리포트는 `status = 'approved'`인 출처만 근거로 사용할 수 있다.
 - 새 출처 후보는 자동 승인하지 않는다.
 - MVP에서는 개발자 관리 방식으로 seed 또는 Dashboard에서 관리한다.
+- initial schema migration에는 승인된 기본 출처 seed를 함께 넣는다.
+
+초기 승인 출처:
+
+- Cleveland Clinic: Frequent Urination
+- Cleveland Clinic: Constipation
+- NHS: Urinary tract infections (UTIs)
 
 ## `ai_reports`
 
@@ -130,3 +140,22 @@ RLS 방향:
 - 사용자는 자신의 리포트만 읽을 수 있다.
 - 리포트 생성은 Edge Function을 통해서만 수행한다.
 
+## Initial migration
+
+초기 migration 파일:
+
+- `supabase/migrations/20260702115423_initial_schema.sql`
+
+포함 내용:
+
+- `allowed_users`
+- `profiles`
+- `bathroom_logs`
+- `reference_sources`
+- `is_allowed_user()` RPC
+- `updated_at` trigger
+- RLS policies
+- FK/RLS 조회용 index
+- 승인된 참고 출처 seed
+
+`ai_reports`는 MVP 구현을 단순하게 유지하기 위해 initial migration에 포함하지 않는다.

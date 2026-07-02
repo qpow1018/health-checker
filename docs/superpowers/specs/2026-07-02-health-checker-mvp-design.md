@@ -75,3 +75,5 @@ AI 출력은 진단, 처방, 조작된 인용을 하지 않아야 한다.
 - OpenAI 자격 증명이 Next.js 앱이나 React Native shell에 노출되지 않는다.
 - Next.js 화면은 개발 중 브라우저에서 직접 확인할 수 있다.
 - React Native shell은 WebView 역할에 머물고 건강 기록 로직을 중복 구현하지 않는다.
+- `is_allowed_user()` RPC가 허용 계정만 true를 반환한다.
+- 제한된 기록 값은 check constraint로 보호된다.

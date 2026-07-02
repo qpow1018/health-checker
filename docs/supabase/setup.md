@@ -39,7 +39,7 @@ Supabase Dashboard에서 확인할 것:
 로그인 이후 앱은 다음 순서로 접근을 확인한다.
 
 1. Supabase session이 있는지 확인한다.
-2. `allowed_users`에 현재 사용자 이메일이 있고 `is_active = true`인지 확인한다.
+2. `is_allowed_user()` RPC로 현재 사용자 이메일이 허용되어 있고 `is_active = true`인지 확인한다.
 3. 허용되지 않은 사용자는 앱 화면과 AI 리포트 접근을 차단한다.
 4. 개인 기록 조회/수정은 RLS가 다시 `user_id = auth.uid()`로 제한한다.
 
@@ -63,4 +63,3 @@ OpenAI API key와 service role key가 필요한 경우 Supabase Edge Function se
 - 필요한 경우 `SUPABASE_SERVICE_ROLE_KEY`
 
 Edge Function도 우선 사용자의 JWT를 검증해야 한다. service role이 필요하더라도 사용자 검증 없이 데이터에 접근하면 안 된다.
-

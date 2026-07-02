@@ -21,7 +21,7 @@
 
 - 모든 사용자 소유 테이블에 RLS를 활성화한다.
 - 모든 사용자 소유 기록은 `user_id = auth.uid()` 소유권 검사로 제한한다.
-- 로그인 성공과 앱 사용 권한은 별개다. 앱 진입 전에 `allowed_users`의 `is_active = true`를 확인한다.
+- 로그인 성공과 앱 사용 권한은 별개다. 앱 진입 전에 `is_allowed_user()` RPC로 허용 여부를 확인한다.
 - row ownership이 바뀔 수 있는 쓰기에는 `USING`과 `WITH CHECK`를 모두 포함한다.
 - service role key를 앱에 노출하지 않는다.
 - 권한 판단에 사용자 수정 가능한 metadata를 사용하지 않는다.
