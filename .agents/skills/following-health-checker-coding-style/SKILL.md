@@ -75,7 +75,10 @@ Health Checker 코드를 작성하거나 수정할 때 다음 규칙을 적용�
 
 ## CSS
 
-- 현재 전역 스타일은 `src/app/globals.css`에 있다. 새 스타일 체계는 기존 구조와 충돌하지 않게 작게 확장한다.
+- 전역 스타일은 `src/app/globals.scss`에 둔다. reset, CSS variables, body 기본값처럼 앱 전체에 필요한 것만 둔다.
+- 화면/컴포넌트 스타일은 `*.module.scss`로 작성한다.
+- SCSS Module은 `styles`라는 이름으로 import한다.
+- 클래스명은 kebab-case로 작성하고, `styles['class-name']` 형식으로 접근한다.
 - class 이름은 역할이 드러나게 작성한다.
 - 모바일 WebView에서 safe area, 키보드, 좁은 화면을 고려한다.
 - 텍스트가 버튼이나 패널 안에서 넘치지 않도록 stable한 크기와 줄바꿈을 둔다.

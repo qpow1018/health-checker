@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import "./globals.css";
+import { Noto_Sans_KR } from "next/font/google";
+import "./globals.scss";
+
+const notoSansKr = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Health Checker",
@@ -19,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body className={notoSansKr.className}>{children}</body>
     </html>
   );
 }
