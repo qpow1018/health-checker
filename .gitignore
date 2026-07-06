@@ -10,10 +10,10 @@ node_modules/
 .next/
 dist/
 build/
+supabase/.temp/
 
 # Logs
 *.log
 
 # OS files
 .DS_Store
-

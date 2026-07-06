@@ -145,6 +145,7 @@ RLS 방향:
 초기 migration 파일:
 
 - `supabase/migrations/20260702115423_initial_schema.sql`
+- `supabase/migrations/20260706100402_fix_auth_policy_advisors.sql`
 
 포함 내용:
 
@@ -159,3 +160,8 @@ RLS 방향:
 - 승인된 참고 출처 seed
 
 `ai_reports`는 MVP 구현을 단순하게 유지하기 위해 initial migration에 포함하지 않는다.
+
+보정 migration은 Supabase advisors 경고를 반영한다.
+
+- `is_allowed_user()`를 `SECURITY INVOKER`로 낮춘다.
+- `auth.jwt()` 호출을 `(select auth.jwt())` 형태로 감싸 RLS initplan 경고를 해소한다.
