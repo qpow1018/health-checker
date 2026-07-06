@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Health Checker 코딩 스타일'
+  short_description: 'Health Checker 프로젝트의 코드 작성 규칙을 적용합니다'
+  default_prompt: 'Use $following-health-checker-coding-style to apply the Health Checker coding conventions to this change.'

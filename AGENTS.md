@@ -10,6 +10,35 @@
 - 추측성 추상화보다 단순한 코드를 우선한다.
 - 완료라고 말하기 전에 검증한다.
 
+## 명령어
+
+저장소 루트에서 실행한다.
+
+```bash
+npm run dev
+npm run lint
+npm run test
+npm run typecheck
+npm run build
+```
+
+일반적인 TypeScript/React 변경 후에는 `npm run typecheck`와 관련 테스트를 우선 실행한다. 라우팅, Next.js 설정, 환경 변수, 빌드 동작에 영향이 있으면 `npm run build`를 실행한다.
+
+## 수정 제외 경로
+
+명시적인 요청이 없다면 다음 파일과 디렉터리를 수정하지 않는다.
+
+- `node_modules/`
+- `.next/`
+- `next-env.d.ts`
+- `tsconfig.tsbuildinfo`
+- `.env.local`
+- `supabase/.temp/`
+
+## 코딩 스타일
+
+코드 작성, 수정, 리뷰, 리팩터링에는 프로젝트 스킬 `$following-health-checker-coding-style`을 적용한다.
+
 ## 제품 범위
 
 이 프로젝트는 화장실 패턴을 기록하는 개인 모바일 앱이다.
@@ -63,11 +92,22 @@ MVP에서 기록하는 것:
 ## UX 규칙
 
 - 기록 화면이 기본 첫 화면이다.
+- 하단 탭은 큰 방향으로 `기록`, `기록 보기`, `AI 리포트`, `설정` 4개를 기준으로 한다.
 - 원탭 기록은 항상 빠르게 유지한다.
 - 상세 입력은 저장 후 선택 사항이다.
 - 최근 기록은 수정할 수 있어야 한다.
 - 제품 문구는 기본적으로 명확한 한국어를 사용한다.
 - 결론처럼 보이는 "정상" 또는 "비정상" 같은 의학적 판단 표현을 피한다.
+
+## 코드 구조
+
+- `src/app/<route>/`는 route와 탭 화면의 소유권을 가진다.
+- route 전용 UI, 타입, 유틸은 각각 `src/app/<route>/_component/`, `_type/`, `_util/`에 둔다.
+- 여러 route에서 재사용하는 UI는 `src/components/<domain>/` 또는 `src/components/common/`에 둔다.
+- Supabase 및 Edge Function 호출 wrapper는 `src/api/`에 둔다.
+- 환경, Supabase client, 서버/인프라 경계는 `src/lib/`에 둔다.
+- 공용 타입은 `src/types/`, 순수 유틸은 `src/utils/`에 둔다.
+- `src/features/`는 새 장기 구조로 키우지 않는다. 기존 파일은 다음 관련 route 작업 때 위 구조로 옮긴다.
 
 ## WebView 경계 규칙
 

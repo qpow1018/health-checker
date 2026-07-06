@@ -11,6 +11,29 @@
 - 범위 좁히기.
 - 검증 방법 정의.
 
+## 코드 구조 방향
+
+이 프로젝트는 `loam-client`와 비슷하게 route-local 구조를 기본으로 삼는다.
+
+- `src/app/<route>/`: route와 하단 탭 화면의 소유권.
+- `src/app/<route>/_component/`: 해당 route에서만 쓰는 UI.
+- `src/app/<route>/_type/`: 해당 route에서만 쓰는 타입.
+- `src/app/<route>/_util/`: 해당 route에서만 쓰는 유틸.
+- `src/components/<domain>/`: 여러 route에서 재사용하는 도메인 UI.
+- `src/components/common/`: 도메인과 무관한 공용 UI.
+- `src/api/`: Supabase 또는 Edge Function 호출 wrapper.
+- `src/lib/`: 환경, Supabase client, 서버/인프라 경계.
+- `src/types/`: 공용 타입.
+- `src/utils/`: 순수 공용 유틸.
+
+`src/features/`는 새 장기 구조로 키우지 않는다. 기존 `features` 파일은 관련 화면이나 탭을 실제로 작업할 때 route-local, `components`, `api`, `types`, `utils`, `lib` 중 맞는 위치로 옮긴다.
+
+현재 큰 탭 방향은 `기록`, `기록 보기`, `AI 리포트`, `설정`이다. 각 탭의 상세 기획은 해당 탭 구현 직전에 좁게 정한다.
+
+## 프로젝트 스킬
+
+코드 작성, 수정, 리뷰, 리팩터링에는 `$following-health-checker-coding-style`을 적용한다. 루트 `AGENTS.md`에는 안정적인 운영 지침을 두고, 자세한 코드 배치와 스타일 규칙은 프로젝트 스킬에 둔다.
+
 ## 이 프로젝트에서 발전시킬 스킬
 
 ### 제품 기획
