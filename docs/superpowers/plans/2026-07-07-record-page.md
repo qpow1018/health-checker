@@ -4,7 +4,7 @@
 
 **Goal:** `record` 화면을 카드 없는 모바일 앱 캔버스로 다시 만들고, 실제 `bathroom_logs` 원탭 저장, 저장 직후 상세 추가, 즉시 취소를 지원한다.
 
-**Architecture:** Supabase 접근은 `src/api/bathroomLogs.ts`로 분리하고, `record` 화면의 UI 상태와 라벨은 route-local 파일에 둔다. `RecordPageContent`는 인증된 사용자 화면 조립, 빠른 기록 버튼, 저장 후 바텀시트, 상세 입력 상태, 하단 탭을 담당한다.
+**Architecture:** Supabase 접근은 `src/api/bathroomLogs/index.ts`로 분리하고, API 경계 타입은 `src/api/bathroomLogs/type.ts`에 둔다. `record` 화면의 UI 상태와 라벨은 route-local 파일에 둔다. `RecordPageContent`는 인증된 사용자 화면 조립, 빠른 기록 버튼, 저장 후 바텀시트, 상세 입력 상태, 하단 탭을 담당한다.
 
 **Tech Stack:** Next.js App Router, React 19, TypeScript, Supabase JS, SCSS Modules, Vitest, Testing Library.
 
@@ -15,10 +15,12 @@
 - 수정: `src/types/supabase.ts`
   - `bathroom_logs` table 타입을 추가한다.
   - 기존 `is_allowed_user` RPC 타입은 유지한다.
-- 생성: `src/api/bathroomLogs.ts`
+- 생성: `src/api/bathroomLogs/index.ts`
   - `createBathroomLog`, `updateBathroomLogDetails`, `deleteBathroomLog`를 제공한다.
   - 현재 Supabase user id를 확인한 뒤 RLS 소유권과 맞는 `user_id`로 insert한다.
-- 생성: `src/api/bathroomLogs.test.ts`
+- 생성: `src/api/bathroomLogs/type.ts`
+  - `TBathroomLogRow`, `TBathroomLogInsert`, `TBathroomLogUpdate`, `TCreateBathroomLogInput`, `TUpdateBathroomLogDetailsInput`을 둔다.
+- 생성: `src/api/bathroomLogs/index.test.ts`
   - API wrapper가 Supabase client를 올바르게 호출하는지 검증한다.
 - 생성: `src/app/(app)/record/_type/bathroomLog.ts`
   - `TBathroomLogKind`, `TUrgency`, `TStoolState`, `TRecordDetailFormState`, `TJustSavedBathroomLog`를 둔다.
@@ -39,12 +41,13 @@
 
 **Files:**
 - Modify: `src/types/supabase.ts`
-- Create: `src/api/bathroomLogs.ts`
-- Create: `src/api/bathroomLogs.test.ts`
+- Create: `src/api/bathroomLogs/index.ts`
+- Create: `src/api/bathroomLogs/type.ts`
+- Create: `src/api/bathroomLogs/index.test.ts`
 
 - [ ] **Step 1: API 테스트 작성**
 
-Create `src/api/bathroomLogs.test.ts`:
+Create `src/api/bathroomLogs/index.test.ts`:
 
 ```ts
 import { beforeEach, describe, expect, test, vi } from "vitest";
@@ -52,7 +55,7 @@ import {
   createBathroomLog,
   deleteBathroomLog,
   updateBathroomLogDetails,
-} from "./bathroomLogs";
+} from "./index";
 
 const mockGetUser = vi.fn();
 const mockFrom = vi.fn();
@@ -187,10 +190,10 @@ describe("bathroomLogs API", () => {
 Run:
 
 ```bash
-npm run test -- src/api/bathroomLogs.test.ts
+npm run test -- src/api/bathroomLogs/index.test.ts
 ```
 
-Expected: FAIL because `src/api/bathroomLogs.ts` does not exist.
+Expected: FAIL because `src/api/bathroomLogs/index.ts` does not exist.
 
 - [ ] **Step 3: Supabase 타입 추가**
 
@@ -270,22 +273,46 @@ export type Database = {
 };
 ```
 
-- [ ] **Step 4: API 구현**
+- [ ] **Step 4: API 타입 생성**
 
-Create `src/api/bathroomLogs.ts`:
+Create `src/api/bathroomLogs/type.ts`:
 
 ```ts
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Database } from "@/types/supabase";
 
-type TBathroomLogRow = Database["public"]["Tables"]["bathroom_logs"]["Row"];
-type TBathroomLogInsert = Database["public"]["Tables"]["bathroom_logs"]["Insert"];
+export type TBathroomLogRow = Database["public"]["Tables"]["bathroom_logs"]["Row"];
+export type TBathroomLogInsert = Database["public"]["Tables"]["bathroom_logs"]["Insert"];
 export type TBathroomLogUpdate = Database["public"]["Tables"]["bathroom_logs"]["Update"];
 
-type TCreateBathroomLogInput = {
+export type TCreateBathroomLogInput = {
   kind: TBathroomLogRow["kind"];
   loggedAt?: string;
 };
+
+export type TUpdateBathroomLogDetailsInput = Pick<
+  TBathroomLogUpdate,
+  | "urgency"
+  | "woke_from_sleep"
+  | "note"
+  | "urine_pain"
+  | "urine_color_unusual"
+  | "stool_state"
+  | "bowel_pain"
+  | "possible_blood"
+>;
+```
+
+- [ ] **Step 5: API 구현**
+
+Create `src/api/bathroomLogs/index.ts`:
+
+```ts
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import type {
+  TBathroomLogInsert,
+  TCreateBathroomLogInput,
+  TUpdateBathroomLogDetailsInput,
+} from "./type";
 
 export async function createBathroomLog({ kind, loggedAt }: TCreateBathroomLogInput) {
   const supabase = getSupabaseBrowserClient();
@@ -320,17 +347,7 @@ export async function createBathroomLog({ kind, loggedAt }: TCreateBathroomLogIn
 
 export async function updateBathroomLogDetails(
   id: string,
-  details: Pick<
-    TBathroomLogUpdate,
-    | "urgency"
-    | "woke_from_sleep"
-    | "note"
-    | "urine_pain"
-    | "urine_color_unusual"
-    | "stool_state"
-    | "bowel_pain"
-    | "possible_blood"
-  >,
+  details: TUpdateBathroomLogDetailsInput,
 ) {
   const supabase = getSupabaseBrowserClient();
   const { error } = await supabase.from("bathroom_logs").update(details).eq("id", id);
@@ -350,20 +367,20 @@ export async function deleteBathroomLog(id: string) {
 }
 ```
 
-- [ ] **Step 5: 테스트 통과 확인**
+- [ ] **Step 6: 테스트 통과 확인**
 
 Run:
 
 ```bash
-npm run test -- src/api/bathroomLogs.test.ts
+npm run test -- src/api/bathroomLogs/index.test.ts
 ```
 
 Expected: PASS.
 
-- [ ] **Step 6: 커밋**
+- [ ] **Step 7: 커밋**
 
 ```bash
-git add src/types/supabase.ts src/api/bathroomLogs.ts src/api/bathroomLogs.test.ts
+git add src/types/supabase.ts src/api/bathroomLogs/index.ts src/api/bathroomLogs/type.ts src/api/bathroomLogs/index.test.ts
 git commit -m "feat: add bathroom log api"
 ```
 
@@ -569,7 +586,7 @@ export const BOTTOM_TABS = [
 Create `src/app/(app)/record/_util/recordDetailForm.ts`:
 
 ```ts
-import type { TBathroomLogUpdate } from "@/api/bathroomLogs";
+import type { TUpdateBathroomLogDetailsInput } from "@/api/bathroomLogs/type";
 import type { TBathroomLogKind, TRecordDetailFormState } from "../_type/bathroomLog";
 
 export function createEmptyDetailForm(): TRecordDetailFormState {
@@ -588,17 +605,7 @@ export function createEmptyDetailForm(): TRecordDetailFormState {
 export function toBathroomLogDetailUpdate(
   kind: TBathroomLogKind,
   form: TRecordDetailFormState,
-): Pick<
-  TBathroomLogUpdate,
-  | "urgency"
-  | "woke_from_sleep"
-  | "note"
-  | "urine_pain"
-  | "urine_color_unusual"
-  | "stool_state"
-  | "bowel_pain"
-  | "possible_blood"
-> {
+): TUpdateBathroomLogDetailsInput {
   const hasUrineFields = kind === "urine" || kind === "both";
   const hasBowelFields = kind === "bowel" || kind === "both";
   const note = form.note.trim();
@@ -1472,7 +1479,7 @@ Expected: PASS.
 Run:
 
 ```bash
-npm run test -- src/api/bathroomLogs.test.ts 'src/app/(app)/record/_util/recordDetailForm.test.ts' 'src/app/(app)/record/_component/RecordPageContent.test.tsx'
+npm run test -- src/api/bathroomLogs/index.test.ts 'src/app/(app)/record/_util/recordDetailForm.test.ts' 'src/app/(app)/record/_component/RecordPageContent.test.tsx'
 ```
 
 Expected: PASS.

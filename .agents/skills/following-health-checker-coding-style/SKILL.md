@@ -23,7 +23,8 @@ Health Checker 코드를 작성하거나 수정할 때 다음 규칙을 적용�
 - 두 번째 route에서 같은 도메인 컴포넌트가 필요해지면 `src/components/<domain>/`으로 옮긴다.
 - 도메인과 무관한 공용 UI는 `src/components/common/`에 둔다.
 - React 생명주기에 의존하는 재사용 로직은 `src/hooks/`에 둔다.
-- Supabase와 Edge Function 호출 wrapper는 `src/api/`에 둔다.
+- 새 Supabase와 Edge Function 호출 wrapper는 `src/api/<domain>/index.ts`에 둔다.
+- 새 API 경계 타입은 `src/api/<domain>/type.ts`에 둔다.
 - 환경, Supabase client, 서버/인프라 경계는 `src/lib/`에 둔다.
 - 공용 타입은 `src/types/`에 둔다.
 - 순수 공용 유틸은 `src/utils/`에 둔다.

@@ -104,7 +104,8 @@ MVP에서 기록하는 것:
 - `src/app/<route>/`는 route와 탭 화면의 소유권을 가진다.
 - route 전용 UI, 타입, 유틸은 각각 `src/app/<route>/_component/`, `_type/`, `_util/`에 둔다.
 - 여러 route에서 재사용하는 UI는 `src/components/<domain>/` 또는 `src/components/common/`에 둔다.
-- Supabase 및 Edge Function 호출 wrapper는 `src/api/`에 둔다.
+- 새 Supabase 및 Edge Function 호출 wrapper는 `src/api/<domain>/index.ts`에 둔다.
+- 새 API 경계 타입은 `src/api/<domain>/type.ts`에 둔다.
 - 환경, Supabase client, 서버/인프라 경계는 `src/lib/`에 둔다.
 - 공용 타입은 `src/types/`, 순수 유틸은 `src/utils/`에 둔다.
 - `src/features/`는 새 장기 구조로 키우지 않는다. 기존 파일은 다음 관련 route 작업 때 위 구조로 옮긴다.
