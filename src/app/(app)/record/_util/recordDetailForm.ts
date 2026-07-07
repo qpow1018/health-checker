@@ -17,7 +17,7 @@ export function createEmptyDetailForm(): TRecordDetailFormState {
   };
 }
 
-export function toBathroomLogDetailUpdate(
+export function createBathroomLogDetailUpdateRequest(
   kind: TBathroomLogKind,
   form: TRecordDetailFormState,
 ): TReqUpdateBathroomLogDetails {
@@ -27,7 +27,7 @@ export function toBathroomLogDetailUpdate(
 
   return {
     urgency: form.urgency || null,
-    woke_from_sleep: toNullableBoolean(form.wokeFromSleep),
+    woke_from_sleep: parseWokeFromSleepValue(form.wokeFromSleep),
     note: note || null,
     urine_pain: hasUrineFields ? form.urinePain : null,
     urine_color_unusual: hasUrineFields ? form.urineColorUnusual : null,
@@ -37,7 +37,7 @@ export function toBathroomLogDetailUpdate(
   };
 }
 
-function toNullableBoolean(value: TRecordDetailFormState["wokeFromSleep"]) {
+function parseWokeFromSleepValue(value: TRecordDetailFormState["wokeFromSleep"]) {
   if (value === "yes") {
     return true;
   }

@@ -23,8 +23,9 @@ import type {
 } from "./_type/bathroomLog";
 import {
   createEmptyDetailForm,
-  toBathroomLogDetailUpdate,
+  createBathroomLogDetailUpdateRequest,
 } from "./_util/recordDetailForm";
+
 import styles from "./recordPageClient.module.scss";
 
 type TSheetMode = "summary" | "detail";
@@ -99,7 +100,7 @@ export function RecordPageClient() {
     try {
       await updateBathroomLogDetails(
         justSavedLog.id,
-        toBathroomLogDetailUpdate(justSavedLog.kind, detailForm),
+        createBathroomLogDetailUpdateRequest(justSavedLog.kind, detailForm),
       );
       setJustSavedLog(null);
       setStatusMessage("상세 내용을 저장했습니다.");

@@ -1,5 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { createEmptyDetailForm, toBathroomLogDetailUpdate } from "./recordDetailForm";
+import {
+  createBathroomLogDetailUpdateRequest,
+  createEmptyDetailForm,
+} from "./recordDetailForm";
 
 describe("recordDetailForm", () => {
   test("creates an empty detail form", () => {
@@ -17,7 +20,7 @@ describe("recordDetailForm", () => {
 
   test("maps urine details and clears bowel-only fields", () => {
     expect(
-      toBathroomLogDetailUpdate("urine", {
+      createBathroomLogDetailUpdateRequest("urine", {
         urgency: "urgent",
         wokeFromSleep: "no",
         note: "  저녁 이후  ",
@@ -41,7 +44,7 @@ describe("recordDetailForm", () => {
 
   test("maps bowel details and clears urine-only fields", () => {
     expect(
-      toBathroomLogDetailUpdate("bowel", {
+      createBathroomLogDetailUpdateRequest("bowel", {
         urgency: "",
         wokeFromSleep: "yes",
         note: "",
@@ -65,7 +68,7 @@ describe("recordDetailForm", () => {
 
   test("keeps urine and bowel fields for both kind", () => {
     expect(
-      toBathroomLogDetailUpdate("both", {
+      createBathroomLogDetailUpdateRequest("both", {
         urgency: "ordinary",
         wokeFromSleep: "",
         note: "메모",
