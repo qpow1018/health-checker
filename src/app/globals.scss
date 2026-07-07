@@ -20,6 +20,13 @@
   --focus: #6a9bc3;
   --shadow: 0 16px 40px rgb(24 34 42 / 8%);
   --app-max-width: 480px;
+  --bottom-tabs-height: 70px;
+  --bottom-tabs-reserved-height: calc(var(--bottom-tabs-height) + env(safe-area-inset-bottom));
+  --overlay: rgb(24 34 42 / 32%);
+  --transition: 160ms ease;
+  --z-bottom-tabs: 100;
+  --z-modal: 200;
+  --z-toast: 400;
   --radius: 8px;
 }
 
@@ -45,6 +52,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
+  line-height: 1.3;
 }
 
 h1,
@@ -112,7 +120,7 @@ h1 {
   gap: 20px;
 }
 
-.stack > * {
+.stack>* {
   min-width: 0;
   width: 100%;
 }

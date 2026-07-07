@@ -3,10 +3,10 @@
   right: max(0px, calc((100vw - var(--app-max-width)) / 2));
   bottom: 0;
   left: max(0px, calc((100vw - var(--app-max-width)) / 2));
-  z-index: 3;
+  z-index: var(--z-bottom-tabs);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  min-height: calc(70px + env(safe-area-inset-bottom));
+  min-height: var(--bottom-tabs-reserved-height);
   border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--surface);
@@ -23,6 +23,7 @@
     line-height: 1.25;
     text-align: center;
     text-decoration: none;
+    transition: color var(--transition);
   }
 
   .active-tab {

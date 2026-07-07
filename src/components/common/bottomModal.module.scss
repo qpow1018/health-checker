@@ -1,0 +1,35 @@
+.bottom-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--overlay);
+
+  .bottom-modal {
+    width: min(100%, var(--app-max-width));
+    border-bottom: 0;
+    border-radius: 20px 20px 0 0;
+    background: var(--surface);
+
+    .bottom-modal-indicator {
+      width: 44px;
+      height: 4px;
+      margin: 16px auto 0;
+      border-radius: 100px;
+      background: var(--line);
+    }
+
+    .bottom-modal-header {
+      padding: 16px 20px 0;
+
+      .bottom-modal-title {
+        margin: 0;
+        color: var(--text);
+        font-size: 18px;
+        font-weight: 700;
+      }
+    }
+  }
+}

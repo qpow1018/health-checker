@@ -48,8 +48,7 @@ describe("RecordPageClient", () => {
     await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
 
     expect(bathroomLogMocks.createBathroomLog).toHaveBeenCalledWith({ kind: "urine" });
-    const sheet = screen.getByRole("dialog", { name: "방금 저장된 기록" });
-    expect(within(sheet).getByText("방금 저장됨")).toBeInTheDocument();
+    const sheet = screen.getByRole("dialog", { name: "방금 저장됨" });
     expect(within(sheet).getByText("소변")).toBeInTheDocument();
     expect(within(sheet).getByRole("button", { name: "상세 추가" })).toBeInTheDocument();
     expect(within(sheet).getByRole("button", { name: "취소" })).toBeInTheDocument();
@@ -63,7 +62,7 @@ describe("RecordPageClient", () => {
     await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
     await user.click(screen.getByRole("button", { name: "닫기" }));
 
-    expect(screen.queryByRole("dialog", { name: "방금 저장된 기록" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "방금 저장됨" })).not.toBeInTheDocument();
     expect(bathroomLogMocks.deleteBathroomLog).not.toHaveBeenCalled();
   });
 
@@ -75,7 +74,7 @@ describe("RecordPageClient", () => {
     await user.click(screen.getByRole("button", { name: "취소" }));
 
     expect(bathroomLogMocks.deleteBathroomLog).toHaveBeenCalledWith("log-1");
-    expect(screen.queryByRole("dialog", { name: "방금 저장된 기록" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "방금 저장됨" })).not.toBeInTheDocument();
   });
 
   test("opens detail fields for urine logs and saves them", async () => {
@@ -108,7 +107,19 @@ describe("RecordPageClient", () => {
       bowel_pain: null,
       possible_blood: null,
     });
-    expect(screen.queryByRole("dialog", { name: "방금 저장된 기록" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "방금 저장됨" })).not.toBeInTheDocument();
+  });
+
+  test("returns from detail modal to the saved summary modal", async () => {
+    const user = userEvent.setup();
+
+    render(<RecordPageClient />);
+    await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
+    await user.click(screen.getByRole("button", { name: "상세 추가" }));
+    await user.click(screen.getByRole("button", { name: "뒤로" }));
+
+    const sheet = screen.getByRole("dialog", { name: "방금 저장됨" });
+    expect(within(sheet).getByRole("button", { name: "상세 추가" })).toBeInTheDocument();
   });
 
   test("shows a save failure message without opening the sheet", async () => {
@@ -119,6 +130,6 @@ describe("RecordPageClient", () => {
     await user.click(screen.getByRole("button", { name: "대변 지금 시각으로 대변 기록" }));
 
     expect(screen.getByRole("status")).toHaveTextContent("기록을 저장하지 못했습니다. 다시 시도해 주세요.");
-    expect(screen.queryByRole("dialog", { name: "방금 저장된 기록" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "방금 저장됨" })).not.toBeInTheDocument();
   });
 });
