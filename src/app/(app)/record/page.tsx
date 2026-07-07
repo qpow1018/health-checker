@@ -1,5 +1,5 @@
-import { RecordPageContent } from "./_component/RecordPageContent";
+import { RecordPageClient } from "./RecordPageClient";
 
 export default function RecordPage() {
-  return <RecordPageContent />;
+  return <RecordPageClient />;
 }
