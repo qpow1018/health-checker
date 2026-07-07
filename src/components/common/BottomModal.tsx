@@ -38,13 +38,15 @@ export default function BottomModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className={styles["bottom-modal-indicator"]} />
-        {title ? (
+
+        {title && (
           <header className={styles["bottom-modal-header"]}>
             <h2 className={styles["bottom-modal-title"]} id={titleId}>
               {title}
             </h2>
           </header>
-        ) : null}
+        )}
+
         {children}
       </section>
     </div>

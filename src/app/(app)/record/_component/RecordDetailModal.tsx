@@ -30,66 +30,73 @@ export function RecordDetailModal({
   return (
     <BottomModal title="상세 추가" isOpen={true} onClose={onBack}>
       <div className={styles["detail-form"]}>
-        <label>
-          긴급도
-          <select
-            value={detailForm.urgency}
-            onChange={(event) =>
-              onChange({
-                urgency: event.target.value as TRecordDetailFormState["urgency"],
-              })
-            }
-          >
-            <option value="">미기록</option>
-            {URGENCY_OPTIONS.map((option) => (
-              <option value={option.value} key={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          자다가 깼음
-          <select
-            value={detailForm.wokeFromSleep}
-            onChange={(event) =>
-              onChange({
-                wokeFromSleep: event.target
-                  .value as TRecordDetailFormState["wokeFromSleep"],
-              })
-            }
-          >
-            <option value="">미기록</option>
-            <option value="yes">예</option>
-            <option value="no">아니오</option>
-          </select>
-        </label>
+        <fieldset className={styles["field-group"]}>
+          <legend>기본</legend>
+          <label>
+            긴급도
+            <select
+              value={detailForm.urgency}
+              onChange={(event) =>
+                onChange({
+                  urgency: event.target.value as TRecordDetailFormState["urgency"],
+                })
+              }
+            >
+              <option value="">미기록</option>
+              {URGENCY_OPTIONS.map((option) => (
+                <option value={option.value} key={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            자다가 깼음
+            <select
+              value={detailForm.wokeFromSleep}
+              onChange={(event) =>
+                onChange({
+                  wokeFromSleep: event.target
+                    .value as TRecordDetailFormState["wokeFromSleep"],
+                })
+              }
+            >
+              <option value="">미기록</option>
+              <option value="yes">예</option>
+              <option value="no">아니오</option>
+            </select>
+          </label>
+        </fieldset>
         {showsUrineFields(kind) ? (
-          <div className={styles["check-group"]}>
-            <label>
-              <input
-                type="checkbox"
-                checked={detailForm.urinePain}
-                onChange={(event) => onChange({ urinePain: event.target.checked })}
-              />
-              소변 통증
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={detailForm.urineColorUnusual}
-                onChange={(event) =>
+          <fieldset className={styles["field-group"]}>
+            <legend>소변 관련</legend>
+            <div className={styles["check-group"]}>
+              <label>
+                <span>소변 통증</span>
+                <input
+                  type="checkbox"
+                  checked={detailForm.urinePain}
+                  onChange={(event) => onChange({ urinePain: event.target.checked })}
+                />
+              </label>
+              <label>
+                <span>색이 평소와 다름</span>
+                <input
+                  type="checkbox"
+                  checked={detailForm.urineColorUnusual}
+                  onChange={(event) =>
                   onChange({
                     urineColorUnusual: event.target.checked,
                   })
-                }
-              />
-              색이 평소와 다름
-            </label>
-          </div>
+                  }
+                />
+              </label>
+            </div>
+          </fieldset>
         ) : null}
         {showsBowelFields(kind) ? (
-          <>
+          <fieldset className={styles["field-group"]}>
+            <legend>대변 관련</legend>
             <label>
               대변 상태
               <select
@@ -110,37 +117,48 @@ export function RecordDetailModal({
             </label>
             <div className={styles["check-group"]}>
               <label>
+                <span>대변 통증</span>
                 <input
                   type="checkbox"
                   checked={detailForm.bowelPain}
                   onChange={(event) => onChange({ bowelPain: event.target.checked })}
                 />
-                대변 통증
               </label>
               <label>
+                <span>혈변 의심</span>
                 <input
                   type="checkbox"
                   checked={detailForm.possibleBlood}
                   onChange={(event) => onChange({ possibleBlood: event.target.checked })}
                 />
-                혈변 의심
               </label>
             </div>
-          </>
+          </fieldset>
         ) : null}
-        <label>
-          메모
-          <textarea
-            value={detailForm.note}
-            onChange={(event) => onChange({ note: event.target.value })}
-            rows={3}
-          />
-        </label>
+        <div className={styles["field-group"]}>
+          <label>
+            메모
+            <textarea
+              value={detailForm.note}
+              onChange={(event) => onChange({ note: event.target.value })}
+              rows={3}
+            />
+          </label>
+        </div>
         <div className={styles["sheet-actions"]}>
-          <button type="button" onClick={onSave} disabled={isSavingDetails}>
+          <button
+            className={styles["primary-action"]}
+            type="button"
+            onClick={onSave}
+            disabled={isSavingDetails}
+          >
             상세 저장
           </button>
-          <button type="button" onClick={onBack}>
+          <button
+            className={styles["secondary-action"]}
+            type="button"
+            onClick={onBack}
+          >
             뒤로
           </button>
         </div>

@@ -1,6 +1,7 @@
-import BottomModal from "@/components/common/BottomModal";
 import { RECORD_KIND_LABEL } from "@/app/(app)/record/_define/recordOptions";
 import type { TJustSavedBathroomLog } from "@/app/(app)/record/_type/bathroomLog";
+
+import BottomModal from "@/components/common/BottomModal";
 
 import styles from "./recordSavedSummaryModal.module.scss";
 
@@ -22,19 +23,35 @@ export function RecordSavedSummaryModal({
   return (
     <BottomModal title="방금 저장됨" isOpen={true} onClose={onClose}>
       <div className={styles["saved-summary-modal"]}>
-        <div className={styles["sheet-summary"]}>
-          <strong>{RECORD_KIND_LABEL[log.kind]}</strong>
-          <span>{formatSavedTime(log.logged_at)}</span>
+        <div className={styles["summary-card"]}>
+          <span className={styles["summary-label"]}>저장된 기록</span>
+          <div className={styles["sheet-summary"]}>
+            <strong>{RECORD_KIND_LABEL[log.kind]}</strong>
+            <span>{formatSavedTime(log.logged_at)}</span>
+          </div>
         </div>
         <div className={styles["sheet-actions"]}>
-          <button type="button" onClick={onAddDetails}>
+          <button
+            className={styles["primary-action"]}
+            type="button"
+            onClick={onAddDetails}
+          >
             상세 추가
           </button>
-          <button type="button" onClick={onUndo} disabled={isUndoing}>
-            취소
-          </button>
-          <button type="button" onClick={onClose}>
+          <button
+            className={styles["secondary-action"]}
+            type="button"
+            onClick={onClose}
+          >
             닫기
+          </button>
+          <button
+            className={styles["quiet-action"]}
+            type="button"
+            onClick={onUndo}
+            disabled={isUndoing}
+          >
+            취소
           </button>
         </div>
       </div>

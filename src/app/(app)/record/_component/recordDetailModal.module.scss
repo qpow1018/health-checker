@@ -3,6 +3,24 @@
   gap: 12px;
   padding: 18px 20px calc(var(--bottom-tabs-reserved-height) + 16px);
 
+  .field-group {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+    background: var(--surface-muted);
+
+    legend {
+      padding: 0 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+  }
+
   label {
     display: grid;
     gap: 6px;
@@ -21,33 +39,46 @@
     color: var(--text);
     font: inherit;
     font-weight: 500;
+
+    &:focus-visible {
+      outline: 3px solid rgb(106 155 195 / 34%);
+      outline-offset: 2px;
+    }
   }
 
   textarea {
+    min-height: 88px;
     resize: vertical;
   }
 
   .check-group {
     display: grid;
-    gap: 10px;
+    gap: 8px;
 
     label {
       display: flex;
-      grid-template-columns: none;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px;
+      background: var(--surface);
       font-weight: 700;
     }
 
     input {
+      flex: 0 0 auto;
       width: 18px;
       height: 18px;
+      accent-color: var(--primary);
     }
   }
 
   .sheet-actions {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
 
     button {
@@ -59,10 +90,14 @@
       cursor: pointer;
       font-weight: 800;
 
-      &:first-child {
+      &.primary-action {
         border-color: transparent;
         background: var(--primary-soft);
         color: var(--primary-strong);
+      }
+
+      &.secondary-action {
+        background: var(--surface);
       }
 
       &:disabled {
