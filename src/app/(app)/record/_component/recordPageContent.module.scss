@@ -1,0 +1,63 @@
+.record-page-content {
+  .topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .topbar-title {
+    min-width: 0;
+  }
+
+  .ghost-button {
+    min-height: 40px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0 12px;
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .record-button {
+    min-height: 92px;
+    border: 0;
+    border-radius: var(--radius);
+    padding: 12px 8px;
+    color: #ffffff;
+    cursor: not-allowed;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.25;
+    opacity: 0.64;
+  }
+
+  .urine {
+    background: var(--record-urine);
+  }
+
+  .bowel {
+    background: var(--record-bowel);
+  }
+
+  .combined {
+    background: var(--record-combined);
+  }
+
+  .notice {
+    border-radius: var(--radius);
+    padding: 12px;
+    background: var(--primary-soft);
+    color: var(--primary-strong);
+    line-height: 1.55;
+  }
+}

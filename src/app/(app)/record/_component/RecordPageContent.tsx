@@ -1,20 +1,20 @@
-import styles from "./RecordHome.module.scss";
+"use client";
 
-type RecordHomeProps = {
-  email: string;
-  onSignOut: () => void;
-};
+import { useAuthSession } from "@/components/auth/AuthGate";
+import styles from "./recordPageContent.module.scss";
 
-export function RecordHome({ email, onSignOut }: RecordHomeProps) {
+export function RecordPageContent() {
+  const { email, signOut } = useAuthSession();
+
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${styles["record-page-content"]}`}>
       <section className="surface stack">
         <header className={styles["topbar"]}>
           <div className={styles["topbar-title"]}>
             <p className="eyebrow">오늘 기록</p>
             <h1>화장실 기록</h1>
           </div>
-          <button className={styles["ghost-button"]} type="button" onClick={onSignOut}>
+          <button className={styles["ghost-button"]} type="button" onClick={() => void signOut()}>
             로그아웃
           </button>
         </header>

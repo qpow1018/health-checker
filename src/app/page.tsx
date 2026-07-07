@@ -1,5 +1,5 @@
-import { AuthGate } from "@/features/auth/AuthGate";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  return <AuthGate />;
+  redirect("/record");
 }

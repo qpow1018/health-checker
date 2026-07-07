@@ -16,11 +16,14 @@
 이 프로젝트는 `loam-client`와 비슷하게 route-local 구조를 기본으로 삼는다.
 
 - `src/app/<route>/`: route와 하단 탭 화면의 소유권.
-- `src/app/<route>/_component/`: 해당 route에서만 쓰는 UI.
+- `src/app/<route>/<RouteName>Client.tsx`: 상호작용이 필요한 route 최상위 UI.
+- `src/app/<route>/_component/`: 해당 route에서만 쓰는 하위 UI.
 - `src/app/<route>/_type/`: 해당 route에서만 쓰는 타입.
 - `src/app/<route>/_util/`: 해당 route에서만 쓰는 유틸.
+- `src/app/<route>/_define/`: 해당 route에서만 쓰는 상수.
 - `src/components/<domain>/`: 여러 route에서 재사용하는 도메인 UI.
 - `src/components/common/`: 도메인과 무관한 공용 UI.
+- `src/hooks/`: React 생명주기에 의존하는 재사용 로직.
 - `src/api/`: Supabase 또는 Edge Function 호출 wrapper.
 - `src/lib/`: 환경, Supabase client, 서버/인프라 경계.
 - `src/types/`: 공용 타입.
@@ -29,6 +32,8 @@
 `src/features/`는 새 장기 구조로 키우지 않는다. 기존 `features` 파일은 관련 화면이나 탭을 실제로 작업할 때 route-local, `components`, `api`, `types`, `utils`, `lib` 중 맞는 위치로 옮긴다.
 
 현재 큰 탭 방향은 `기록`, `기록 보기`, `AI 리포트`, `설정`이다. 각 탭의 상세 기획은 해당 탭 구현 직전에 좁게 정한다.
+
+인증이 필요한 앱 화면은 `src/app/(app)/` route group 아래에 둔다. `AuthGate`는 `(app)/layout.tsx`에서 한 번만 적용하고, 각 `page.tsx`에서 반복 호출하지 않는다. 로그인 화면은 `src/app/login/`에 둔다.
 
 ## 프로젝트 스킬
 
