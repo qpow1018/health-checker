@@ -43,10 +43,3 @@ export const STOOL_STATE_OPTIONS: Array<{ value: TStoolState; label: string }> =
   { value: "loose", label: "묽음" },
   { value: "hard", label: "딱딱함" },
 ];
-
-export const BOTTOM_TABS = [
-  { href: "/record", label: "기록" },
-  { href: "/records", label: "기록 보기" },
-  { href: "/report", label: "AI 리포트" },
-  { href: "/settings", label: "설정" },
-] as const;

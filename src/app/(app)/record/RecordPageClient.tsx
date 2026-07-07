@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 import {
   createBathroomLog,
   deleteBathroomLog,
   updateBathroomLogDetails,
 } from "@/api/bathroomLogs";
-import { useAuthSession } from "@/components/auth/AuthGate";
 import {
-  BOTTOM_TABS,
   RECORD_KIND_LABEL,
   RECORD_KIND_OPTIONS,
   STOOL_STATE_OPTIONS,
@@ -26,6 +23,8 @@ import {
   createBathroomLogDetailUpdateRequest,
 } from "./_util/recordDetailForm";
 
+import { AppBottomTabs } from "@/components/common/AppBottomTabs";
+
 import styles from "./recordPageClient.module.scss";
 
 type TSheetMode = "summary" | "detail";
@@ -37,7 +36,6 @@ const DETAIL_ERROR_MESSAGE =
   "상세 내용을 저장하지 못했습니다. 다시 시도해 주세요.";
 
 export function RecordPageClient() {
-  const { email, signOut } = useAuthSession();
   const [justSavedLog, setJustSavedLog] =
     useState<TJustSavedBathroomLog | null>(null);
   const [sheetMode, setSheetMode] = useState<TSheetMode>("summary");
@@ -131,16 +129,7 @@ export function RecordPageClient() {
             <p className={styles["eyebrow"]}>오늘 기록</p>
             <h1>빠르게 기록하고 필요하면 덧붙이기</h1>
           </div>
-          <button
-            className={styles["ghost-button"]}
-            type="button"
-            onClick={() => void signOut()}
-          >
-            로그아웃
-          </button>
         </header>
-
-        <p className={styles["account"]}>{email}</p>
 
         <section className={styles["quick-section"]} aria-label="빠른 기록">
           {RECORD_KIND_OPTIONS.map((option) => (
@@ -344,19 +333,7 @@ export function RecordPageClient() {
           </section>
         ) : null}
 
-        <nav className={styles["bottom-tabs"]} aria-label="하단 탭">
-          {BOTTOM_TABS.map((tab) => (
-            <Link
-              className={
-                tab.href === "/record" ? styles["active-tab"] : undefined
-              }
-              href={tab.href}
-              key={tab.href}
-            >
-              {tab.label}
-            </Link>
-          ))}
-        </nav>
+        <AppBottomTabs activeHref="/record" />
       </div>
     </main>
   );

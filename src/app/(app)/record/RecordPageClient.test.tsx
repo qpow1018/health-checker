@@ -3,21 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { RecordPageClient } from "./RecordPageClient";
 
-const authMocks = vi.hoisted(() => ({
-  signOut: vi.fn(),
-}));
-
 const bathroomLogMocks = vi.hoisted(() => ({
   createBathroomLog: vi.fn(),
   deleteBathroomLog: vi.fn(),
   updateBathroomLogDetails: vi.fn(),
-}));
-
-vi.mock("@/components/auth/AuthGate", () => ({
-  useAuthSession: () => ({
-    email: "me@example.com",
-    signOut: authMocks.signOut,
-  }),
 }));
 
 vi.mock("@/api/bathroomLogs", () => ({
@@ -131,14 +120,5 @@ describe("RecordPageClient", () => {
 
     expect(screen.getByRole("status")).toHaveTextContent("기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     expect(screen.queryByRole("dialog", { name: "방금 저장된 기록" })).not.toBeInTheDocument();
-  });
-
-  test("keeps sign out available", async () => {
-    const user = userEvent.setup();
-
-    render(<RecordPageClient />);
-    await user.click(screen.getByRole("button", { name: "로그아웃" }));
-
-    expect(authMocks.signOut).toHaveBeenCalledTimes(1);
   });
 });
