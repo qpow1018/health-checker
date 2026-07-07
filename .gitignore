@@ -12,6 +12,7 @@ dist/
 build/
 supabase/.temp/
 .worktrees/
+.superpowers/
 *.tsbuildinfo
 
 # Logs
