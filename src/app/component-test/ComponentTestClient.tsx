@@ -6,6 +6,7 @@ import { ButtonGroup } from "@/components/common/buttonGroup/ButtonGroup";
 import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
 import { TextInput } from "@/components/common/form/TextInput";
 import { Textarea } from "@/components/common/form/Textarea";
+import { Tabs } from "@/components/common/tabs/Tabs";
 
 import styles from "./componentTestPage.module.scss";
 
@@ -14,6 +15,7 @@ export function ComponentTestClient() {
   const [note, setNote] = useState("저녁 이후 물을 적게 마심");
   const [urgency, setUrgency] = useState("ordinary");
   const [wokeFromSleep, setWokeFromSleep] = useState("no");
+  const [reportTab, setReportTab] = useState("summary");
   const [isPrimaryConfirmOpen, setIsPrimaryConfirmOpen] = useState(false);
   const [isDestructiveConfirmOpen, setIsDestructiveConfirmOpen] = useState(false);
 
@@ -156,6 +158,21 @@ export function ComponentTestClient() {
               onChange={() => undefined}
             />
           </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="tabs-section-title">
+          <h2 id="tabs-section-title">Tabs</h2>
+
+          <Tabs
+            label="AI 리포트 보기"
+            tabs={[
+              { value: "summary", label: "요약" },
+              { value: "sources", label: "출처" },
+              { value: "records", label: "기록 기준" },
+            ]}
+            value={reportTab}
+            onChange={setReportTab}
+          />
         </section>
 
         <section className={styles.section} aria-labelledby="confirm-section-title">

@@ -1,0 +1,40 @@
+.tabs {
+  display: flex;
+  min-width: 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line);
+
+  button {
+    flex: 0 0 auto;
+    min-height: 42px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 10px 12px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.2;
+    transition:
+      border-color var(--transition),
+      color var(--transition),
+      opacity var(--transition);
+
+    &:hover:not(:disabled) {
+      color: var(--text);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+  }
+
+  .selected-tab {
+    border-bottom-color: var(--primary);
+    color: var(--primary-strong);
+  }
+}
