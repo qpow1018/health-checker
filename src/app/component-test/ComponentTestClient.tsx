@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/common/button/Button";
+import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
 import { TextInput } from "@/components/common/form/TextInput";
 import { Textarea } from "@/components/common/form/Textarea";
 
@@ -10,6 +11,8 @@ import styles from "./componentTestPage.module.scss";
 export function ComponentTestClient() {
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("저녁 이후 물을 적게 마심");
+  const [isPrimaryConfirmOpen, setIsPrimaryConfirmOpen] = useState(false);
+  const [isDestructiveConfirmOpen, setIsDestructiveConfirmOpen] = useState(false);
 
   return (
     <main className={styles["component-test-page"]}>
@@ -115,7 +118,60 @@ export function ComponentTestClient() {
             />
           </div>
         </section>
+
+        <section className={styles.section} aria-labelledby="confirm-section-title">
+          <h2 id="confirm-section-title">ConfirmModal</h2>
+
+          <div className={styles["button-grid"]}>
+            <Button
+              variant="primary"
+              size="large"
+              onClick={() => setIsPrimaryConfirmOpen(true)}
+            >
+              기본 확인
+            </Button>
+            <Button
+              variant="destructive"
+              size="large"
+              onClick={() => setIsDestructiveConfirmOpen(true)}
+            >
+              삭제 확인
+            </Button>
+          </div>
+        </section>
       </section>
+
+      <ConfirmModal
+        isOpen={isPrimaryConfirmOpen}
+        onClose={() => setIsPrimaryConfirmOpen(false)}
+        title="상세를 저장할까요?"
+        message="입력한 상세 정보가 방금 저장한 기록에 추가됩니다."
+        cancelButton={{
+          label: "닫기",
+          onClick: () => setIsPrimaryConfirmOpen(false),
+        }}
+        confirmButton={{
+          label: "저장하기",
+          variant: "primary",
+          onClick: () => setIsPrimaryConfirmOpen(false),
+        }}
+      />
+
+      <ConfirmModal
+        isOpen={isDestructiveConfirmOpen}
+        onClose={() => setIsDestructiveConfirmOpen(false)}
+        title="기록을 삭제할까요?"
+        message="삭제한 기록은 되돌릴 수 없습니다."
+        cancelButton={{
+          label: "닫기",
+          onClick: () => setIsDestructiveConfirmOpen(false),
+        }}
+        confirmButton={{
+          label: "삭제하기",
+          variant: "destructive",
+          onClick: () => setIsDestructiveConfirmOpen(false),
+        }}
+      />
     </main>
   );
 }

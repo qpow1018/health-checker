@@ -1,0 +1,102 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, test, vi } from "vitest";
+
+import { ConfirmModal } from "./ConfirmModal";
+
+describe("ConfirmModal", () => {
+  test("renders a centered confirmation dialog", () => {
+    render(
+      <ConfirmModal
+        isOpen={true}
+        onClose={() => undefined}
+        title="기록을 취소할까요?"
+        message="방금 저장한 기록이 삭제됩니다."
+        cancelButton={{ label: "닫기", onClick: () => undefined }}
+        confirmButton={{
+          label: "취소하기",
+          variant: "destructive",
+          onClick: () => undefined,
+        }}
+      />,
+    );
+
+    const dialog = screen.getByRole("dialog", { name: "기록을 취소할까요?" });
+
+    expect(dialog).toHaveTextContent("방금 저장한 기록이 삭제됩니다.");
+    expect(screen.getByRole("button", { name: "닫기" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "취소하기" })).toHaveAttribute(
+      "data-variant",
+      "destructive",
+    );
+  });
+
+  test("does not render when closed", () => {
+    render(
+      <ConfirmModal
+        isOpen={false}
+        onClose={() => undefined}
+        title="기록 삭제"
+        message="삭제할까요?"
+        cancelButton={{ label: "닫기", onClick: () => undefined }}
+        confirmButton={{
+          label: "삭제",
+          variant: "destructive",
+          onClick: () => undefined,
+        }}
+      />,
+    );
+
+    expect(screen.queryByRole("dialog", { name: "기록 삭제" })).not.toBeInTheDocument();
+  });
+
+  test("calls the requested handlers for overlay, cancel, and confirm actions", async () => {
+    const user = userEvent.setup();
+    const handleClose = vi.fn();
+    const handleCancel = vi.fn();
+    const handleConfirm = vi.fn();
+
+    render(
+      <ConfirmModal
+        isOpen={true}
+        onClose={handleClose}
+        title="기록 삭제"
+        message="이 기록을 삭제할까요?"
+        cancelButton={{ label: "닫기", onClick: handleCancel }}
+        confirmButton={{
+          label: "삭제",
+          variant: "destructive",
+          onClick: handleConfirm,
+        }}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "닫기" }));
+    await user.click(screen.getByRole("button", { name: "삭제" }));
+    await user.click(screen.getByTestId("confirm-modal-overlay"));
+
+    expect(handleCancel).toHaveBeenCalledTimes(1);
+    expect(handleConfirm).toHaveBeenCalledTimes(1);
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  test("disables the confirm button while confirming", () => {
+    render(
+      <ConfirmModal
+        isOpen={true}
+        onClose={() => undefined}
+        title="복원할까요?"
+        message="기존 기록이 교체됩니다."
+        cancelButton={{ label: "닫기", onClick: () => undefined }}
+        confirmButton={{
+          label: "복원",
+          variant: "primary",
+          isLoading: true,
+          onClick: () => undefined,
+        }}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "복원" })).toBeDisabled();
+  });
+});
