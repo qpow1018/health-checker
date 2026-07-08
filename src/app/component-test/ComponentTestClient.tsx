@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/common/button/Button";
+import { ButtonGroup } from "@/components/common/buttonGroup/ButtonGroup";
 import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
 import { TextInput } from "@/components/common/form/TextInput";
 import { Textarea } from "@/components/common/form/Textarea";
@@ -11,6 +12,8 @@ import styles from "./componentTestPage.module.scss";
 export function ComponentTestClient() {
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("저녁 이후 물을 적게 마심");
+  const [urgency, setUrgency] = useState("ordinary");
+  const [wokeFromSleep, setWokeFromSleep] = useState("no");
   const [isPrimaryConfirmOpen, setIsPrimaryConfirmOpen] = useState(false);
   const [isDestructiveConfirmOpen, setIsDestructiveConfirmOpen] = useState(false);
 
@@ -115,6 +118,42 @@ export function ComponentTestClient() {
               onChange={setNote}
               rows={4}
               value={note}
+            />
+          </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="button-group-section-title">
+          <h2 id="button-group-section-title">ButtonGroup</h2>
+
+          <div className={styles["form-stack"]}>
+            <ButtonGroup
+              label="긴급도"
+              options={[
+                { value: "relaxed", label: "여유" },
+                { value: "ordinary", label: "보통" },
+                { value: "urgent", label: "급함" },
+              ]}
+              value={urgency}
+              onChange={setUrgency}
+            />
+            <ButtonGroup
+              label="자다가 깼음"
+              options={[
+                { value: "yes", label: "예" },
+                { value: "no", label: "아니오" },
+              ]}
+              value={wokeFromSleep}
+              onChange={setWokeFromSleep}
+            />
+            <ButtonGroup
+              isDisabled
+              label="비활성 선택"
+              options={[
+                { value: "yes", label: "예" },
+                { value: "no", label: "아니오" },
+              ]}
+              value="yes"
+              onChange={() => undefined}
             />
           </div>
         </section>
