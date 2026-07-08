@@ -24,9 +24,16 @@
 
     h1 {
       margin: 0;
-      font-size: 28px;
-      line-height: 1.18;
+      font-size: 24px;
+      line-height: 1.22;
     }
+  }
+
+  .topbar-description {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .eyebrow {
@@ -39,19 +46,18 @@
 
   .quick-section {
     display: grid;
-    gap: 12px;
-    margin-top: 30px;
+    gap: 10px;
+    margin-top: 26px;
   }
 
   .record-button {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    min-height: 104px;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 76px;
     border: 0;
     border-radius: 14px;
-    padding: 20px 18px;
+    padding: 0 18px;
     color: #ffffff;
     cursor: pointer;
     text-align: left;
@@ -69,17 +75,9 @@
     }
 
     span {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 850;
       line-height: 1.2;
-    }
-
-    small {
-      margin-top: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.4;
-      opacity: 0.86;
     }
 
     &:disabled {

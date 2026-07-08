@@ -143,7 +143,10 @@ export function RecordPageClient() {
         <header className={styles["topbar"]}>
           <div className={styles["topbar-title"]}>
             <p className={styles["eyebrow"]}>오늘 기록</p>
-            <h1>빠르게 기록하고 필요하면 덧붙이기</h1>
+            <h1>방금 다녀온 기록을 남겨요</h1>
+            <p className={styles["topbar-description"]}>
+              저장 후 필요한 내용만 이어서 적을 수 있습니다.
+            </p>
           </div>
         </header>
 
@@ -157,13 +160,12 @@ export function RecordPageClient() {
               disabled={isSaving}
             >
               <span>{option.label}</span>
-              <small>{option.description}</small>
             </button>
           ))}
         </section>
 
         <p className={styles["helper-text"]}>
-          저장하면 바로 완료되고, 상세 입력은 이어서 선택할 수 있습니다.
+          탭하면 지금 시각으로 바로 저장됩니다.
         </p>
 
         {statusMessage ? (

@@ -31,9 +31,18 @@ describe("RecordPageClient", () => {
     render(<RecordPageClient />);
 
     expect(screen.getByRole("main", { name: "기록 화면" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" })).toBeEnabled();
-    expect(screen.getByRole("button", { name: "대변 지금 시각으로 대변 기록" })).toBeEnabled();
-    expect(screen.getByRole("button", { name: "둘 다 소변과 대변을 함께 기록" })).toBeEnabled();
+    expect(
+      screen.getByRole("heading", { name: "방금 다녀온 기록을 남겨요" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("저장 후 필요한 내용만 이어서 적을 수 있습니다."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("탭하면 지금 시각으로 바로 저장됩니다."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "소변" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "대변" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "둘 다" })).toBeEnabled();
     expect(screen.getByRole("navigation", { name: "하단 탭" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "기록" })).toHaveAttribute("href", "/record");
     expect(screen.getByRole("link", { name: "기록 보기" })).toHaveAttribute("href", "/records");
@@ -45,7 +54,7 @@ describe("RecordPageClient", () => {
     const user = userEvent.setup();
 
     render(<RecordPageClient />);
-    await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
+    await user.click(screen.getByRole("button", { name: "소변" }));
 
     expect(bathroomLogMocks.createBathroomLog).toHaveBeenCalledWith({ kind: "urine" });
     const sheet = screen.getByRole("dialog", { name: "방금 저장됨" });
@@ -59,7 +68,7 @@ describe("RecordPageClient", () => {
     const user = userEvent.setup();
 
     render(<RecordPageClient />);
-    await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
+    await user.click(screen.getByRole("button", { name: "소변" }));
     await user.click(screen.getByRole("button", { name: "닫기" }));
 
     expect(screen.queryByRole("dialog", { name: "방금 저장됨" })).not.toBeInTheDocument();
@@ -70,7 +79,7 @@ describe("RecordPageClient", () => {
     const user = userEvent.setup();
 
     render(<RecordPageClient />);
-    await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
+    await user.click(screen.getByRole("button", { name: "소변" }));
     await user.click(screen.getByRole("button", { name: "취소" }));
 
     expect(bathroomLogMocks.deleteBathroomLog).toHaveBeenCalledWith("log-1");
@@ -81,7 +90,7 @@ describe("RecordPageClient", () => {
     const user = userEvent.setup();
 
     render(<RecordPageClient />);
-    await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
+    await user.click(screen.getByRole("button", { name: "소변" }));
     await user.click(screen.getByRole("button", { name: "상세 추가" }));
 
     expect(screen.getByLabelText("긴급도")).toBeInTheDocument();
@@ -114,7 +123,7 @@ describe("RecordPageClient", () => {
     const user = userEvent.setup();
 
     render(<RecordPageClient />);
-    await user.click(screen.getByRole("button", { name: "소변 지금 시각으로 소변 기록" }));
+    await user.click(screen.getByRole("button", { name: "소변" }));
     await user.click(screen.getByRole("button", { name: "상세 추가" }));
     await user.click(screen.getByRole("button", { name: "뒤로" }));
 
@@ -127,7 +136,7 @@ describe("RecordPageClient", () => {
     bathroomLogMocks.createBathroomLog.mockRejectedValue(new Error("network"));
 
     render(<RecordPageClient />);
-    await user.click(screen.getByRole("button", { name: "대변 지금 시각으로 대변 기록" }));
+    await user.click(screen.getByRole("button", { name: "대변" }));
 
     expect(screen.getByRole("status")).toHaveTextContent("기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     expect(screen.queryByRole("dialog", { name: "방금 저장됨" })).not.toBeInTheDocument();
