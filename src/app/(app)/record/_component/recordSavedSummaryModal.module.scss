@@ -1,5 +1,5 @@
 .saved-summary-modal {
-  padding: 16px 20px calc(var(--bottom-tabs-reserved-height) + 8px);
+  padding: 16px 20px max(18px, env(safe-area-inset-bottom));
 
   .summary-row {
     display: grid;
