@@ -13,22 +13,18 @@ export const RECORD_KIND_LABEL: Record<TBathroomLogKind, string> = {
 export const RECORD_KIND_OPTIONS: Array<{
   kind: TBathroomLogKind;
   label: string;
-  description: string;
 }> = [
   {
     kind: "urine",
     label: "소변",
-    description: "지금 시각으로 소변 기록",
   },
   {
     kind: "bowel",
     label: "대변",
-    description: "지금 시각으로 대변 기록",
   },
   {
     kind: "both",
     label: "둘 다",
-    description: "소변과 대변을 함께 기록",
   },
 ];
 

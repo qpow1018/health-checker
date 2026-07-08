@@ -168,19 +168,19 @@ export function RecordPageClient() {
           탭하면 지금 시각으로 바로 저장됩니다.
         </p>
 
-        {statusMessage ? (
+        {statusMessage && (
           <p className={styles["status-message"]} role="status">
             {statusMessage}
           </p>
-        ) : null}
+        )}
 
-        {errorMessage ? (
+        {errorMessage && (
           <p className={styles["error-message"]} role="status">
             {errorMessage}
           </p>
-        ) : null}
+        )}
 
-        {summaryLog ? (
+        {summaryLog && (
           <RecordSavedSummaryModal
             log={summaryLog}
             isUndoing={isUndoing}
@@ -188,9 +188,9 @@ export function RecordPageClient() {
             onUndo={() => void handleUndo()}
             onClose={handleCloseSummary}
           />
-        ) : null}
+        )}
 
-        {detailLog ? (
+        {detailLog && (
           <RecordDetailModal
             kind={detailLog.kind}
             detailForm={detailForm}
@@ -199,7 +199,7 @@ export function RecordPageClient() {
             onSave={() => void handleSaveDetails()}
             onBack={handleBackToSummary}
           />
-        ) : null}
+        )}
 
         <BottomNavigation activeHref="/record" />
       </div>
