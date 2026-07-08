@@ -1,7 +1,7 @@
 import { RECORD_KIND_LABEL } from "@/app/(app)/record/_define/recordOptions";
 import type { TJustSavedBathroomLog } from "@/app/(app)/record/_type/bathroomLog";
 
-import BottomModal from "@/components/common/BottomModal";
+import BottomModal from "@/components/common/bottomModal/BottomModal";
 
 import styles from "./recordSavedSummaryModal.module.scss";
 

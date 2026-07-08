@@ -7,7 +7,7 @@ import {
   deleteBathroomLog,
   updateBathroomLogDetails,
 } from "@/api/bathroomLogs";
-import { AppBottomTabs } from "@/components/common/AppBottomTabs";
+import { BottomNavigation } from "@/components/common/bottomNavigation/BottomNavigation";
 import { RecordDetailModal } from "@/app/(app)/record/_component/RecordDetailModal";
 import { RecordSavedSummaryModal } from "@/app/(app)/record/_component/RecordSavedSummaryModal";
 import { RECORD_KIND_LABEL, RECORD_KIND_OPTIONS } from "./_define/recordOptions";
@@ -199,7 +199,7 @@ export function RecordPageClient() {
           />
         ) : null}
 
-        <AppBottomTabs activeHref="/record" />
+        <BottomNavigation activeHref="/record" />
       </div>
     </main>
   );

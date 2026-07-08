@@ -1,4 +1,4 @@
-import BottomModal from "@/components/common/BottomModal";
+import BottomModal from "@/components/common/bottomModal/BottomModal";
 import {
   STOOL_STATE_OPTIONS,
   URGENCY_OPTIONS,
