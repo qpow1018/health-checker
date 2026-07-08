@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
   createBathroomLog,
   deleteBathroomLog,
+  listBathroomLogs,
   updateBathroomLogDetails,
 } from "./index";
 
@@ -118,6 +119,42 @@ describe("bathroomLogs API", () => {
     expect(supabaseMocks.from).toHaveBeenCalledWith("bathroom_logs");
     expect(deleteQuery).toHaveBeenCalledWith();
     expect(eq).toHaveBeenCalledWith("id", "log-1");
+  });
+
+  test("lists bathroom logs from newest to oldest with a limit", async () => {
+    const limit = vi.fn().mockResolvedValue({
+      data: [
+        {
+          id: "log-2",
+          user_id: "user-1",
+          kind: "bowel",
+          logged_at: "2026-07-08T09:00:00.000Z",
+          urgency: null,
+          woke_from_sleep: null,
+          note: null,
+          urine_pain: null,
+          urine_color_unusual: null,
+          stool_state: null,
+          bowel_pain: null,
+          possible_blood: null,
+          created_at: "2026-07-08T09:00:00.000Z",
+          updated_at: "2026-07-08T09:00:00.000Z",
+        },
+      ],
+      error: null,
+    });
+    const order = vi.fn(() => ({ limit }));
+    const select = vi.fn(() => ({ order }));
+    supabaseMocks.from.mockReturnValue({ select });
+
+    const result = await listBathroomLogs({ limit: 30 });
+
+    expect(supabaseMocks.from).toHaveBeenCalledWith("bathroom_logs");
+    expect(select).toHaveBeenCalledWith("*");
+    expect(order).toHaveBeenCalledWith("logged_at", { ascending: false });
+    expect(limit).toHaveBeenCalledWith(30);
+    expect(result).toHaveLength(1);
+    expect(result[0]?.id).toBe("log-2");
   });
 
   test("throws when there is no authenticated user for create", async () => {

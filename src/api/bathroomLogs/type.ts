@@ -20,3 +20,7 @@ export type TReqUpdateBathroomLogDetails = Pick<
   | "bowel_pain"
   | "possible_blood"
 >;
+
+export type TReqListBathroomLogs = {
+  limit?: number;
+};

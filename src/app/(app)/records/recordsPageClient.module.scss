@@ -1,0 +1,145 @@
+.records-page-content {
+  min-height: 100svh;
+  color: #2d2722;
+
+  .app-canvas {
+    position: relative;
+    display: flex;
+    min-height: 100svh;
+    width: min(100%, var(--app-max-width));
+    margin: 0 auto;
+    flex-direction: column;
+    padding: calc(24px + env(safe-area-inset-top)) 18px
+      var(--bottom-tabs-reserved-height);
+    background: #fbf8f3;
+  }
+
+  .topbar {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 22px;
+
+    h1 {
+      margin: 0;
+      color: #241f1b;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+  }
+
+  .eyebrow {
+    margin: 0;
+    color: #6f5a47;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .topbar-description,
+  .status-message,
+  .error-message {
+    margin: 0;
+    color: #74675d;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .status-message,
+  .error-message {
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #f1ebe3;
+  }
+
+  .error-message {
+    color: #8f2f24;
+    background: #f8e8e4;
+  }
+
+  .empty-state {
+    display: grid;
+    gap: 10px;
+    margin-top: 42px;
+    text-align: center;
+
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    p {
+      color: #74675d;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
+
+  .record-link {
+    justify-self: center;
+    margin-top: 8px;
+    color: #315f5b;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .record-groups {
+    display: grid;
+    gap: 26px;
+  }
+
+  .record-group {
+    display: grid;
+    gap: 10px;
+
+    h2 {
+      margin: 0;
+      color: #5e5147;
+      font-size: 15px;
+    }
+  }
+
+  .record-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .record-item {
+    display: grid;
+    width: 100%;
+    gap: 6px;
+    border: 1px solid #eadfd2;
+    border-radius: 8px;
+    padding: 14px;
+    background: #fffdf9;
+    color: inherit;
+    text-align: left;
+  }
+
+  .record-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .record-time {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .record-kind {
+    color: #315f5b;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .record-meta,
+  .record-note {
+    color: #74675d;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
