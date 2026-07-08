@@ -23,7 +23,7 @@ export function RecordSavedSummaryModal({
   return (
     <BottomModal title="방금 저장됨" isOpen={true} onClose={onClose}>
       <div className={styles["saved-summary-modal"]}>
-        <div className={styles["summary-card"]}>
+        <div className={styles["summary-row"]}>
           <span className={styles["summary-label"]}>저장된 기록</span>
           <div className={styles["sheet-summary"]}>
             <strong>{RECORD_KIND_LABEL[log.kind]}</strong>
@@ -45,13 +45,15 @@ export function RecordSavedSummaryModal({
           >
             닫기
           </button>
+        </div>
+        <div className={styles["undo-action-row"]}>
           <button
             className={styles["quiet-action"]}
             type="button"
             onClick={onUndo}
             disabled={isUndoing}
           >
-            취소
+            방금 저장한 기록 취소
           </button>
         </div>
       </div>

@@ -60,8 +60,10 @@ describe("RecordPageClient", () => {
     const sheet = screen.getByRole("dialog", { name: "방금 저장됨" });
     expect(within(sheet).getByText("소변")).toBeInTheDocument();
     expect(within(sheet).getByRole("button", { name: "상세 추가" })).toBeInTheDocument();
-    expect(within(sheet).getByRole("button", { name: "취소" })).toBeInTheDocument();
     expect(within(sheet).getByRole("button", { name: "닫기" })).toBeInTheDocument();
+    expect(
+      within(sheet).getByRole("button", { name: "방금 저장한 기록 취소" }),
+    ).toBeInTheDocument();
   });
 
   test("dismisses the bottom sheet without undoing the log", async () => {
@@ -80,7 +82,7 @@ describe("RecordPageClient", () => {
 
     render(<RecordPageClient />);
     await user.click(screen.getByRole("button", { name: "소변" }));
-    await user.click(screen.getByRole("button", { name: "취소" }));
+    await user.click(screen.getByRole("button", { name: "방금 저장한 기록 취소" }));
 
     expect(bathroomLogMocks.deleteBathroomLog).toHaveBeenCalledWith("log-1");
     expect(screen.queryByRole("dialog", { name: "방금 저장됨" })).not.toBeInTheDocument();
