@@ -1,7 +1,7 @@
 .detail-form {
   display: grid;
   gap: 12px;
-  padding: 18px 20px calc(var(--bottom-tabs-reserved-height) + 16px);
+  padding: 18px 20px max(18px, env(safe-area-inset-bottom));
 
   .field-group {
     display: grid;

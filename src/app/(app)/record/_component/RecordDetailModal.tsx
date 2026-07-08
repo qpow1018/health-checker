@@ -67,7 +67,7 @@ export function RecordDetailModal({
             </select>
           </label>
         </fieldset>
-        {showsUrineFields(kind) ? (
+        {showsUrineFields(kind) && (
           <fieldset className={styles["field-group"]}>
             <legend>소변 관련</legend>
             <div className={styles["check-group"]}>
@@ -85,16 +85,16 @@ export function RecordDetailModal({
                   type="checkbox"
                   checked={detailForm.urineColorUnusual}
                   onChange={(event) =>
-                  onChange({
-                    urineColorUnusual: event.target.checked,
-                  })
+                    onChange({
+                      urineColorUnusual: event.target.checked,
+                    })
                   }
                 />
               </label>
             </div>
           </fieldset>
-        ) : null}
-        {showsBowelFields(kind) ? (
+        )}
+        {showsBowelFields(kind) && (
           <fieldset className={styles["field-group"]}>
             <legend>대변 관련</legend>
             <label>
@@ -134,7 +134,7 @@ export function RecordDetailModal({
               </label>
             </div>
           </fieldset>
-        ) : null}
+        )}
         <div className={styles["field-group"]}>
           <label>
             메모
