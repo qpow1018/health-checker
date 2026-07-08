@@ -11,6 +11,8 @@ describe("BottomNavigation", () => {
     expect(screen.getByRole("link", { name: "기록 보기" })).toHaveAttribute("href", "/records");
     expect(screen.getByRole("link", { name: "AI 리포트" })).toHaveAttribute("href", "/report");
     expect(screen.getByRole("link", { name: "설정" })).toHaveAttribute("href", "/settings");
+    expect(screen.getByRole("link", { name: "기록" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "기록 보기" })).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("link", { name: "기록" }).className).toContain("active-item");
   });
 });
