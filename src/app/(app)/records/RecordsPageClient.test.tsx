@@ -349,6 +349,31 @@ describe("RecordsPageClient", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("shows a date-specific empty state after deleting the selected date record", async () => {
+    const user = userEvent.setup();
+
+    render(<RecordsPageClient />);
+    await user.click(
+      await screen.findByRole("button", {
+        name: "7월 8일, 소변 0회, 대변 1회",
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: /오전 9:10 대변/ }));
+    await user.click(screen.getByRole("button", { name: "삭제" }));
+    await user.click(
+      within(screen.getByRole("dialog", { name: "기록 삭제" })).getByRole(
+        "button",
+        { name: "삭제" },
+      ),
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "7월 8일 기록" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("이 날짜에는 기록이 없습니다.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /오전 9:10 대변/ })).not.toBeInTheDocument();
+  });
+
   test("shows an empty state when there are no records", async () => {
     const user = userEvent.setup();
     bathroomLogMocks.listBathroomLogs.mockResolvedValue([]);

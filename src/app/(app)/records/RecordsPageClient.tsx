@@ -295,6 +295,7 @@ export function RecordsPageClient() {
         </header>
 
         <Tabs
+          idPrefix="records"
           label="기록 보기 방식"
           tabs={RECORDS_TABS}
           value={activeView}
@@ -318,7 +319,7 @@ export function RecordsPageClient() {
             className={styles["tab-panel"]}
             id="records-summary-panel"
             role="tabpanel"
-            aria-label="요약보기"
+            aria-labelledby="records-summary-tab"
           >
             <RecordsCalendarSummary
               year={visibleMonth.year}
@@ -338,7 +339,7 @@ export function RecordsPageClient() {
             className={styles["tab-panel"]}
             id="records-details-panel"
             role="tabpanel"
-            aria-label="상세보기"
+            aria-labelledby="records-details-tab"
           >
             {selectedDateKey && (
               <header className={styles["filter-header"]}>
@@ -347,6 +348,12 @@ export function RecordsPageClient() {
                   전체 보기
                 </button>
               </header>
+            )}
+
+            {selectedDateKey && detailLogs.length === 0 && (
+              <p className={styles["status-message"]}>
+                이 날짜에는 기록이 없습니다.
+              </p>
             )}
 
             {!selectedDateKey && isRecentLoading && (

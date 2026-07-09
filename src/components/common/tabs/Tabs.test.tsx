@@ -50,6 +50,27 @@ describe("Tabs", () => {
     expect(handleChange).toHaveBeenCalledWith("sources");
   });
 
+  test("links tabs to their panels when an id prefix is provided", () => {
+    render(
+      <Tabs
+        idPrefix="report"
+        label="AI 리포트 보기"
+        tabs={REPORT_TABS}
+        value="summary"
+        onChange={() => undefined}
+      />,
+    );
+
+    expect(screen.getByRole("tab", { name: "요약" })).toHaveAttribute(
+      "id",
+      "report-summary-tab",
+    );
+    expect(screen.getByRole("tab", { name: "요약" })).toHaveAttribute(
+      "aria-controls",
+      "report-summary-panel",
+    );
+  });
+
   test("blocks tab changes when disabled", async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();

@@ -11,6 +11,7 @@ type TTabsProps<TValue extends string> = {
   value: TValue;
   onChange: (value: TValue) => void;
   isDisabled?: boolean;
+  idPrefix?: string;
 };
 
 export function Tabs<TValue extends string>({
@@ -19,6 +20,7 @@ export function Tabs<TValue extends string>({
   value,
   onChange,
   isDisabled = false,
+  idPrefix,
 }: TTabsProps<TValue>) {
   return (
     <div className={styles["tabs"]} role="tablist" aria-label={label}>
@@ -27,9 +29,13 @@ export function Tabs<TValue extends string>({
 
         return (
           <button
+            aria-controls={
+              idPrefix ? `${idPrefix}-${tab.value}-panel` : undefined
+            }
             aria-selected={isSelected}
             className={isSelected ? styles["selected-tab"] : undefined}
             disabled={isDisabled}
+            id={idPrefix ? `${idPrefix}-${tab.value}-tab` : undefined}
             key={tab.value}
             onClick={() => onChange(tab.value)}
             role="tab"
