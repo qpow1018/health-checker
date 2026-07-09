@@ -3,6 +3,7 @@ import type {
   TBathroomLogInsert,
   TReqCreateBathroomLog,
   TReqListBathroomLogs,
+  TReqListBathroomLogsByRange,
   TReqUpdateBathroomLogDetails,
 } from "./type";
 
@@ -65,6 +66,25 @@ export async function listBathroomLogs({ limit = 50 }: TReqListBathroomLogs = {}
     .select("*")
     .order("logged_at", { ascending: false })
     .limit(limit);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function listBathroomLogsByRange({
+  from,
+  to,
+}: TReqListBathroomLogsByRange) {
+  const supabase = getSupabaseBrowserClient();
+  const { data, error } = await supabase
+    .from("bathroom_logs")
+    .select("*")
+    .gte("logged_at", from)
+    .lt("logged_at", to)
+    .order("logged_at", { ascending: false });
 
   if (error) {
     throw error;

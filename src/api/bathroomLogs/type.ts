@@ -24,3 +24,8 @@ export type TReqUpdateBathroomLogDetails = Pick<
 export type TReqListBathroomLogs = {
   limit?: number;
 };
+
+export type TReqListBathroomLogsByRange = {
+  from: string;
+  to: string;
+};

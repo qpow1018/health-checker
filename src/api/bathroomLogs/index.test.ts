@@ -3,6 +3,7 @@ import {
   createBathroomLog,
   deleteBathroomLog,
   listBathroomLogs,
+  listBathroomLogsByRange,
   updateBathroomLogDetails,
 } from "./index";
 
@@ -155,6 +156,27 @@ describe("bathroomLogs API", () => {
     expect(limit).toHaveBeenCalledWith(30);
     expect(result).toHaveLength(1);
     expect(result[0]?.id).toBe("log-2");
+  });
+
+  test("lists bathroom logs inside a half-open date range", async () => {
+    const from = "2026-07-01T00:00:00.000Z";
+    const to = "2026-08-01T00:00:00.000Z";
+    const order = vi.fn().mockResolvedValue({
+      data: [],
+      error: null,
+    });
+    const lt = vi.fn(() => ({ order }));
+    const gte = vi.fn(() => ({ lt }));
+    const select = vi.fn(() => ({ gte }));
+    supabaseMocks.from.mockReturnValue({ select });
+
+    await listBathroomLogsByRange({ from, to });
+
+    expect(supabaseMocks.from).toHaveBeenCalledWith("bathroom_logs");
+    expect(select).toHaveBeenCalledWith("*");
+    expect(gte).toHaveBeenCalledWith("logged_at", from);
+    expect(lt).toHaveBeenCalledWith("logged_at", to);
+    expect(order).toHaveBeenCalledWith("logged_at", { ascending: false });
   });
 
   test("throws when there is no authenticated user for create", async () => {
