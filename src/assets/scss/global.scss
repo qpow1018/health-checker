@@ -1,0 +1,98 @@
+@use "./reset";
+
+:root {
+  color-scheme: light;
+  --background: #{$background};
+  --surface: #{$surface};
+  --surface-muted: #{$surface-muted};
+  --text: #{$text};
+  --muted: #{$muted};
+  --line: #{$line};
+  --primary: #{$primary};
+  --primary-strong: #{$primary-strong};
+  --primary-soft: #{$primary-soft};
+  --secondary: #{$secondary};
+  --secondary-strong: #{$secondary-strong};
+  --secondary-soft: #{$secondary-soft};
+  --record-urine: #{$record-urine};
+  --record-urine-strong: #{$record-urine-strong};
+  --record-bowel: #{$record-bowel};
+  --record-bowel-strong: #{$record-bowel-strong};
+  --record-combined: #{$record-combined};
+  --record-combined-strong: #{$record-combined-strong};
+  --danger: #{$danger};
+  --danger-soft: #{$danger-soft};
+  --focus: #{$focus};
+  --shadow: #{$shadow};
+  --app-max-width: #{$app-max-width};
+  --bottom-tabs-height: #{$bottom-tabs-height};
+  --bottom-tabs-reserved-height: #{$bottom-tabs-reserved-height};
+  --overlay: #{$overlay};
+  --transition: #{$transition};
+  --z-bottom-tabs: #{$z-bottom-tabs};
+  --z-modal: #{$z-modal};
+  --z-toast: #{$z-toast};
+  --radius: #{$radius};
+}
+
+body {
+  background: #d4d4d4;
+  color: var(--text);
+  font-family: inherit;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  line-height: 1.3;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgb(106 155 195 / 34%);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  min-height: 100svh;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+}
+
+.surface {
+  width: min(100%, var(--app-max-width));
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stack>* {
+  min-width: 0;
+  width: 100%;
+}
