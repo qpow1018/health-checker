@@ -40,8 +40,11 @@ export async function signInWithPassword({ email, password }: TReqSignInWithPass
 
 export async function signOut() {
   const supabase = getSupabaseBrowserClient();
+  const { error } = await supabase.auth.signOut({ scope: "local" });
 
-  await supabase.auth.signOut();
+  if (error) {
+    throw error;
+  }
 }
 
 export async function checkAllowedUser() {
