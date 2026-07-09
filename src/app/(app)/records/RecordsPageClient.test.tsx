@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { RecordsPageClient } from "./RecordsPageClient";
@@ -148,6 +148,22 @@ describe("RecordsPageClient", () => {
     expect(bathroomLogMocks.listBathroomLogsByRange).toHaveBeenCalledTimes(2);
   });
 
+  test("moves from January to the previous December with the correct range", async () => {
+    const user = userEvent.setup();
+    vi.setSystemTime(new Date("2026-01-15T03:00:00.000Z"));
+
+    render(<RecordsPageClient />);
+    await user.click(screen.getByRole("button", { name: "이전 달 보기" }));
+
+    expect(await screen.findByRole("heading", { name: "2025년 12월" })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(bathroomLogMocks.listBathroomLogsByRange).toHaveBeenCalledWith({
+        from: "2025-11-30T15:00:00.000Z",
+        to: "2025-12-31T15:00:00.000Z",
+      });
+    });
+  });
+
   test("keeps recent details usable when the calendar request fails", async () => {
     const user = userEvent.setup();
     bathroomLogMocks.listBathroomLogsByRange.mockRejectedValue(new Error("network"));
@@ -160,6 +176,110 @@ describe("RecordsPageClient", () => {
 
     await user.click(screen.getByRole("tab", { name: "상세보기" }));
     expect(await screen.findByRole("button", { name: /오전 9:10 대변/ })).toBeInTheDocument();
+  });
+
+  test("keeps the summary usable when loading recent details fails", async () => {
+    const user = userEvent.setup();
+    bathroomLogMocks.listBathroomLogs.mockRejectedValue(new Error("network"));
+
+    render(<RecordsPageClient />);
+
+    expect(
+      await screen.findByRole("button", {
+        name: "7월 8일, 소변 0회, 대변 1회",
+      }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: "상세보기" }));
+    expect(
+      await screen.findByText("기록을 불러오지 못했습니다. 다시 시도해 주세요."),
+    ).toBeInTheDocument();
+  });
+
+  test("ignores a stale month response after navigating away", async () => {
+    const user = userEvent.setup();
+    const julyRequest = createDeferred<TBathroomLogRow[]>();
+    const juneRequest = createDeferred<TBathroomLogRow[]>();
+    const juneLog: TBathroomLogRow = {
+      ...LOGS[0],
+      id: "june-log",
+      logged_at: "2026-06-08T09:10:00+09:00",
+    };
+    bathroomLogMocks.listBathroomLogsByRange
+      .mockReturnValueOnce(julyRequest.promise)
+      .mockReturnValueOnce(juneRequest.promise);
+
+    render(<RecordsPageClient />);
+    await user.click(screen.getByRole("button", { name: "이전 달 보기" }));
+
+    await act(async () => {
+      juneRequest.resolve([juneLog]);
+      await juneRequest.promise;
+    });
+    expect(
+      await screen.findByRole("button", {
+        name: "6월 8일, 소변 0회, 대변 1회",
+      }),
+    ).toBeInTheDocument();
+
+    await act(async () => {
+      julyRequest.resolve(LOGS);
+      await julyRequest.promise;
+    });
+
+    expect(screen.getByRole("heading", { name: "2026년 6월" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "6월 8일, 소변 0회, 대변 1회",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: "7월 8일, 소변 0회, 대변 1회",
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  test("keeps an edited calendar record synchronized in the month cache", async () => {
+    const user = userEvent.setup();
+
+    render(<RecordsPageClient />);
+    await user.click(
+      await screen.findByRole("button", {
+        name: "7월 8일, 소변 0회, 대변 1회",
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: /오전 9:10 대변/ }));
+    await user.click(
+      within(screen.getByRole("dialog", { name: "기록 상세" })).getByRole(
+        "button",
+        { name: "수정" },
+      ),
+    );
+    await user.clear(screen.getByLabelText("메모"));
+    await user.type(screen.getByLabelText("메모"), "수정된 메모");
+    await user.click(screen.getByRole("button", { name: "수정 저장" }));
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: "기록 상세" })).not.toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("tab", { name: "요약보기" }));
+    await user.click(screen.getByRole("button", { name: "이전 달 보기" }));
+    await screen.findByRole("heading", { name: "2026년 6월" });
+    await user.click(screen.getByRole("button", { name: "다음 달 보기" }));
+    await user.click(
+      await screen.findByRole("button", {
+        name: "7월 8일, 소변 0회, 대변 1회",
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: /오전 9:10 대변/ }));
+
+    expect(
+      within(screen.getByRole("dialog", { name: "기록 상세" })).getByText(
+        "수정된 메모",
+      ),
+    ).toBeInTheDocument();
+    expect(bathroomLogMocks.listBathroomLogsByRange).toHaveBeenCalledTimes(2);
   });
 
   test("shows an empty state when there are no records", async () => {
@@ -244,3 +364,15 @@ describe("RecordsPageClient", () => {
     ).toBeInTheDocument();
   });
 });
+
+function createDeferred<T>() {
+  let resolvePromise: (value: T) => void = () => undefined;
+  const promise = new Promise<T>((resolve) => {
+    resolvePromise = resolve;
+  });
+
+  return {
+    promise,
+    resolve: resolvePromise,
+  };
+}
