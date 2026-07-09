@@ -1,18 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   deleteBathroomLog,
   listBathroomLogs,
+  listBathroomLogsByRange,
   updateBathroomLogDetails,
 } from "@/api/bathroomLogs";
 import type { TBathroomLogRow } from "@/api/bathroomLogs/type";
 import { RECORD_KIND_LABEL } from "@/app/(app)/record/_define/recordOptions";
 import type { TRecordDetailFormState } from "@/app/(app)/record/_type/bathroomLog";
+import type { TRecordsView } from "@/app/(app)/records/_type/recordsCalendar";
+import {
+  createMonthKey,
+  createMonthRange,
+  filterLogsByDateKey,
+  formatRecordDateKey,
+} from "@/app/(app)/records/_util/recordsCalendar";
 import { BottomNavigation } from "@/components/common/bottomNavigation/BottomNavigation";
 import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
+import { Tabs } from "@/components/common/tabs/Tabs";
+import { RecordsCalendarSummary } from "./_component/RecordsCalendarSummary";
+import { RecordsDetailModal } from "./_component/RecordsDetailModal";
+import { RecordsEditModal } from "./_component/RecordsEditModal";
 import {
   createRecordDetailFormFromLog,
   createRecordUpdateRequest,
@@ -20,63 +32,155 @@ import {
   formatRecordTimeLabel,
   hasRecordDetails,
 } from "./_util/recordsPresentation";
-import { RecordsDetailModal } from "./_component/RecordsDetailModal";
-import { RecordsEditModal } from "./_component/RecordsEditModal";
 
 import styles from "./recordsPageClient.module.scss";
 
 const LOAD_ERROR_MESSAGE = "기록을 불러오지 못했습니다. 다시 시도해 주세요.";
+const CALENDAR_LOAD_ERROR_MESSAGE =
+  "달력 기록을 불러오지 못했습니다. 다시 시도해 주세요.";
 const UPDATE_ERROR_MESSAGE = "기록 상세를 수정하지 못했습니다. 다시 시도해 주세요.";
 const DELETE_ERROR_MESSAGE = "기록을 삭제하지 못했습니다. 다시 시도해 주세요.";
+const RECORDS_TABS = [
+  { value: "summary", label: "요약보기" },
+  { value: "details", label: "상세보기" },
+] as const;
 
 export function RecordsPageClient() {
-  const [logs, setLogs] = useState<TBathroomLogRow[]>([]);
+  const initialMonthKey = formatRecordDateKey(new Date().toISOString()).slice(0, 7);
+  const [initialYear, initialMonth] = initialMonthKey.split("-").map(Number);
+  const [activeView, setActiveView] = useState<TRecordsView>("summary");
+  const [visibleMonth, setVisibleMonth] = useState({
+    year: initialYear,
+    monthIndex: initialMonth - 1,
+  });
+  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
+  const [recentLogs, setRecentLogs] = useState<TBathroomLogRow[]>([]);
+  const [calendarLogs, setCalendarLogs] = useState<TBathroomLogRow[]>([]);
+  const monthCacheRef = useRef<Record<string, TBathroomLogRow[]>>({});
   const [selectedLog, setSelectedLog] = useState<TBathroomLogRow | null>(null);
   const [editingLog, setEditingLog] = useState<TBathroomLogRow | null>(null);
   const [deleteTargetLog, setDeleteTargetLog] = useState<TBathroomLogRow | null>(null);
   const [detailForm, setDetailForm] = useState<TRecordDetailFormState | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [actionErrorMessage, setActionErrorMessage] = useState("");
+  const [recentErrorMessage, setRecentErrorMessage] = useState("");
+  const [calendarErrorMessage, setCalendarErrorMessage] = useState("");
+  const [isRecentLoading, setIsRecentLoading] = useState(true);
+  const [isCalendarLoading, setIsCalendarLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     let isActive = true;
 
-    async function loadLogs() {
-      setIsLoading(true);
-      setErrorMessage("");
+    async function loadRecentLogs() {
+      setIsRecentLoading(true);
+      setRecentErrorMessage("");
 
       try {
         const nextLogs = await listBathroomLogs({ limit: 50 });
 
         if (isActive) {
-          setLogs(nextLogs);
+          setRecentLogs(nextLogs);
         }
       } catch {
         if (isActive) {
-          setErrorMessage(LOAD_ERROR_MESSAGE);
+          setRecentErrorMessage(LOAD_ERROR_MESSAGE);
         }
       } finally {
         if (isActive) {
-          setIsLoading(false);
+          setIsRecentLoading(false);
         }
       }
     }
 
-    void loadLogs();
+    void loadRecentLogs();
 
     return () => {
       isActive = false;
     };
   }, []);
 
-  const groupedLogs = useMemo(() => groupLogsByDate(logs), [logs]);
+  useEffect(() => {
+    let isActive = true;
+    const monthKey = createMonthKey(visibleMonth.year, visibleMonth.monthIndex);
+    const cachedLogs = monthCacheRef.current[monthKey];
+
+    if (cachedLogs) {
+      setCalendarLogs(cachedLogs);
+      setCalendarErrorMessage("");
+      setIsCalendarLoading(false);
+      return () => {
+        isActive = false;
+      };
+    }
+
+    async function loadCalendarLogs() {
+      setIsCalendarLoading(true);
+      setCalendarErrorMessage("");
+
+      try {
+        const nextLogs = await listBathroomLogsByRange(
+          createMonthRange(visibleMonth.year, visibleMonth.monthIndex),
+        );
+
+        if (isActive) {
+          monthCacheRef.current[monthKey] = nextLogs;
+          setCalendarLogs(nextLogs);
+        }
+      } catch {
+        if (isActive) {
+          setCalendarLogs([]);
+          setCalendarErrorMessage(CALENDAR_LOAD_ERROR_MESSAGE);
+        }
+      } finally {
+        if (isActive) {
+          setIsCalendarLoading(false);
+        }
+      }
+    }
+
+    void loadCalendarLogs();
+
+    return () => {
+      isActive = false;
+    };
+  }, [visibleMonth]);
+
+  const detailLogs = selectedDateKey
+    ? filterLogsByDateKey(calendarLogs, selectedDateKey)
+    : recentLogs;
+  const groupedLogs = useMemo(() => groupLogsByDate(detailLogs), [detailLogs]);
+
+  function handleViewChange(view: TRecordsView) {
+    setActiveView(view);
+
+    if (view === "details") {
+      setSelectedDateKey(null);
+    }
+  }
+
+  function handleChangeMonth(offset: number) {
+    setVisibleMonth((currentMonth) => {
+      const nextMonth = new Date(
+        Date.UTC(currentMonth.year, currentMonth.monthIndex + offset, 1),
+      );
+
+      return {
+        year: nextMonth.getUTCFullYear(),
+        monthIndex: nextMonth.getUTCMonth(),
+      };
+    });
+  }
+
+  function handleSelectDate(dateKey: string) {
+    setSelectedDateKey(dateKey);
+    setActiveView("details");
+  }
 
   function handleOpenDetails(log: TBathroomLogRow) {
     setStatusMessage("");
-    setErrorMessage("");
+    setActionErrorMessage("");
     setSelectedLog(log);
   }
 
@@ -92,21 +196,22 @@ export function RecordsPageClient() {
     }
 
     setIsSaving(true);
-    setErrorMessage("");
+    setActionErrorMessage("");
 
     try {
       const updatePayload = createRecordUpdateRequest(editingLog.kind, detailForm);
       await updateBathroomLogDetails(editingLog.id, updatePayload);
-      setLogs((currentLogs) =>
-        currentLogs.map((log) =>
-          log.id === editingLog.id ? { ...log, ...updatePayload } : log,
-        ),
-      );
+      const updateLog = (log: TBathroomLogRow) =>
+        log.id === editingLog.id ? { ...log, ...updatePayload } : log;
+
+      setRecentLogs((currentLogs) => currentLogs.map(updateLog));
+      setCalendarLogs((currentLogs) => currentLogs.map(updateLog));
+      updateCachedMonths((logs) => logs.map(updateLog));
       setEditingLog(null);
       setDetailForm(null);
       setStatusMessage("기록 상세를 수정했습니다.");
     } catch {
-      setErrorMessage(UPDATE_ERROR_MESSAGE);
+      setActionErrorMessage(UPDATE_ERROR_MESSAGE);
     } finally {
       setIsSaving(false);
     }
@@ -122,21 +227,31 @@ export function RecordsPageClient() {
     }
 
     setIsDeleting(true);
-    setErrorMessage("");
+    setActionErrorMessage("");
 
     try {
       await deleteBathroomLog(deleteTargetLog.id);
-      setLogs((currentLogs) =>
-        currentLogs.filter((log) => log.id !== deleteTargetLog.id),
-      );
+      const removeLog = (log: TBathroomLogRow) => log.id !== deleteTargetLog.id;
+
+      setRecentLogs((currentLogs) => currentLogs.filter(removeLog));
+      setCalendarLogs((currentLogs) => currentLogs.filter(removeLog));
+      updateCachedMonths((logs) => logs.filter(removeLog));
       setSelectedLog(null);
       setDeleteTargetLog(null);
       setStatusMessage("기록을 삭제했습니다.");
     } catch {
-      setErrorMessage(DELETE_ERROR_MESSAGE);
+      setActionErrorMessage(DELETE_ERROR_MESSAGE);
     } finally {
       setIsDeleting(false);
     }
+  }
+
+  function updateCachedMonths(
+    updateLogs: (logs: TBathroomLogRow[]) => TBathroomLogRow[],
+  ) {
+    Object.entries(monthCacheRef.current).forEach(([monthKey, logs]) => {
+      monthCacheRef.current[monthKey] = updateLogs(logs);
+    });
   }
 
   function updateDetailForm(nextForm: Partial<TRecordDetailFormState>) {
@@ -145,10 +260,7 @@ export function RecordsPageClient() {
         return currentForm;
       }
 
-      return {
-        ...currentForm,
-        ...nextForm,
-      };
+      return { ...currentForm, ...nextForm };
     });
   }
 
@@ -163,66 +275,121 @@ export function RecordsPageClient() {
           </p>
         </header>
 
-        {isLoading && (
-          <p className={styles["status-message"]} role="status">
-            기록을 불러오는 중입니다.
-          </p>
-        )}
+        <Tabs
+          label="기록 보기 방식"
+          tabs={RECORDS_TABS}
+          value={activeView}
+          onChange={handleViewChange}
+        />
 
-        {statusMessage && !isLoading && (
+        {statusMessage && (
           <p className={styles["status-message"]} role="status">
             {statusMessage}
           </p>
         )}
 
-        {errorMessage && !isLoading && (
+        {actionErrorMessage && (
           <p className={styles["error-message"]} role="status">
-            {errorMessage}
+            {actionErrorMessage}
           </p>
         )}
 
-        {!isLoading && !errorMessage && logs.length === 0 && (
-          <section className={styles["empty-state"]} aria-label="빈 기록">
-            <h2>아직 저장된 기록이 없습니다.</h2>
-            <p>기록 화면에서 첫 기록을 남기면 여기에 표시됩니다.</p>
-            <Link className={styles["record-link"]} href="/record">
-              기록하러 가기
-            </Link>
-          </section>
+        {activeView === "summary" && (
+          <div
+            className={styles["tab-panel"]}
+            id="records-summary-panel"
+            role="tabpanel"
+            aria-label="요약보기"
+          >
+            <RecordsCalendarSummary
+              year={visibleMonth.year}
+              monthIndex={visibleMonth.monthIndex}
+              logs={calendarLogs}
+              isLoading={isCalendarLoading}
+              errorMessage={calendarErrorMessage}
+              onPreviousMonth={() => handleChangeMonth(-1)}
+              onNextMonth={() => handleChangeMonth(1)}
+              onSelectDate={handleSelectDate}
+            />
+          </div>
         )}
 
-        {!isLoading && logs.length > 0 && (
-          <div className={styles["record-groups"]}>
-            {groupedLogs.map((group) => (
-              <section className={styles["record-group"]} key={group.dateLabel}>
-                <h2>{group.dateLabel}</h2>
-                <div className={styles["record-list"]}>
-                  {group.logs.map((log) => (
-                    <button
-                      className={styles["record-item"]}
-                      type="button"
-                      onClick={() => handleOpenDetails(log)}
-                      key={log.id}
-                    >
-                      <span className={styles["record-main"]}>
-                        <span className={styles["record-time"]}>
-                          {formatRecordTimeLabel(log.logged_at)}
-                        </span>
-                        <span className={styles["record-kind"]}>
-                          {RECORD_KIND_LABEL[log.kind]}
-                        </span>
-                      </span>
-                      <span className={styles["record-meta"]}>
-                        {hasRecordDetails(log) ? "상세 있음" : "빠른 기록"}
-                      </span>
-                      {log.note && (
-                        <span className={styles["record-note"]}>{log.note}</span>
-                      )}
-                    </button>
+        {activeView === "details" && (
+          <div
+            className={styles["tab-panel"]}
+            id="records-details-panel"
+            role="tabpanel"
+            aria-label="상세보기"
+          >
+            {selectedDateKey && (
+              <header className={styles["filter-header"]}>
+                <h2>{formatSelectedDateLabel(selectedDateKey)}</h2>
+                <button type="button" onClick={() => setSelectedDateKey(null)}>
+                  전체 보기
+                </button>
+              </header>
+            )}
+
+            {!selectedDateKey && isRecentLoading && (
+              <p className={styles["status-message"]} role="status">
+                기록을 불러오는 중입니다.
+              </p>
+            )}
+
+            {!selectedDateKey && recentErrorMessage && !isRecentLoading && (
+              <p className={styles["error-message"]} role="status">
+                {recentErrorMessage}
+              </p>
+            )}
+
+            {!isRecentLoading &&
+              !recentErrorMessage &&
+              !selectedDateKey &&
+              detailLogs.length === 0 && (
+                <section className={styles["empty-state"]} aria-label="빈 기록">
+                  <h2>아직 저장된 기록이 없습니다.</h2>
+                  <p>기록 화면에서 첫 기록을 남기면 여기에 표시됩니다.</p>
+                  <Link className={styles["record-link"]} href="/record">
+                    기록하러 가기
+                  </Link>
+                </section>
+              )}
+
+            {(selectedDateKey || (!isRecentLoading && !recentErrorMessage)) &&
+              detailLogs.length > 0 && (
+                <div className={styles["record-groups"]}>
+                  {groupedLogs.map((group) => (
+                    <section className={styles["record-group"]} key={group.dateLabel}>
+                      {!selectedDateKey && <h2>{group.dateLabel}</h2>}
+                      <div className={styles["record-list"]}>
+                        {group.logs.map((log) => (
+                          <button
+                            className={styles["record-item"]}
+                            type="button"
+                            onClick={() => handleOpenDetails(log)}
+                            key={log.id}
+                          >
+                            <span className={styles["record-main"]}>
+                              <span className={styles["record-time"]}>
+                                {formatRecordTimeLabel(log.logged_at)}
+                              </span>
+                              <span className={styles["record-kind"]}>
+                                {RECORD_KIND_LABEL[log.kind]}
+                              </span>
+                            </span>
+                            <span className={styles["record-meta"]}>
+                              {hasRecordDetails(log) ? "상세 있음" : "빠른 기록"}
+                            </span>
+                            {log.note && (
+                              <span className={styles["record-note"]}>{log.note}</span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </section>
                   ))}
                 </div>
-              </section>
-            ))}
+              )}
           </div>
         )}
 
@@ -274,7 +441,13 @@ export function RecordsPageClient() {
   );
 }
 
-function groupLogsByDate(logs: TBathroomLogRow[]) {
+function formatSelectedDateLabel(dateKey: string) {
+  const [, month, day] = dateKey.split("-").map(Number);
+
+  return `${month}월 ${day}일 기록`;
+}
+
+function groupLogsByDate(logs: readonly TBathroomLogRow[]) {
   return logs.reduce<Array<{ dateLabel: string; logs: TBathroomLogRow[] }>>(
     (groups, log) => {
       const dateLabel = formatRecordDateLabel(log.logged_at);
