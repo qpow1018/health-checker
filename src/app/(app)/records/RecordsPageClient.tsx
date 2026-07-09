@@ -57,6 +57,8 @@ export function RecordsPageClient() {
   const [recentLogs, setRecentLogs] = useState<TBathroomLogRow[]>([]);
   const [calendarLogs, setCalendarLogs] = useState<TBathroomLogRow[]>([]);
   const monthCacheRef = useRef<Record<string, TBathroomLogRow[]>>({});
+  const updatedLogsRef = useRef<Record<string, Partial<TBathroomLogRow>>>({});
+  const deletedLogIdsRef = useRef<Set<string>>(new Set());
   const [selectedLog, setSelectedLog] = useState<TBathroomLogRow | null>(null);
   const [editingLog, setEditingLog] = useState<TBathroomLogRow | null>(null);
   const [deleteTargetLog, setDeleteTargetLog] = useState<TBathroomLogRow | null>(null);
@@ -81,7 +83,13 @@ export function RecordsPageClient() {
         const nextLogs = await listBathroomLogs({ limit: 50 });
 
         if (isActive) {
-          setRecentLogs(nextLogs);
+          setRecentLogs(
+            reconcileFetchedLogs(
+              nextLogs,
+              updatedLogsRef.current,
+              deletedLogIdsRef.current,
+            ),
+          );
         }
       } catch {
         if (isActive) {
@@ -125,8 +133,14 @@ export function RecordsPageClient() {
         );
 
         if (isActive) {
-          monthCacheRef.current[monthKey] = nextLogs;
-          setCalendarLogs(nextLogs);
+          const reconciledLogs = reconcileFetchedLogs(
+            nextLogs,
+            updatedLogsRef.current,
+            deletedLogIdsRef.current,
+          );
+
+          monthCacheRef.current[monthKey] = reconciledLogs;
+          setCalendarLogs(reconciledLogs);
         }
       } catch {
         if (isActive) {
@@ -201,6 +215,10 @@ export function RecordsPageClient() {
     try {
       const updatePayload = createRecordUpdateRequest(editingLog.kind, detailForm);
       await updateBathroomLogDetails(editingLog.id, updatePayload);
+      updatedLogsRef.current[editingLog.id] = {
+        ...updatedLogsRef.current[editingLog.id],
+        ...updatePayload,
+      };
       const updateLog = (log: TBathroomLogRow) =>
         log.id === editingLog.id ? { ...log, ...updatePayload } : log;
 
@@ -231,6 +249,7 @@ export function RecordsPageClient() {
 
     try {
       await deleteBathroomLog(deleteTargetLog.id);
+      deletedLogIdsRef.current.add(deleteTargetLog.id);
       const removeLog = (log: TBathroomLogRow) => log.id !== deleteTargetLog.id;
 
       setRecentLogs((currentLogs) => currentLogs.filter(removeLog));
@@ -445,6 +464,16 @@ function formatSelectedDateLabel(dateKey: string) {
   const [, month, day] = dateKey.split("-").map(Number);
 
   return `${month}월 ${day}일 기록`;
+}
+
+function reconcileFetchedLogs(
+  logs: readonly TBathroomLogRow[],
+  updatedLogs: Readonly<Record<string, Partial<TBathroomLogRow>>>,
+  deletedLogIds: ReadonlySet<string>,
+) {
+  return logs
+    .filter((log) => !deletedLogIds.has(log.id))
+    .map((log) => ({ ...log, ...updatedLogs[log.id] }));
 }
 
 function groupLogsByDate(logs: readonly TBathroomLogRow[]) {
