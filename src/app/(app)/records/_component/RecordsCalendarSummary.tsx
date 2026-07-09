@@ -29,6 +29,9 @@ export function RecordsCalendarSummary({
 }: TRecordsCalendarSummaryProps) {
   const month = monthIndex + 1;
   const calendarDays = createCalendarDays(year, monthIndex, logs);
+  const calendarWeeks = Array.from({ length: 6 }, (_, weekIndex) =>
+    calendarDays.slice(weekIndex * 7, weekIndex * 7 + 7),
+  );
 
   return (
     <section
@@ -65,66 +68,68 @@ export function RecordsCalendarSummary({
             {errorMessage}
           </p>
         ) : (
-          <>
-            <div className={styles["weekday-grid"]} aria-hidden="true">
-              {WEEKDAYS.map((weekday) => (
-                <span key={weekday}>{weekday}</span>
-              ))}
-            </div>
-            <div className={styles["day-grid"]}>
-              {calendarDays.map((day) => {
-                if (!day.isCurrentMonth) {
-                  return (
-                    <span
-                      className={styles["adjacent-day"]}
-                      key={day.dateKey}
-                      aria-hidden="true"
-                    />
-                  );
-                }
-
-                if (!day.hasRecords) {
-                  return (
-                    <span
-                      className={`${styles["day-cell"]} ${
-                        day.isToday ? styles["today"] : ""
-                      }`}
+          <table className={styles["calendar-table"]}>
+            <caption className={styles["visually-hidden"]}>
+              {year}년 {month}월 기록 달력
+            </caption>
+            <thead>
+              <tr>
+                {WEEKDAYS.map((weekday) => (
+                  <th key={weekday} scope="col">
+                    {weekday}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {calendarWeeks.map((week) => (
+                <tr key={week[0].dateKey}>
+                  {week.map((day) => (
+                    <td
+                      className={
+                        day.isCurrentMonth ? undefined : styles["adjacent-day"]
+                      }
                       key={day.dateKey}
                     >
-                      <span className={styles["day-number"]}>
-                        {day.dayOfMonth}
-                      </span>
-                      {day.isToday ? (
-                        <span className={styles["today-label"]}>오늘</span>
-                      ) : null}
-                    </span>
-                  );
-                }
-
-                return (
-                  <button
-                    className={`${styles["day-cell"]} ${styles["recorded-day"]} ${
-                      day.isToday ? styles["today"] : ""
-                    }`}
-                    key={day.dateKey}
-                    type="button"
-                    aria-label={`${month}월 ${day.dayOfMonth}일, 소변 ${day.urineCount}회, 대변 ${day.bowelCount}회`}
-                    onClick={() => onSelectDate(day.dateKey)}
-                  >
-                    <span className={styles["day-number"]}>
-                      {day.dayOfMonth}
-                    </span>
-                    <span className={styles["record-count"]}>
-                      소변 {day.urineCount}
-                    </span>
-                    <span className={styles["record-count"]}>
-                      대변 {day.bowelCount}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </>
+                      {!day.isCurrentMonth ? null : !day.hasRecords ? (
+                        <span
+                          className={`${styles["day-cell"]} ${
+                            day.isToday ? styles["today"] : ""
+                          }`}
+                        >
+                          <span className={styles["day-number"]}>
+                            {day.dayOfMonth}
+                          </span>
+                          {day.isToday ? (
+                            <span className={styles["today-label"]}>오늘</span>
+                          ) : null}
+                        </span>
+                      ) : (
+                        <button
+                          className={`${styles["day-cell"]} ${styles["recorded-day"]} ${
+                            day.isToday ? styles["today"] : ""
+                          }`}
+                          type="button"
+                          aria-label={`${month}월 ${day.dayOfMonth}일, 소변 ${day.urineCount}회, 대변 ${day.bowelCount}회`}
+                          onClick={() => onSelectDate(day.dateKey)}
+                        >
+                          <span className={styles["day-number"]}>
+                            {day.dayOfMonth}
+                          </span>
+                          <span className={styles["record-count"]}>
+                            소변 {day.urineCount}
+                          </span>
+                          <span className={styles["record-count"]}>
+                            대변 {day.bowelCount}
+                          </span>
+                        </button>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </section>
