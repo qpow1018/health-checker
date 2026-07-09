@@ -9,6 +9,7 @@ import {
   signOut as signOutFromApi,
   subscribeToAuthChanges,
 } from "@/api/auth";
+import styles from "./authGate.module.scss";
 
 type TAuthGateProps = {
   children: React.ReactNode;
@@ -107,11 +108,11 @@ export function AuthGate({ children }: TAuthGateProps) {
 
   if (authState === "loading" || authState === "checking-access") {
     return (
-      <main className="app-shell">
-        <section className="surface stack">
-          <p className="eyebrow">Health Checker</p>
+      <main className={styles["auth-gate"]}>
+        <section className={styles["surface"]}>
+          <p className={styles["eyebrow"]}>Health Checker</p>
           <h1>확인 중</h1>
-          <p className="muted">계정 접근 권한을 확인하고 있습니다.</p>
+          <p className={styles["muted"]}>계정 접근 권한을 확인하고 있습니다.</p>
         </section>
       </main>
     );

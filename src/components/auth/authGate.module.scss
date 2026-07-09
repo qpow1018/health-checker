@@ -1,0 +1,36 @@
+.auth-gate {
+  min-height: 100svh;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+
+  .surface {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: min(100%, var(--app-max-width));
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+
+    > * {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+
+  .muted {
+    color: var(--muted);
+    line-height: 1.6;
+  }
+}

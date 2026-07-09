@@ -2,7 +2,6 @@
 
 :root {
   color-scheme: light;
-  --background: #{$background};
   --surface: #{$surface};
   --surface-muted: #{$surface-muted};
   --text: #{$text};
@@ -15,11 +14,8 @@
   --secondary-strong: #{$secondary-strong};
   --secondary-soft: #{$secondary-soft};
   --record-urine: #{$record-urine};
-  --record-urine-strong: #{$record-urine-strong};
   --record-bowel: #{$record-bowel};
-  --record-bowel-strong: #{$record-bowel-strong};
   --record-combined: #{$record-combined};
-  --record-combined-strong: #{$record-combined-strong};
   --danger: #{$danger};
   --danger-soft: #{$danger-soft};
   --focus: #{$focus};
@@ -31,7 +27,6 @@
   --transition: #{$transition};
   --z-bottom-tabs: #{$z-bottom-tabs};
   --z-modal: #{$z-modal};
-  --z-toast: #{$z-toast};
   --radius: #{$radius};
 }
 
@@ -51,48 +46,8 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
-.app-shell {
-  min-height: 100svh;
-  padding: max(20px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
-}
-
-.surface {
-  width: min(100%, var(--app-max-width));
-  margin: 0 auto;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 22px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-}
-
-.eyebrow {
-  margin: 0 0 8px;
-  color: var(--primary);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1.4;
-}
-
 h1 {
   font-size: 28px;
   line-height: 1.2;
   letter-spacing: 0;
-}
-
-.muted {
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.stack>* {
-  min-width: 0;
-  width: 100%;
 }
