@@ -53,12 +53,11 @@ $danger-soft: $red-100;
 // size
 $app-max-width: 480px;
 $bottom-nav-height: 60px;
-$bottom-nav-space: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+$bottom-nav-space: calc($bottom-nav-height + env(safe-area-inset-bottom));
 
 // effect
 $transition: 0.2s ease;
 $radius: 8px;
-$shadow: 0 16px 40px rgba(24, 34, 42, 0.08); // 삭제 예정
 
 // z-index
 $z-bottom-nav: 100;

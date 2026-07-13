@@ -1,7 +1,7 @@
 .confirm-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: var(--z-modal);
+  z-index: $z-modal;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,10 +13,10 @@
     gap: 16px;
     width: min(100%, 360px);
     border: 1px solid $border;
-    border-radius: var(--radius);
+    border-radius: $radius;
     padding: 20px;
     background: #ffffff;
-    box-shadow: $shadow;
+    box-shadow: 0 16px 40px rgba(24, 34, 42, 0.08);
 
     .header {
       min-width: 0;

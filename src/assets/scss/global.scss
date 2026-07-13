@@ -1,16 +1,5 @@
 @use "./reset";
 
-:root {
-  color-scheme: light;
-  --app-max-width: #{$app-max-width};
-  --bottom-nav-height: #{$bottom-nav-height};
-  --bottom-nav-space: #{$bottom-nav-space};
-  --transition: #{$transition};
-  --z-bottom-nav: #{$z-bottom-nav};
-  --z-modal: #{$z-modal};
-  --radius: #{$radius};
-}
-
 body {
   background: $app-background;
   color: $text;

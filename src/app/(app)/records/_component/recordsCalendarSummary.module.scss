@@ -1,7 +1,7 @@
 .calendar-summary {
   overflow: hidden;
   border: 1px solid $border;
-  border-radius: var(--radius);
+  border-radius: $radius;
   background: #ffffff;
   color: $text;
 
@@ -27,15 +27,15 @@
     width: 40px;
     height: 40px;
     border: 1px solid $border;
-    border-radius: var(--radius);
+    border-radius: $radius;
     place-items: center;
     background: $gray-100;
     color: $primary-strong;
     cursor: pointer;
     font-size: 24px;
     transition:
-      border-color var(--transition),
-      background var(--transition);
+      border-color $transition,
+      background $transition;
 
     &:hover {
       border-color: $primary;
@@ -135,7 +135,7 @@
     color: $primary-strong;
     cursor: pointer;
     text-align: left;
-    transition: background var(--transition);
+    transition: background $transition;
 
     &:hover {
       background: $gray-100;

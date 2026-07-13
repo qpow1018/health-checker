@@ -6,11 +6,11 @@
     position: relative;
     display: flex;
     min-height: 100svh;
-    width: min(100%, var(--app-max-width));
+    width: min(100%, $app-max-width);
     margin: 0 auto;
     flex-direction: column;
     padding: max(18px, env(safe-area-inset-top)) 18px
-      calc(var(--bottom-nav-space) + 22px);
+      calc($bottom-nav-space + 22px);
     background: $gray-100;
   }
 
@@ -43,10 +43,10 @@
     gap: 16px;
     min-width: 0;
     border: 1px solid $border;
-    border-radius: var(--radius);
+    border-radius: $radius;
     padding: 18px;
     background: #ffffff;
-    box-shadow: $shadow;
+    box-shadow: 0 16px 40px rgba(24, 34, 42, 0.08);
 
     h2 {
       margin: 0;
@@ -90,13 +90,13 @@
 
   .error-message {
     position: fixed;
-    z-index: calc(var(--z-modal) + 1);
+    z-index: calc($z-modal + 1);
     top: max(20px, env(safe-area-inset-top));
     left: 50%;
     width: min(calc(100% - 32px), 360px);
     margin: 0;
     transform: translateX(-50%);
-    border-radius: var(--radius);
+    border-radius: $radius;
     padding: 12px;
     background: $danger-soft;
     color: $danger;

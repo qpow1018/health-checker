@@ -6,11 +6,11 @@
     position: relative;
     display: flex;
     min-height: 100svh;
-    width: min(100%, var(--app-max-width));
+    width: min(100%, $app-max-width);
     margin: 0 auto;
     flex-direction: column;
     padding: max(18px, env(safe-area-inset-top)) 18px
-      calc(var(--bottom-nav-space) + 22px);
+      calc($bottom-nav-space + 22px);
     background: $gray-100;
   }
 
@@ -77,7 +77,7 @@
   .status-message,
   .error-message {
     margin: 0;
-    border-radius: var(--radius);
+    border-radius: $radius;
     padding: 12px;
     font-size: 14px;
     line-height: 1.55;
@@ -152,15 +152,15 @@
     width: 100%;
     gap: 6px;
     border: 1px solid $border;
-    border-radius: var(--radius);
+    border-radius: $radius;
     padding: 14px;
     background: #ffffff;
     color: $text;
     cursor: pointer;
     text-align: left;
     transition:
-      border-color var(--transition),
-      background var(--transition);
+      border-color $transition,
+      background $transition;
 
     &:hover {
       border-color: $primary;

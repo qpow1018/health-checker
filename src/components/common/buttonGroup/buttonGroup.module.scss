@@ -4,7 +4,7 @@
   gap: 4px;
   min-width: 0;
   border: 1px solid $border;
-  border-radius: var(--radius);
+  border-radius: $radius;
   padding: 4px;
   background: $gray-100;
 
@@ -12,7 +12,7 @@
     min-width: 0;
     min-height: 40px;
     border: 0;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: calc($radius - 2px);
     padding: 8px 10px;
     background: transparent;
     color: $text-secondary;
@@ -22,9 +22,9 @@
     font-weight: 800;
     line-height: 1.2;
     transition:
-      background var(--transition),
-      color var(--transition),
-      opacity var(--transition);
+      background $transition,
+      color $transition,
+      opacity $transition;
 
     &:hover:not(:disabled) {
       color: $text;

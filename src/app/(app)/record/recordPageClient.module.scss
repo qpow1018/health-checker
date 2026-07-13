@@ -5,10 +5,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    width: min(100%, var(--app-max-width));
+    width: min(100%, $app-max-width);
     min-height: 100svh;
     margin: 0 auto;
-    padding: max(18px, env(safe-area-inset-top)) 18px calc(var(--bottom-nav-space) + 22px);
+    padding: max(18px, env(safe-area-inset-top)) 18px calc($bottom-nav-space + 22px);
     background: $gray-100;
   }
 
@@ -89,7 +89,7 @@
   .status-message,
   .error-message {
     margin: 16px 0 0;
-    border-radius: var(--radius);
+    border-radius: $radius;
     padding: 12px;
     font-size: 14px;
     line-height: 1.55;

@@ -14,11 +14,11 @@
     display: flex;
     min-width: 0;
     border: 1px solid $border;
-    border-radius: var(--radius);
+    border-radius: $radius;
     background: $gray-100;
     transition:
-      background var(--transition),
-      border-color var(--transition);
+      background $transition,
+      border-color $transition;
 
     &:focus-within {
       border-color: $primary-400;

@@ -7,7 +7,7 @@
   gap: 6px;
   min-width: 80px;
   border: 1px solid transparent;
-  border-radius: var(--radius);
+  border-radius: $radius;
   padding: 0 16px;
   color: $text;
   cursor: pointer;
@@ -17,11 +17,11 @@
   text-align: center;
   white-space: nowrap;
   transition:
-    background var(--transition),
-    border-color var(--transition),
-    color var(--transition),
-    opacity var(--transition),
-    transform var(--transition);
+    background $transition,
+    border-color $transition,
+    color $transition,
+    opacity $transition,
+    transform $transition;
 
   &:active:not(:disabled) {
     transform: translateY(1px);
