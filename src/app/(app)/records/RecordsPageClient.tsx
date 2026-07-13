@@ -465,7 +465,7 @@ export function RecordsPageClient() {
           }}
         />
 
-        <BottomNavigation activeHref="/records" />
+        <BottomNavigation />
       </div>
     </main>
   );

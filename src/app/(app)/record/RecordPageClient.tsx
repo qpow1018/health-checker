@@ -201,7 +201,7 @@ export function RecordPageClient() {
           />
         )}
 
-        <BottomNavigation activeHref="/record" />
+        <BottomNavigation />
       </div>
     </main>
   );

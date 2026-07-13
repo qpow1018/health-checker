@@ -4,35 +4,35 @@
   bottom: 0;
   left: max(0px, calc((100vw - $app-max-width) / 2));
   z-index: $z-bottom-nav;
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  min-height: $bottom-nav-space;
-  border-top: 1px solid rgb(215 222 227 / 86%);
-  padding: 8px 8px max(8px, env(safe-area-inset-bottom));
-  background: $gray-100;
-  box-shadow: 0 -16px 30px rgb(24 34 42 / 10%);
+  grid-template-columns: repeat(4, 1fr);
+  height: $bottom-nav-space;
+  border-top: 1px solid $primary-200;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  background: $primary-soft;
 
-  .navigation-item {
+  .bottom-navigation-item {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
     align-items: center;
     justify-content: center;
     min-width: 0;
     border-radius: $radius;
-    padding: 5px 4px;
-    color: $text-secondary;
+    padding: 2px 4px;
+    color: $gray-700;
     font-size: 11px;
-    font-weight: 800;
-    line-height: 1.25;
+    font-weight: 500;
+    line-height: 1.1;
     text-align: center;
     text-decoration: none;
     transition: color $transition;
 
-    .icon-wrap {
+    .bottom-navigation-icon-wrap {
       display: grid;
-      min-width: 42px;
-      height: 28px;
+      min-width: 36px;
+      height: 24px;
       place-items: center;
       border-radius: 999px;
       transition:
@@ -40,23 +40,24 @@
         color $transition;
     }
 
-    .icon {
-      width: 22px;
-      height: 22px;
+    .bottom-navigation-icon {
+      width: 20px;
+      height: 20px;
       flex: none;
     }
 
-    .label {
+    .bottom-navigation-label {
       overflow-wrap: anywhere;
     }
   }
 
-  .active-item {
+  .active-navigation-item {
     color: $primary-strong;
+    font-weight: 700;
 
-    .icon-wrap {
-      background: $primary-soft;
-      color: $primary-strong;
+    .bottom-navigation-icon-wrap {
+      background: $primary;
+      color: #ffffff;
     }
   }
 }

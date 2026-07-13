@@ -15,6 +15,10 @@ vi.mock("@/components/auth/AuthGate", () => ({
   }),
 }));
 
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/settings",
+}));
+
 function createDeferred() {
   let resolve!: () => void;
   let reject!: (reason?: unknown) => void;

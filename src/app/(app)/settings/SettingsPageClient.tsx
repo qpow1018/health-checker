@@ -81,7 +81,7 @@ export function SettingsPageClient() {
           </section>
         </div>
 
-        <BottomNavigation activeHref="/settings" />
+        <BottomNavigation />
       </div>
 
       {signOutError ? (

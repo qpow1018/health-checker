@@ -18,6 +18,10 @@ vi.mock("@/api/bathroomLogs", () => ({
   updateBathroomLogDetails: bathroomLogMocks.updateBathroomLogDetails,
 }));
 
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/records",
+}));
+
 const LOGS: TBathroomLogRow[] = [
   {
     id: "log-2",

@@ -15,6 +15,10 @@ vi.mock("@/api/bathroomLogs", () => ({
   updateBathroomLogDetails: bathroomLogMocks.updateBathroomLogDetails,
 }));
 
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/record",
+}));
+
 describe("RecordPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
