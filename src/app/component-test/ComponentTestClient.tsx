@@ -21,10 +21,13 @@ export function ComponentTestClient() {
 
   return (
     <main className={styles["component-test-page"]}>
-      <section className={styles.surface}>
-        <header className={styles.header}>
+      <div className={styles["app-canvas"]}>
+        <header className={styles.topbar}>
           <p className={styles.eyebrow}>Component Test</p>
           <h1>공용 컴포넌트</h1>
+          <p className={styles["topbar-description"]}>
+            실제 화면 안에서 공용 UI가 어떻게 보이는지 확인합니다.
+          </p>
         </header>
 
         <section className={styles.section} aria-labelledby="button-section-title">
@@ -195,7 +198,7 @@ export function ComponentTestClient() {
             </Button>
           </div>
         </section>
-      </section>
+      </div>
 
       <ConfirmModal
         isOpen={isPrimaryConfirmOpen}
