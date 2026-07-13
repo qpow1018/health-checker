@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BottomModal from "@/components/common/bottomModal/BottomModal";
 import { Button } from "@/components/common/button/Button";
 import { ButtonGroup } from "@/components/common/buttonGroup/ButtonGroup";
 import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
@@ -16,6 +17,7 @@ export function ComponentTestClient() {
   const [urgency, setUrgency] = useState("ordinary");
   const [wokeFromSleep, setWokeFromSleep] = useState("no");
   const [reportTab, setReportTab] = useState("summary");
+  const [isBottomModalOpen, setIsBottomModalOpen] = useState(false);
   const [isPrimaryConfirmOpen, setIsPrimaryConfirmOpen] = useState(false);
   const [isDestructiveConfirmOpen, setIsDestructiveConfirmOpen] = useState(false);
 
@@ -178,6 +180,19 @@ export function ComponentTestClient() {
           />
         </section>
 
+        <section className={styles.section} aria-labelledby="bottom-modal-section-title">
+          <h2 id="bottom-modal-section-title">BottomModal</h2>
+
+          <Button
+            variant="primary"
+            size="large"
+            isFullWidth
+            onClick={() => setIsBottomModalOpen(true)}
+          >
+            바텀 모달 열기
+          </Button>
+        </section>
+
         <section className={styles.section} aria-labelledby="confirm-section-title">
           <h2 id="confirm-section-title">ConfirmModal</h2>
 
@@ -199,6 +214,38 @@ export function ComponentTestClient() {
           </div>
         </section>
       </div>
+
+      <BottomModal
+        isOpen={isBottomModalOpen}
+        onClose={() => setIsBottomModalOpen(false)}
+        title="상세 기록"
+      >
+        <div className={styles["bottom-modal-preview"]}>
+          <p>
+            저장한 기록에 남길 상세 정보를 이어서 입력하는 상황을 확인합니다.
+          </p>
+
+          <div className={styles["bottom-modal-actions"]}>
+            <Button
+              variant="primary"
+              size="large"
+              isFullWidth
+              onClick={() => setIsBottomModalOpen(false)}
+            >
+              확인
+            </Button>
+            <Button
+              variant="secondary"
+              appearance="outline"
+              size="large"
+              isFullWidth
+              onClick={() => setIsBottomModalOpen(false)}
+            >
+              닫기
+            </Button>
+          </div>
+        </div>
+      </BottomModal>
 
       <ConfirmModal
         isOpen={isPrimaryConfirmOpen}

@@ -55,4 +55,79 @@ describe("BottomModal", () => {
     await user.click(screen.getByTestId("bottom-modal-overlay"));
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
+
+  test("focuses the first enabled button when opened and restores focus after close", () => {
+    const { rerender } = render(
+      <>
+        <button type="button">이전 버튼</button>
+        <BottomModal title="테스트 모달" isOpen={false} onClose={() => undefined}>
+          <button type="button">첫 번째 버튼</button>
+        </BottomModal>
+      </>,
+    );
+    const previousButton = screen.getByRole("button", { name: "이전 버튼" });
+
+    previousButton.focus();
+    rerender(
+      <>
+        <button type="button">이전 버튼</button>
+        <BottomModal title="테스트 모달" isOpen={true} onClose={() => undefined}>
+          <button type="button">첫 번째 버튼</button>
+        </BottomModal>
+      </>,
+    );
+
+    expect(screen.getByRole("button", { name: "첫 번째 버튼" })).toHaveFocus();
+
+    rerender(
+      <>
+        <button type="button">이전 버튼</button>
+        <BottomModal title="테스트 모달" isOpen={false} onClose={() => undefined}>
+          <button type="button">첫 번째 버튼</button>
+        </BottomModal>
+      </>,
+    );
+
+    expect(previousButton).toHaveFocus();
+  });
+
+  test("closes on Escape", async () => {
+    const user = userEvent.setup();
+    const handleClose = vi.fn();
+
+    render(
+      <BottomModal title="테스트 모달" isOpen={true} onClose={handleClose}>
+        <button type="button">내부 버튼</button>
+      </BottomModal>,
+    );
+
+    await user.keyboard("{Escape}");
+
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  test("keeps tab focus inside the dialog", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <BottomModal title="테스트 모달" isOpen={true} onClose={() => undefined}>
+        <button type="button">첫 번째 버튼</button>
+        <button type="button">두 번째 버튼</button>
+      </BottomModal>,
+    );
+
+    const firstButton = screen.getByRole("button", { name: "첫 번째 버튼" });
+    const secondButton = screen.getByRole("button", { name: "두 번째 버튼" });
+
+    expect(firstButton).toHaveFocus();
+
+    await user.tab();
+    expect(secondButton).toHaveFocus();
+
+    await user.tab();
+    expect(firstButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(secondButton).toHaveFocus();
+  });
 });
