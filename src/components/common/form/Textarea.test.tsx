@@ -45,6 +45,7 @@ describe("Textarea", () => {
       <Textarea
         id="disabled-note"
         isDisabled
+        isRequired
         label="메모"
         onChange={() => undefined}
         rows={5}
@@ -55,6 +56,7 @@ describe("Textarea", () => {
     const textarea = screen.getByLabelText("메모");
 
     expect(textarea).toBeDisabled();
+    expect(textarea).toHaveAttribute("required");
     expect(textarea).toHaveAttribute("rows", "5");
   });
 });

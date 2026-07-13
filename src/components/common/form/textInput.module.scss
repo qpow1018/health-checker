@@ -1,16 +1,16 @@
-.field {
+.text-input {
   display: grid;
   gap: 8px;
   min-width: 0;
   color: $text;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
 
-  .field-label {
+  .text-input-label {
     min-width: 0;
   }
 
-  .control-shell {
+  .text-input-control-shell {
     display: flex;
     min-width: 0;
     border: 1px solid $border;
@@ -26,15 +26,16 @@
     }
   }
 
-  .control {
+  .text-input-control {
     width: 100%;
+    min-height: 48px;
     min-width: 0;
     border: 0;
-    padding: 13px 12px;
+    padding: 0 12px;
     background: transparent;
     color: $text;
     font: inherit;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
 
     &:focus {
@@ -47,18 +48,17 @@
     }
   }
 
-  .helper-message,
-  .error-message {
+  .text-input-helper-message,
+  .text-input-error-message {
     font-size: 13px;
-    font-weight: 600;
-    line-height: 1.45;
+    font-weight: 500;
   }
 
-  .helper-message {
+  .text-input-helper-message {
     color: $text-secondary;
   }
 
-  .error-message {
+  .text-input-error-message {
     color: $danger;
   }
 }

@@ -43,11 +43,15 @@ describe("TextInput", () => {
   test("connects helper text and error message to the input", () => {
     render(
       <TextInput
+        autoComplete="email"
         errorMessage="이메일 형식을 확인해주세요."
         helperText="허용된 계정 이메일을 입력하세요."
         id="login-email"
+        inputMode="email"
+        isRequired
         label="이메일"
         onChange={() => undefined}
+        type="email"
         value=""
       />,
     );
@@ -55,6 +59,10 @@ describe("TextInput", () => {
     const input = screen.getByLabelText("이메일");
 
     expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("autocomplete", "email");
+    expect(input).toHaveAttribute("inputmode", "email");
+    expect(input).toHaveAttribute("required");
+    expect(input).toHaveAttribute("type", "email");
     expect(input).toHaveAccessibleDescription(
       "허용된 계정 이메일을 입력하세요. 이메일 형식을 확인해주세요.",
     );

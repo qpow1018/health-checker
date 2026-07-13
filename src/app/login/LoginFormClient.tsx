@@ -110,9 +110,9 @@ export function LoginFormClient() {
             id="login-email"
             inputMode="email"
             isDisabled={isBusy}
+            isRequired
             label="이메일"
             onChange={setEmail}
-            required
             type="email"
             value={email}
           />
@@ -121,9 +121,9 @@ export function LoginFormClient() {
             autoComplete="current-password"
             id="login-password"
             isDisabled={isBusy}
+            isRequired
             label="비밀번호"
             onChange={setPassword}
-            required
             type="password"
             value={password}
           />
