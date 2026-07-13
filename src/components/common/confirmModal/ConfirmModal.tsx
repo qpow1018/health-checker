@@ -11,7 +11,7 @@ type TConfirmModalAction = {
   isLoading?: boolean;
 };
 
-type TConfirmModalProps = {
+export function ConfirmModal(props: {
   isOpen: boolean;
   title: string;
   message: string;
@@ -20,16 +20,15 @@ type TConfirmModalProps = {
   confirmButton: TConfirmModalAction & {
     color: TButtonColor;
   };
-};
-
-export function ConfirmModal({
-  isOpen,
-  title,
-  message,
-  onClose,
-  cancelButton,
-  confirmButton,
-}: TConfirmModalProps) {
+}) {
+  const {
+    isOpen,
+    title,
+    message,
+    onClose,
+    cancelButton,
+    confirmButton,
+  } = props;
   const dialogRef = useRef<HTMLElement>(null);
   const onCloseRef = useRef(onClose);
   const isLockedRef = useRef(false);
@@ -120,13 +119,13 @@ export function ConfirmModal({
         tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
       >
-        <header className={styles.header}>
+        <header className={styles["confirm-modal-header"]}>
           <h2 id={titleId}>{title}</h2>
         </header>
-        <p className={styles.message} id={messageId}>
+        <p className={styles["confirm-modal-message"]} id={messageId}>
           {message}
         </p>
-        <div className={styles.actions}>
+        <div className={styles["confirm-modal-actions"]}>
           <Button
             color="gray"
             fill="outline"
