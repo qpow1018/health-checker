@@ -5,12 +5,12 @@ import { describe, expect, test, vi } from "vitest";
 import { Button } from "./Button";
 
 describe("Button", () => {
-  test("renders a clickable button with the requested variant and size", async () => {
+  test("renders a clickable button with the requested color and size", async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();
 
     render(
-      <Button variant="primary" size="large" onClick={handleClick}>
+      <Button color="primary" size="large" onClick={handleClick}>
         저장
       </Button>,
     );
@@ -18,7 +18,7 @@ describe("Button", () => {
     const button = screen.getByRole("button", { name: "저장" });
 
     expect(button).toHaveAttribute("type", "button");
-    expect(button).toHaveAttribute("data-variant", "primary");
+    expect(button).toHaveAttribute("data-color", "primary");
     expect(button).toHaveAttribute("data-size", "large");
 
     await user.click(button);
@@ -26,17 +26,17 @@ describe("Button", () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  test("separates the color variant from the visual appearance", () => {
+  test("separates the color from the visual fill", () => {
     render(
-      <Button variant="secondary" appearance="outline">
+      <Button color="accent" fill="outline">
         나중에
       </Button>,
     );
 
     const button = screen.getByRole("button", { name: "나중에" });
 
-    expect(button).toHaveAttribute("data-variant", "secondary");
-    expect(button).toHaveAttribute("data-appearance", "outline");
+    expect(button).toHaveAttribute("data-color", "accent");
+    expect(button).toHaveAttribute("data-fill", "outline");
   });
 
   test("marks full-width buttons and blocks clicks while loading", async () => {

@@ -51,13 +51,13 @@ export function RecordsDetailModal({
         {log.note && <p className={styles.note}>{log.note}</p>}
 
         <div className={styles.actions}>
-          <Button variant="primary" size="large" isFullWidth onClick={onEdit}>
+          <Button color="primary" size="large" isFullWidth onClick={onEdit}>
             수정
           </Button>
-          <Button variant="destructive" size="large" isFullWidth onClick={onDelete}>
+          <Button color="danger" size="large" isFullWidth onClick={onDelete}>
             삭제
           </Button>
-          <Button variant="secondary" appearance="ghost" size="large" isFullWidth onClick={onClose}>
+          <Button color="gray" fill="ghost" size="large" isFullWidth onClick={onClose}>
             닫기
           </Button>
         </div>

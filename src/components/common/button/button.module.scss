@@ -32,35 +32,58 @@
     opacity: 0.65;
   }
 
-  &.variant-primary {
-    --button-color: #{$primary};
-    --button-color-strong: #{$primary-strong};
-    --button-soft: #{$primary-soft};
+  &.color-primary {
+    --button-solid-background: #{$primary};
+    --button-solid-hover-background: #{$primary-strong};
     --button-solid-text: #ffffff;
+    --button-soft-background: #{$primary-soft};
+    --button-soft-text: #{$primary-strong};
+    --button-outline-border: #{$primary};
+    --button-outline-text: #{$primary-strong};
+    --button-ghost-text: #{$primary-strong};
   }
 
-  &.variant-secondary {
-    --button-color: #{$accent};
-    --button-color-strong: #{$accent-strong};
-    --button-soft: #{$accent-soft};
+  &.color-accent {
+    --button-solid-background: #{$accent};
+    --button-solid-hover-background: #{$accent-strong};
     --button-solid-text: #ffffff;
+    --button-soft-background: #{$accent-soft};
+    --button-soft-text: #{$accent-strong};
+    --button-outline-border: #{$accent};
+    --button-outline-text: #{$accent-strong};
+    --button-ghost-text: #{$accent-strong};
   }
 
-  &.variant-destructive {
-    --button-color: #{$danger};
-    --button-color-strong: #{$danger};
-    --button-soft: #{$danger-soft};
+  &.color-gray {
+    --button-solid-background: #{$gray-900};
+    --button-solid-hover-background: #{$gray-800};
     --button-solid-text: #ffffff;
+    --button-soft-background: #{$gray-200};
+    --button-soft-text: #{$gray-700};
+    --button-outline-border: #{$border};
+    --button-outline-text: #{$gray-700};
+    --button-ghost-text: #{$gray-700};
   }
 
-  &.appearance-solid {
-    border-color: var(--button-color);
-    background: var(--button-color);
+  &.color-danger {
+    --button-solid-background: #{$danger};
+    --button-solid-hover-background: #{$danger};
+    --button-solid-text: #ffffff;
+    --button-soft-background: #{$danger-soft};
+    --button-soft-text: #{$danger};
+    --button-outline-border: #{$danger};
+    --button-outline-text: #{$danger};
+    --button-ghost-text: #{$danger};
+  }
+
+  &.fill-solid {
+    border-color: var(--button-solid-background);
+    background: var(--button-solid-background);
     color: var(--button-solid-text);
 
     &:hover:not(:disabled) {
-      border-color: var(--button-color-strong);
-      background: var(--button-color-strong);
+      border-color: var(--button-solid-hover-background);
+      background: var(--button-solid-hover-background);
     }
 
     .spinner {
@@ -69,26 +92,26 @@
     }
   }
 
-  &.appearance-soft {
-    border-color: var(--button-soft);
-    background: var(--button-soft);
-    color: var(--button-color-strong);
+  &.fill-soft {
+    border-color: var(--button-soft-background);
+    background: var(--button-soft-background);
+    color: var(--button-soft-text);
   }
 
-  &.appearance-outline {
-    border-color: var(--button-color);
+  &.fill-outline {
+    border-color: var(--button-outline-border);
     background: #ffffff;
-    color: var(--button-color-strong);
+    color: var(--button-outline-text);
 
     &:hover:not(:disabled) {
-      background: var(--button-soft);
+      background: var(--button-soft-background);
     }
   }
 
-  &.appearance-ghost {
+  &.fill-ghost {
     border-color: transparent;
     background: transparent;
-    color: var(--button-color-strong);
+    color: var(--button-ghost-text);
   }
 
   &.size-small {

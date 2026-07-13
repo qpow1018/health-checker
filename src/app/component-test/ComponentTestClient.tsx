@@ -19,7 +19,7 @@ export function ComponentTestClient() {
   const [reportTab, setReportTab] = useState("summary");
   const [isBottomModalOpen, setIsBottomModalOpen] = useState(false);
   const [isPrimaryConfirmOpen, setIsPrimaryConfirmOpen] = useState(false);
-  const [isDestructiveConfirmOpen, setIsDestructiveConfirmOpen] = useState(false);
+  const [isDangerConfirmOpen, setIsDangerConfirmOpen] = useState(false);
 
   return (
     <main className={styles["component-test-page"]}>
@@ -36,42 +36,66 @@ export function ComponentTestClient() {
           <h2 id="button-section-title">Button</h2>
 
           <div className={styles["button-grid"]}>
-            <Button variant="primary" appearance="solid" size="large">
-              Primary Solid
+            <Button color="primary" fill="solid" size="large">
+              기본 채움
             </Button>
-            <Button variant="primary" appearance="outline" size="large">
-              Primary Outline
+            <Button color="primary" fill="outline" size="large">
+              기본 테두리
             </Button>
-            <Button variant="secondary" appearance="solid" size="large">
-              Secondary Solid
+            <Button color="primary" fill="soft" size="large">
+              기본 연한 배경
             </Button>
-            <Button variant="secondary" appearance="outline" size="large">
-              Secondary Outline
+            <Button color="primary" fill="ghost" size="large">
+              기본 글자형
             </Button>
-            <Button variant="secondary" appearance="soft" size="large">
-              Secondary Soft
+            <Button color="accent" fill="solid" size="large">
+              강조 채움
             </Button>
-            <Button variant="secondary" appearance="ghost" size="large">
-              Secondary Ghost
+            <Button color="accent" fill="outline" size="large">
+              강조 테두리
             </Button>
-            <Button variant="destructive" appearance="soft" size="large">
-              Destructive Soft
+            <Button color="accent" fill="soft" size="large">
+              강조 연한 배경
             </Button>
-            <Button variant="destructive" appearance="outline" size="large">
-              Destructive Outline
+            <Button color="accent" fill="ghost" size="large">
+              강조 글자형
+            </Button>
+            <Button color="gray" fill="solid" size="large">
+              회색 채움
+            </Button>
+            <Button color="gray" fill="outline" size="large">
+              회색 테두리
+            </Button>
+            <Button color="gray" fill="soft" size="large">
+              회색 연한 배경
+            </Button>
+            <Button color="gray" fill="ghost" size="large">
+              회색 글자형
+            </Button>
+            <Button color="danger" fill="solid" size="large">
+              위험 채움
+            </Button>
+            <Button color="danger" fill="soft" size="large">
+              위험 연한 배경
+            </Button>
+            <Button color="danger" fill="outline" size="large">
+              위험 테두리
+            </Button>
+            <Button color="danger" fill="ghost" size="large">
+              위험 글자형
             </Button>
           </div>
 
           <div className={styles["button-stack"]}>
-            <Button variant="primary" size="large" isFullWidth>
+            <Button color="primary" size="large" isFullWidth>
               전체 너비 버튼
             </Button>
-            <Button variant="primary" size="large" isFullWidth isLoading>
+            <Button color="primary" size="large" isFullWidth isLoading>
               저장 중
             </Button>
             <Button
-              variant="secondary"
-              appearance="outline"
+              color="gray"
+              fill="outline"
               size="large"
               isFullWidth
               isDisabled
@@ -80,16 +104,25 @@ export function ComponentTestClient() {
             </Button>
           </div>
 
-          <div className={styles["size-row"]}>
-            <Button variant="secondary" size="small">
-              Small
-            </Button>
-            <Button variant="secondary" size="medium">
-              Medium
-            </Button>
-            <Button variant="secondary" size="large">
-              Large
-            </Button>
+          <div className={styles["size-stack"]}>
+            <div className={styles["size-sample"]}>
+              <span>작음</span>
+              <Button color="accent" size="small" isFullWidth>
+                작은 버튼
+              </Button>
+            </div>
+            <div className={styles["size-sample"]}>
+              <span>보통</span>
+              <Button color="accent" size="medium" isFullWidth>
+                보통 버튼
+              </Button>
+            </div>
+            <div className={styles["size-sample"]}>
+              <span>큼</span>
+              <Button color="accent" size="large" isFullWidth>
+                큰 버튼
+              </Button>
+            </div>
           </div>
         </section>
 
@@ -184,7 +217,7 @@ export function ComponentTestClient() {
           <h2 id="bottom-modal-section-title">BottomModal</h2>
 
           <Button
-            variant="primary"
+            color="primary"
             size="large"
             isFullWidth
             onClick={() => setIsBottomModalOpen(true)}
@@ -198,16 +231,16 @@ export function ComponentTestClient() {
 
           <div className={styles["button-grid"]}>
             <Button
-              variant="primary"
+              color="primary"
               size="large"
               onClick={() => setIsPrimaryConfirmOpen(true)}
             >
               기본 확인
             </Button>
             <Button
-              variant="destructive"
+              color="danger"
               size="large"
-              onClick={() => setIsDestructiveConfirmOpen(true)}
+              onClick={() => setIsDangerConfirmOpen(true)}
             >
               삭제 확인
             </Button>
@@ -227,7 +260,7 @@ export function ComponentTestClient() {
 
           <div className={styles["bottom-modal-actions"]}>
             <Button
-              variant="primary"
+              color="primary"
               size="large"
               isFullWidth
               onClick={() => setIsBottomModalOpen(false)}
@@ -235,8 +268,8 @@ export function ComponentTestClient() {
               확인
             </Button>
             <Button
-              variant="secondary"
-              appearance="outline"
+              color="gray"
+              fill="outline"
               size="large"
               isFullWidth
               onClick={() => setIsBottomModalOpen(false)}
@@ -258,24 +291,24 @@ export function ComponentTestClient() {
         }}
         confirmButton={{
           label: "저장하기",
-          variant: "primary",
+          color: "primary",
           onClick: () => setIsPrimaryConfirmOpen(false),
         }}
       />
 
       <ConfirmModal
-        isOpen={isDestructiveConfirmOpen}
-        onClose={() => setIsDestructiveConfirmOpen(false)}
+        isOpen={isDangerConfirmOpen}
+        onClose={() => setIsDangerConfirmOpen(false)}
         title="기록을 삭제할까요?"
         message="삭제한 기록은 되돌릴 수 없습니다."
         cancelButton={{
           label: "닫기",
-          onClick: () => setIsDestructiveConfirmOpen(false),
+          onClick: () => setIsDangerConfirmOpen(false),
         }}
         confirmButton={{
           label: "삭제하기",
-          variant: "destructive",
-          onClick: () => setIsDestructiveConfirmOpen(false),
+          color: "danger",
+          onClick: () => setIsDangerConfirmOpen(false),
         }}
       />
     </main>

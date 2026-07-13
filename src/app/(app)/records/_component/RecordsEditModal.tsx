@@ -151,12 +151,12 @@ export function RecordsEditModal({
         </div>
 
         <div className={styles.actions}>
-          <Button variant="primary" size="large" isFullWidth isLoading={isSaving} onClick={onSave}>
+          <Button color="primary" size="large" isFullWidth isLoading={isSaving} onClick={onSave}>
             수정 저장
           </Button>
           <Button
-            variant="secondary"
-            appearance="ghost"
+            color="gray"
+            fill="ghost"
             size="large"
             isFullWidth
             isDisabled={isSaving}

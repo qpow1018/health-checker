@@ -70,8 +70,8 @@ export function SettingsPageClient() {
             <h2 id="logout-section-title">로그아웃</h2>
             <p className={styles.description}>이 기기에서 현재 계정의 사용을 종료합니다.</p>
             <Button
-              variant="destructive"
-              appearance="outline"
+              color="danger"
+              fill="outline"
               size="large"
               isFullWidth
               onClick={handleOpenLogoutModal}
@@ -102,7 +102,7 @@ export function SettingsPageClient() {
         }}
         confirmButton={{
           label: "로그아웃",
-          variant: "destructive",
+          color: "danger",
           onClick: handleConfirmLogout,
           isDisabled: isSigningOut,
           isLoading: isSigningOut,

@@ -16,7 +16,7 @@ describe("ConfirmModal", () => {
         cancelButton={{ label: "닫기", onClick: () => undefined }}
         confirmButton={{
           label: "취소하기",
-          variant: "destructive",
+          color: "danger",
           onClick: () => undefined,
         }}
       />,
@@ -27,8 +27,8 @@ describe("ConfirmModal", () => {
     expect(dialog).toHaveTextContent("방금 저장한 기록이 삭제됩니다.");
     expect(screen.getByRole("button", { name: "닫기" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "취소하기" })).toHaveAttribute(
-      "data-variant",
-      "destructive",
+      "data-color",
+      "danger",
     );
   });
 
@@ -42,7 +42,7 @@ describe("ConfirmModal", () => {
         cancelButton={{ label: "닫기", onClick: () => undefined }}
         confirmButton={{
           label: "삭제",
-          variant: "destructive",
+          color: "danger",
           onClick: () => undefined,
         }}
       />,
@@ -66,7 +66,7 @@ describe("ConfirmModal", () => {
         cancelButton={{ label: "닫기", onClick: handleCancel }}
         confirmButton={{
           label: "삭제",
-          variant: "destructive",
+          color: "danger",
           onClick: handleConfirm,
         }}
       />,
@@ -91,7 +91,7 @@ describe("ConfirmModal", () => {
         cancelButton={{ label: "닫기", onClick: () => undefined }}
         confirmButton={{
           label: "복원",
-          variant: "primary",
+          color: "primary",
           isLoading: true,
           onClick: () => undefined,
         }}
@@ -115,7 +115,7 @@ describe("ConfirmModal", () => {
           cancelButton={{ label: "닫기", onClick: () => undefined }}
           confirmButton={{
             label: "삭제",
-            variant: "destructive",
+            color: "danger",
             onClick: () => undefined,
           }}
         />
@@ -153,7 +153,7 @@ describe("ConfirmModal", () => {
             cancelButton={{ label: "닫기", onClick: () => setIsOpen(false) }}
             confirmButton={{
               label: "삭제",
-              variant: "destructive",
+              color: "danger",
               onClick: () => undefined,
             }}
           />
@@ -190,7 +190,7 @@ describe("ConfirmModal", () => {
         }}
         confirmButton={{
           label: "로그아웃",
-          variant: "destructive",
+          color: "danger",
           isLoading: true,
           onClick: () => undefined,
         }}

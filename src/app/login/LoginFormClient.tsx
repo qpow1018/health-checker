@@ -134,7 +134,7 @@ export function LoginFormClient() {
             isLoading={isSubmitting}
             size="large"
             type="submit"
-            variant="primary"
+            color="primary"
           >
             로그인
           </Button>

@@ -75,10 +75,23 @@
     gap: 10px;
   }
 
-  .size-row {
-    display: flex;
-    flex-wrap: wrap;
+  .size-stack {
+    display: grid;
     gap: 10px;
+  }
+
+  .size-sample {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+
+    span {
+      color: $text-secondary;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
   }
 
   .form-stack {

@@ -455,7 +455,7 @@ export function RecordsPageClient() {
           }}
           confirmButton={{
             label: "삭제",
-            variant: "destructive",
+            color: "danger",
             onClick: () => void handleConfirmDelete(),
             isLoading: isDeleting,
           }}

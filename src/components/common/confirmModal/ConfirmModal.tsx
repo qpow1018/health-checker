@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from "react";
 
-import { Button, type TButtonVariant } from "@/components/common/button/Button";
+import { Button, type TButtonColor } from "@/components/common/button/Button";
 
 import styles from "./confirmModal.module.scss";
 
@@ -18,7 +18,7 @@ type TConfirmModalProps = {
   onClose: () => void;
   cancelButton: TConfirmModalAction;
   confirmButton: TConfirmModalAction & {
-    variant: TButtonVariant;
+    color: TButtonColor;
   };
 };
 
@@ -128,8 +128,8 @@ export function ConfirmModal({
         </p>
         <div className={styles.actions}>
           <Button
-            variant="secondary"
-            appearance="outline"
+            color="gray"
+            fill="outline"
             size="large"
             isFullWidth
             isDisabled={cancelButton.isDisabled}
@@ -139,7 +139,7 @@ export function ConfirmModal({
             {cancelButton.label}
           </Button>
           <Button
-            variant={confirmButton.variant}
+            color={confirmButton.color}
             size="large"
             isFullWidth
             isDisabled={confirmButton.isDisabled}
