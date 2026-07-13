@@ -5,7 +5,7 @@
   min-width: 0;
   border: 1px solid $border;
   border-radius: $radius;
-  padding: 4px;
+  padding: 3px;
   background: $gray-100;
 
   button {
@@ -19,10 +19,10 @@
     cursor: pointer;
     font: inherit;
     font-size: 14px;
-    font-weight: 800;
-    line-height: 1.2;
+    font-weight: 500;
     transition:
       background $transition,
+      box-shadow $transition,
       color $transition,
       opacity $transition;
 
@@ -30,15 +30,20 @@
       color: $text;
     }
 
+    &:focus-visible {
+      outline: 3px solid rgb(106 155 195 / 34%);
+      outline-offset: 2px;
+    }
+
     &:disabled {
       cursor: not-allowed;
       opacity: 0.65;
     }
-  }
 
-  .selected-option {
-    background: #ffffff;
-    color: $primary-strong;
-    box-shadow: 0 2px 8px rgb(24 34 42 / 8%);
+    &.selected-option {
+      background: $primary-soft;
+      color: $primary-strong;
+      box-shadow: inset 0 0 0 1px rgba($primary, 0.18);
+    }
   }
 }
