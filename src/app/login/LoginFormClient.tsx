@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   checkAllowedUser,
@@ -8,6 +8,8 @@ import {
   signInWithPassword,
   signOut,
 } from "@/api/auth";
+import { Button } from "@/components/common/button/Button";
+import { TextInput } from "@/components/common/form/TextInput";
 import styles from "./loginFormClient.module.scss";
 
 type TLoginState = "idle" | "checking-session" | "submitting";
@@ -59,7 +61,7 @@ export function LoginFormClient() {
     };
   }, [router]);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoginState("submitting");
     setMessage("");
@@ -90,50 +92,52 @@ export function LoginFormClient() {
     }
   }
 
+  const isBusy = loginState !== "idle";
   const isSubmitting = loginState === "submitting";
 
   return (
     <main className={styles["login-form-client"]}>
-      <section className={styles["surface"]}>
+      <section className={styles["login-panel"]}>
         <div>
           <p className={styles["eyebrow"]}>Health Checker</p>
           <h1>로그인</h1>
-          <p className={styles["muted"]}>허용된 계정만 사용할 수 있습니다.</p>
+          <p className={styles["description"]}>허용된 계정만 사용할 수 있습니다.</p>
         </div>
 
         <form className={styles["form"]} onSubmit={handleSubmit}>
-          <label className={styles["field"]}>
-            <span>이메일</span>
-            <input
-              autoComplete="email"
-              disabled={isSubmitting}
-              inputMode="email"
-              onChange={(event) => setEmail(event.target.value)}
-              required
-              type="email"
-              value={email}
-            />
-          </label>
+          <TextInput
+            autoComplete="email"
+            id="login-email"
+            inputMode="email"
+            isDisabled={isBusy}
+            label="이메일"
+            onChange={setEmail}
+            required
+            type="email"
+            value={email}
+          />
 
-          <label className={styles["field"]}>
-            <span>비밀번호</span>
-            <input
-              autoComplete="current-password"
-              disabled={isSubmitting}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              type="password"
-              value={password}
-            />
-          </label>
+          <TextInput
+            autoComplete="current-password"
+            id="login-password"
+            isDisabled={isBusy}
+            label="비밀번호"
+            onChange={setPassword}
+            required
+            type="password"
+            value={password}
+          />
 
-          <button
-            className={styles["primary-button"]}
-            disabled={isSubmitting}
+          <Button
+            isDisabled={loginState === "checking-session"}
+            isFullWidth
+            isLoading={isSubmitting}
+            size="large"
             type="submit"
+            variant="primary"
           >
             로그인
-          </button>
+          </Button>
         </form>
 
         {message ? <p className={styles["error-message"]}>{message}</p> : null}
