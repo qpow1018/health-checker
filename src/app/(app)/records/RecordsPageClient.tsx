@@ -166,7 +166,11 @@ export function RecordsPageClient() {
     : recentLogs;
   const groupedLogs = useMemo(() => groupLogsByDate(detailLogs), [detailLogs]);
 
-  function handleViewChange(view: TRecordsView) {
+  function handleViewChange(view: string) {
+    if (view !== "summary" && view !== "details") {
+      return;
+    }
+
     setActiveView(view);
 
     if (view === "details") {

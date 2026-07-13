@@ -5,23 +5,16 @@ type TTabItem<TValue extends string> = {
   label: string;
 };
 
-type TTabsProps<TValue extends string> = {
+export function Tabs(props: {
   label: string;
-  tabs: ReadonlyArray<TTabItem<TValue>>;
-  value: TValue;
-  onChange: (value: TValue) => void;
+  tabs: ReadonlyArray<TTabItem<string>>;
+  value: string;
+  onChange: (value: string) => void;
   isDisabled?: boolean;
   idPrefix?: string;
-};
+}) {
+  const { label, tabs, value, onChange, isDisabled = false, idPrefix } = props;
 
-export function Tabs<TValue extends string>({
-  label,
-  tabs,
-  value,
-  onChange,
-  isDisabled = false,
-  idPrefix,
-}: TTabsProps<TValue>) {
   return (
     <div className={styles["tabs"]} role="tablist" aria-label={label}>
       {tabs.map((tab) => {

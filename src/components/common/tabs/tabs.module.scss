@@ -2,22 +2,22 @@
   display: flex;
   min-width: 0;
   overflow-x: auto;
+  overflow-y: hidden;
   border-bottom: 1px solid $border;
 
   button {
     flex: 0 0 auto;
-    min-height: 42px;
+    min-height: 44px;
     border: 0;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
-    padding: 10px 12px;
+    padding: 0 12px;
     background: transparent;
     color: $text-secondary;
     cursor: pointer;
     font: inherit;
     font-size: 14px;
-    font-weight: 800;
-    line-height: 1.2;
+    font-weight: 500;
     transition:
       border-color $transition,
       color $transition,
@@ -31,10 +31,16 @@
       cursor: not-allowed;
       opacity: 0.65;
     }
+
+    &:focus-visible {
+      outline: 3px solid rgb(106 155 195 / 34%);
+      outline-offset: -3px;
+    }
   }
 
   .selected-tab {
     border-bottom-color: $primary;
     color: $primary-strong;
+    font-weight: 700;
   }
 }
