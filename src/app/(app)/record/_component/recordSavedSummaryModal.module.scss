@@ -5,11 +5,11 @@
     display: grid;
     gap: 6px;
     margin-bottom: 16px;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid $border;
     padding-bottom: 14px;
 
     .summary-label {
-      color: var(--muted);
+      color: $text-secondary;
       font-size: 12px;
       font-weight: 700;
       line-height: 1.4;
@@ -30,7 +30,7 @@
 
       span {
         flex: 0 0 auto;
-        color: var(--muted);
+        color: $text-secondary;
         font-size: 14px;
       }
     }
@@ -42,21 +42,21 @@
 
     button {
       min-height: 46px;
-      border: 1px solid var(--line);
+      border: 1px solid $border;
       border-radius: 10px;
-      background: var(--surface);
-      color: var(--text);
+      background: #ffffff;
+      color: $text;
       cursor: pointer;
       font-weight: 800;
 
       &.primary-action {
         border-color: transparent;
-        background: var(--primary-soft);
-        color: var(--primary-strong);
+        background: $primary-soft;
+        color: $primary-strong;
       }
 
       &.secondary-action {
-        background: var(--surface);
+        background: #ffffff;
       }
 
       &:disabled {
@@ -74,7 +74,7 @@
     .quiet-action {
       border: 0;
       background: transparent;
-      color: var(--danger);
+      color: $danger;
       cursor: pointer;
       font-size: 13px;
       font-weight: 800;

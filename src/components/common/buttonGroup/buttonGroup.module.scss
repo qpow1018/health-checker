@@ -3,10 +3,10 @@
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 4px;
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 1px solid $border;
   border-radius: var(--radius);
   padding: 4px;
-  background: var(--surface-muted);
+  background: $gray-100;
 
   button {
     min-width: 0;
@@ -15,7 +15,7 @@
     border-radius: calc(var(--radius) - 2px);
     padding: 8px 10px;
     background: transparent;
-    color: var(--muted);
+    color: $text-secondary;
     cursor: pointer;
     font: inherit;
     font-size: 14px;
@@ -27,7 +27,7 @@
       opacity var(--transition);
 
     &:hover:not(:disabled) {
-      color: var(--text);
+      color: $text;
     }
 
     &:disabled {
@@ -37,8 +37,8 @@
   }
 
   .selected-option {
-    background: var(--surface);
-    color: var(--primary-strong);
+    background: #ffffff;
+    color: $primary-strong;
     box-shadow: 0 2px 8px rgb(24 34 42 / 8%);
   }
 }

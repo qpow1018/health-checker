@@ -2,7 +2,7 @@
   display: flex;
   min-width: 0;
   overflow-x: auto;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid $border;
 
   button {
     flex: 0 0 auto;
@@ -12,7 +12,7 @@
     margin-bottom: -1px;
     padding: 10px 12px;
     background: transparent;
-    color: var(--muted);
+    color: $text-secondary;
     cursor: pointer;
     font: inherit;
     font-size: 14px;
@@ -24,7 +24,7 @@
       opacity var(--transition);
 
     &:hover:not(:disabled) {
-      color: var(--text);
+      color: $text;
     }
 
     &:disabled {
@@ -34,7 +34,7 @@
   }
 
   .selected-tab {
-    border-bottom-color: var(--primary);
-    color: var(--primary-strong);
+    border-bottom-color: $primary;
+    color: $primary-strong;
   }
 }

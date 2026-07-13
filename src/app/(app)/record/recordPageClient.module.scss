@@ -9,7 +9,7 @@
     min-height: 100svh;
     margin: 0 auto;
     padding: max(18px, env(safe-area-inset-top)) 18px calc(var(--bottom-tabs-reserved-height) + 22px);
-    background: var(--surface-muted);
+    background: $gray-100;
   }
 
   .topbar {
@@ -30,14 +30,14 @@
 
   .topbar-description {
     margin: 8px 0 0;
-    color: var(--muted);
+    color: $text-secondary;
     font-size: 14px;
     line-height: 1.5;
   }
 
   .eyebrow {
     margin: 0 0 8px;
-    color: var(--primary);
+    color: $primary;
     font-size: 13px;
     font-weight: 800;
     line-height: 1.4;
@@ -62,15 +62,15 @@
     text-align: left;
 
     &.urine {
-      background: var(--record-urine);
+      background: $primary-500;
     }
 
     &.bowel {
-      background: var(--record-bowel);
+      background: $accent-500;
     }
 
     &.both {
-      background: var(--record-combined);
+      background: #87847c;
     }
 
     span {
@@ -96,17 +96,17 @@
   }
 
   .helper-text {
-    color: var(--muted);
+    color: $text-secondary;
   }
 
   .status-message {
-    background: var(--primary-soft);
-    color: var(--primary-strong);
+    background: $primary-soft;
+    color: $primary-strong;
   }
 
   .error-message {
-    background: var(--danger-soft);
-    color: var(--danger);
+    background: $danger-soft;
+    color: $danger;
   }
 
 }

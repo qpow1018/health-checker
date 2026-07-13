@@ -1,6 +1,6 @@
 .records-page-content {
   min-height: 100svh;
-  color: var(--text);
+  color: $text;
 
   .app-canvas {
     position: relative;
@@ -11,7 +11,7 @@
     flex-direction: column;
     padding: max(18px, env(safe-area-inset-top)) 18px
       calc(var(--bottom-tabs-reserved-height) + 22px);
-    background: var(--surface-muted);
+    background: $gray-100;
   }
 
   .topbar {
@@ -30,7 +30,7 @@
 
   .eyebrow {
     margin: 0 0 8px;
-    color: var(--primary);
+    color: $primary;
     font-size: 13px;
     font-weight: 800;
     line-height: 1.4;
@@ -38,7 +38,7 @@
 
   .topbar-description {
     margin: 8px 0 0;
-    color: var(--muted);
+    color: $text-secondary;
     font-size: 14px;
     line-height: 1.5;
   }
@@ -67,7 +67,7 @@
       border: 0;
       padding: 6px 0;
       background: transparent;
-      color: var(--primary-strong);
+      color: $primary-strong;
       cursor: pointer;
       font-size: 14px;
       font-weight: 800;
@@ -84,13 +84,13 @@
   }
 
   .status-message {
-    background: var(--primary-soft);
-    color: var(--primary-strong);
+    background: $primary-soft;
+    color: $primary-strong;
   }
 
   .error-message {
-    background: var(--danger-soft);
-    color: var(--danger);
+    background: $danger-soft;
+    color: $danger;
   }
 
   .empty-state {
@@ -105,13 +105,13 @@
     }
 
     h2 {
-      color: var(--text);
+      color: $text;
       font-size: 20px;
       line-height: 1.25;
     }
 
     p {
-      color: var(--muted);
+      color: $text-secondary;
       font-size: 14px;
       line-height: 1.5;
     }
@@ -120,7 +120,7 @@
   .record-link {
     justify-self: center;
     margin-top: 8px;
-    color: var(--primary-strong);
+    color: $primary-strong;
     font-weight: 800;
     text-decoration: none;
   }
@@ -136,7 +136,7 @@
 
     h2 {
       margin: 0;
-      color: var(--muted);
+      color: $text-secondary;
       font-size: 15px;
       line-height: 1.4;
     }
@@ -151,11 +151,11 @@
     display: grid;
     width: 100%;
     gap: 6px;
-    border: 1px solid var(--line);
+    border: 1px solid $border;
     border-radius: var(--radius);
     padding: 14px;
-    background: var(--surface);
-    color: var(--text);
+    background: #ffffff;
+    color: $text;
     cursor: pointer;
     text-align: left;
     transition:
@@ -163,8 +163,8 @@
       background var(--transition);
 
     &:hover {
-      border-color: var(--primary);
-      background: var(--primary-soft);
+      border-color: $primary;
+      background: $primary-soft;
     }
   }
 
@@ -181,14 +181,14 @@
   }
 
   .record-kind {
-    color: var(--primary-strong);
+    color: $primary-strong;
     font-size: 15px;
     font-weight: 800;
   }
 
   .record-meta,
   .record-note {
-    color: var(--muted);
+    color: $text-secondary;
     font-size: 13px;
     line-height: 1.45;
   }

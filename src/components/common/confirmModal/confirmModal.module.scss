@@ -6,24 +6,24 @@
   align-items: center;
   justify-content: center;
   padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
-  background: var(--overlay);
+  background: $overlay;
 
   .confirm-modal {
     display: grid;
     gap: 16px;
     width: min(100%, 360px);
-    border: 1px solid var(--line);
+    border: 1px solid $border;
     border-radius: var(--radius);
     padding: 20px;
-    background: var(--surface);
-    box-shadow: var(--shadow);
+    background: #ffffff;
+    box-shadow: $shadow;
 
     .header {
       min-width: 0;
 
       h2 {
         margin: 0;
-        color: var(--text);
+        color: $text;
         font-size: 18px;
         font-weight: 800;
         line-height: 1.35;
@@ -32,7 +32,7 @@
 
     .message {
       margin: 0;
-      color: var(--muted);
+      color: $text-secondary;
       font-size: 14px;
       font-weight: 600;
       line-height: 1.55;

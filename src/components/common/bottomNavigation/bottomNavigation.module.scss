@@ -9,7 +9,7 @@
   min-height: var(--bottom-tabs-reserved-height);
   border-top: 1px solid rgb(215 222 227 / 86%);
   padding: 8px 8px max(8px, env(safe-area-inset-bottom));
-  background: var(--surface-muted);
+  background: $gray-100;
   box-shadow: 0 -16px 30px rgb(24 34 42 / 10%);
 
   .navigation-item {
@@ -21,7 +21,7 @@
     min-width: 0;
     border-radius: var(--radius);
     padding: 5px 4px;
-    color: var(--muted);
+    color: $text-secondary;
     font-size: 11px;
     font-weight: 800;
     line-height: 1.25;
@@ -52,11 +52,11 @@
   }
 
   .active-item {
-    color: var(--primary-strong);
+    color: $primary-strong;
 
     .icon-wrap {
-      background: var(--primary-soft);
-      color: var(--primary-strong);
+      background: $primary-soft;
+      color: $primary-strong;
     }
   }
 }

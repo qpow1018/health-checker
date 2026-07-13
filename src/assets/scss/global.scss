@@ -2,28 +2,9 @@
 
 :root {
   color-scheme: light;
-  --surface: #{$surface};
-  --surface-muted: #{$surface-muted};
-  --text: #{$text};
-  --muted: #{$muted};
-  --line: #{$line};
-  --primary: #{$primary};
-  --primary-strong: #{$primary-strong};
-  --primary-soft: #{$primary-soft};
-  --secondary: #{$secondary};
-  --secondary-strong: #{$secondary-strong};
-  --secondary-soft: #{$secondary-soft};
-  --record-urine: #{$record-urine};
-  --record-bowel: #{$record-bowel};
-  --record-combined: #{$record-combined};
-  --danger: #{$danger};
-  --danger-soft: #{$danger-soft};
-  --focus: #{$focus};
-  --shadow: #{$shadow};
   --app-max-width: #{$app-max-width};
   --bottom-tabs-height: #{$bottom-tabs-height};
   --bottom-tabs-reserved-height: #{$bottom-tabs-reserved-height};
-  --overlay: #{$overlay};
   --transition: #{$transition};
   --z-bottom-tabs: #{$z-bottom-tabs};
   --z-modal: #{$z-modal};
@@ -31,19 +12,13 @@
 }
 
 body {
-  background: #d4d4d4;
-  color: var(--text);
+  background: $app-background;
+  color: $text;
   font-family: inherit;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
   line-height: 1.3;
-}
-
-button:focus-visible,
-input:focus-visible {
-  outline: 3px solid rgb(106 155 195 / 34%);
-  outline-offset: 2px;
 }
 
 h1 {

@@ -8,11 +8,11 @@
     gap: 20px;
     width: min(100%, var(--app-max-width));
     margin: 0 auto;
-    border: 1px solid var(--line);
+    border: 1px solid $border;
     border-radius: var(--radius);
     padding: 22px;
-    background: var(--surface);
-    box-shadow: var(--shadow);
+    background: #ffffff;
+    box-shadow: $shadow;
 
     > * {
       min-width: 0;
@@ -22,7 +22,7 @@
 
   .eyebrow {
     margin: 0 0 8px;
-    color: var(--primary);
+    color: $primary;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0;
@@ -30,7 +30,7 @@
   }
 
   .muted {
-    color: var(--muted);
+    color: $text-secondary;
     line-height: 1.6;
   }
 }

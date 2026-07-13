@@ -1,9 +1,9 @@
 .calendar-summary {
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid $border;
   border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
+  background: #ffffff;
+  color: $text;
 
   .calendar-header {
     display: grid;
@@ -26,11 +26,11 @@
     display: grid;
     width: 40px;
     height: 40px;
-    border: 1px solid var(--line);
+    border: 1px solid $border;
     border-radius: var(--radius);
     place-items: center;
-    background: var(--surface-muted);
-    color: var(--primary-strong);
+    background: $gray-100;
+    color: $primary-strong;
     cursor: pointer;
     font-size: 24px;
     transition:
@@ -38,25 +38,25 @@
       background var(--transition);
 
     &:hover {
-      border-color: var(--primary);
-      background: var(--primary-soft);
+      border-color: $primary;
+      background: $primary-soft;
     }
 
     &:focus-visible {
-      outline: 3px solid var(--primary);
+      outline: 3px solid $primary;
       outline-offset: 2px;
     }
   }
 
   .calendar-area {
-    border-top: 1px solid var(--line);
+    border-top: 1px solid $border;
   }
 
   .state-message {
     min-height: 180px;
     margin: 0;
     padding: 28px 16px;
-    color: var(--muted);
+    color: $text-secondary;
     font-size: 14px;
     line-height: 1.5;
     text-align: center;
@@ -69,10 +69,10 @@
 
     th {
       min-width: 0;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid $border;
       padding: 8px 2px;
-      background: var(--surface-muted);
-      color: var(--muted);
+      background: $gray-100;
+      color: $text-secondary;
       font-size: 12px;
       font-weight: 700;
       text-align: center;
@@ -80,7 +80,7 @@
 
     td {
       height: 68px;
-      border: 1px solid var(--line);
+      border: 1px solid $border;
       padding: 0;
       vertical-align: top;
     }
@@ -97,7 +97,7 @@
   }
 
   .adjacent-day {
-    background: var(--surface-muted);
+    background: $gray-100;
   }
 
   .day-cell {
@@ -109,7 +109,7 @@
     flex-direction: column;
     gap: 2px;
     padding: 6px 3px;
-    color: var(--text);
+    color: $text;
     font-size: 11px;
     line-height: 1.25;
   }
@@ -120,31 +120,31 @@
   }
 
   .today {
-    box-shadow: inset 0 0 0 2px var(--primary);
+    box-shadow: inset 0 0 0 2px $primary;
   }
 
   .today-label {
-    color: var(--primary-strong);
+    color: $primary-strong;
     font-weight: 700;
   }
 
   .recorded-day {
     width: 100%;
     border: 0;
-    background: var(--primary-soft);
-    color: var(--primary-strong);
+    background: $primary-soft;
+    color: $primary-strong;
     cursor: pointer;
     text-align: left;
     transition: background var(--transition);
 
     &:hover {
-      background: var(--surface-muted);
+      background: $gray-100;
     }
 
     &:focus-visible {
       position: relative;
       z-index: 1;
-      outline: 3px solid var(--primary);
+      outline: 3px solid $primary;
       outline-offset: -3px;
     }
   }

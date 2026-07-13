@@ -2,7 +2,7 @@
   display: grid;
   gap: 8px;
   min-width: 0;
-  color: var(--text);
+  color: $text;
   font-size: 14px;
   font-weight: 800;
 
@@ -13,16 +13,16 @@
   .control-shell {
     display: flex;
     min-width: 0;
-    border: 1px solid var(--line);
+    border: 1px solid $border;
     border-radius: var(--radius);
-    background: var(--surface-muted);
+    background: $gray-100;
     transition:
       background var(--transition),
       border-color var(--transition);
 
     &:focus-within {
-      border-color: var(--focus);
-      background: var(--surface);
+      border-color: $primary-400;
+      background: #ffffff;
     }
   }
 
@@ -32,7 +32,7 @@
     border: 0;
     padding: 13px 12px;
     background: transparent;
-    color: var(--text);
+    color: $text;
     font: inherit;
     font-size: 16px;
     font-weight: 500;
@@ -43,7 +43,7 @@
 
     &:disabled {
       cursor: not-allowed;
-      color: var(--muted);
+      color: $text-secondary;
     }
   }
 
@@ -60,10 +60,10 @@
   }
 
   .helper-message {
-    color: var(--muted);
+    color: $text-secondary;
   }
 
   .error-message {
-    color: var(--danger);
+    color: $danger;
   }
 }

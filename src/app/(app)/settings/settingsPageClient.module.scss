@@ -1,6 +1,6 @@
 .settings-page-content {
   min-height: 100svh;
-  color: var(--text);
+  color: $text;
 
   .app-canvas {
     position: relative;
@@ -11,7 +11,7 @@
     flex-direction: column;
     padding: max(18px, env(safe-area-inset-top)) 18px
       calc(var(--bottom-tabs-reserved-height) + 22px);
-    background: var(--surface-muted);
+    background: $gray-100;
   }
 
   .topbar {
@@ -26,7 +26,7 @@
 
   .eyebrow {
     margin: 0 0 8px;
-    color: var(--primary);
+    color: $primary;
     font-size: 13px;
     font-weight: 800;
     line-height: 1.4;
@@ -42,11 +42,11 @@
     display: grid;
     gap: 16px;
     min-width: 0;
-    border: 1px solid var(--line);
+    border: 1px solid $border;
     border-radius: var(--radius);
     padding: 18px;
-    background: var(--surface);
-    box-shadow: var(--shadow);
+    background: #ffffff;
+    box-shadow: $shadow;
 
     h2 {
       margin: 0;
@@ -65,7 +65,7 @@
     }
 
     dt {
-      color: var(--muted);
+      color: $text-secondary;
       font-size: 13px;
       font-weight: 700;
       line-height: 1.4;
@@ -83,7 +83,7 @@
 
   .description {
     margin: 0;
-    color: var(--muted);
+    color: $text-secondary;
     font-size: 14px;
     line-height: 1.55;
   }
@@ -98,8 +98,8 @@
     transform: translateX(-50%);
     border-radius: var(--radius);
     padding: 12px;
-    background: var(--danger-soft);
-    color: var(--danger);
+    background: $danger-soft;
+    color: $danger;
     font-size: 14px;
     line-height: 1.55;
   }
