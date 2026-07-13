@@ -46,14 +46,14 @@ $text-secondary: $gray-600;
 
 $border: $gray-300;
 $app-background: $gray-300;
-$overlay: rgb(24 34 42 / 32%);
+$overlay: rgba($gray-900, 0.32);
 $danger: $red-600;
 $danger-soft: $red-100;
 
 // size
 $app-max-width: 480px;
-$bottom-tabs-height: 70px;
-$bottom-tabs-reserved-height: calc(var(--bottom-tabs-height) + env(safe-area-inset-bottom));
+$bottom-nav-height: 60px;
+$bottom-nav-space: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
 
 // effect
 $transition: 0.2s ease;
@@ -61,5 +61,5 @@ $radius: 8px;
 $shadow: 0 16px 40px rgba(24, 34, 42, 0.08); // 삭제 예정
 
 // z-index
-$z-bottom-tabs: 100;
+$z-bottom-nav: 100;
 $z-modal: 200;

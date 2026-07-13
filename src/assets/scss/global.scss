@@ -3,10 +3,10 @@
 :root {
   color-scheme: light;
   --app-max-width: #{$app-max-width};
-  --bottom-tabs-height: #{$bottom-tabs-height};
-  --bottom-tabs-reserved-height: #{$bottom-tabs-reserved-height};
+  --bottom-nav-height: #{$bottom-nav-height};
+  --bottom-nav-space: #{$bottom-nav-space};
   --transition: #{$transition};
-  --z-bottom-tabs: #{$z-bottom-tabs};
+  --z-bottom-nav: #{$z-bottom-nav};
   --z-modal: #{$z-modal};
   --radius: #{$radius};
 }
@@ -18,11 +18,6 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
+  font-size: 16px;
   line-height: 1.3;
-}
-
-h1 {
-  font-size: 28px;
-  line-height: 1.2;
-  letter-spacing: 0;
 }

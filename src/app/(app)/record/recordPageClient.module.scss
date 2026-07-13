@@ -8,7 +8,7 @@
     width: min(100%, var(--app-max-width));
     min-height: 100svh;
     margin: 0 auto;
-    padding: max(18px, env(safe-area-inset-top)) 18px calc(var(--bottom-tabs-reserved-height) + 22px);
+    padding: max(18px, env(safe-area-inset-top)) 18px calc(var(--bottom-nav-space) + 22px);
     background: $gray-100;
   }
 

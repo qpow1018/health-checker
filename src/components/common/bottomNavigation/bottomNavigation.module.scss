@@ -3,10 +3,10 @@
   right: max(0px, calc((100vw - var(--app-max-width)) / 2));
   bottom: 0;
   left: max(0px, calc((100vw - var(--app-max-width)) / 2));
-  z-index: var(--z-bottom-tabs);
+  z-index: var(--z-bottom-nav);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  min-height: var(--bottom-tabs-reserved-height);
+  min-height: var(--bottom-nav-space);
   border-top: 1px solid rgb(215 222 227 / 86%);
   padding: 8px 8px max(8px, env(safe-area-inset-bottom));
   background: $gray-100;
