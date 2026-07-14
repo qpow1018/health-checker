@@ -60,119 +60,56 @@
     display: grid;
     gap: 12px;
     margin-top: 18px;
-  }
+    padding: 0 16px;
 
-  .summary-heading,
-  .section-heading {
-    display: grid;
-    gap: 4px;
+    .record-action-button {
+      justify-content: space-between;
+      min-height: 56px;
+      padding: 0 12px;
 
-    h2 {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.35;
+      .action-main {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 12px;
+        font-weight: 700;
+
+        .action-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: $primary;
+          color: #ffffff;
+
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
+      }
+
+
+      .chevron-icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
     }
-
-    p {
-      margin: 0;
-      color: $text-secondary;
-      font-size: 13px;
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-  }
-
-
-
-  .action-list {
-    display: grid;
-    gap: 10px;
-  }
-
-  .record-action-button {
-    display: grid;
-    grid-template-columns: 34px minmax(0, 1fr) 28px;
-    align-items: center;
-    gap: 10px;
-    min-height: 68px;
-    border: 1px solid $border;
-    border-radius: $radius;
-    padding: 12px;
-    background: #ffffff;
-    color: $text;
-    cursor: pointer;
-    font: inherit;
-    text-align: left;
-  }
-
-  .entry-icon,
-  .add-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: $radius;
-  }
-
-  .entry-icon {
-    width: 34px;
-    height: 34px;
-    background: $primary-soft;
-    color: $primary-strong;
-
-    svg {
-      width: 19px;
-      height: 19px;
-    }
-  }
-
-  .action-copy {
-    display: grid;
-    min-width: 0;
-    gap: 3px;
-
-    strong {
-      font-size: 15px;
-      line-height: 1.35;
-    }
-
-    span {
-      color: $text-secondary;
-      font-size: 13px;
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-  }
-
-  .add-icon {
-    width: 28px;
-    height: 28px;
-    background: $gray-100;
-    color: $gray-600;
-
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-  }
-
-  .primary-action {
-    margin-top: 2px;
   }
 }
 
 @media (max-width: 360px) {
   .record-page-client {
-    .summary-grid {
+    .summary-section {
       grid-template-columns: 1fr;
     }
 
-    .record-action-button {
-      grid-template-columns: 34px minmax(0, 1fr);
-    }
-
-    .add-icon {
-      grid-column: 2;
-      justify-self: start;
+    .action-section {
+      padding-right: 14px;
+      padding-left: 14px;
     }
   }
 }

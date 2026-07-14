@@ -16,24 +16,23 @@ describe("RecordPageClient", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "오늘" })).toBeInTheDocument();
 
-    expect(
-      screen.getByRole("region", { name: "오늘 기록 요약" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("수면")).toBeInTheDocument();
-    expect(screen.getByText("07:20 기상")).toBeInTheDocument();
-    expect(screen.getByText("화장실")).toBeInTheDocument();
-    expect(screen.getByText("2회")).toBeInTheDocument();
-    expect(screen.getByText("컨디션")).toBeInTheDocument();
+    const summarySection = screen.getByRole("region", {
+      name: "오늘 기록 요약",
+    });
+    expect(summarySection).toBeInTheDocument();
+    expect(within(summarySection).getByText("수면")).toBeInTheDocument();
+    expect(within(summarySection).getByText("07:20 기상")).toBeInTheDocument();
+    expect(within(summarySection).getByText("화장실")).toBeInTheDocument();
+    expect(within(summarySection).getByText("2회")).toBeInTheDocument();
+    expect(within(summarySection).getByText("컨디션")).toBeInTheDocument();
 
     const actionSection = screen.getByRole("region", { name: "기록 버튼" });
     expect(actionSection).toBeInTheDocument();
-    expect(
-      within(actionSection).getByRole("heading", { name: "기록하기" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /화장실 기록/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /음식 기록/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /컨디션 기록/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /새 기록 시작/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "수면 시간" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "먹은 음식" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "화장실" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "운동" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "컨디션" })).toBeInTheDocument();
 
     expect(screen.getByRole("navigation", { name: "하단 탭" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "기록" })).toHaveAttribute("href", "/record");
