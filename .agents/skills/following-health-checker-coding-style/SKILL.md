@@ -1,6 +1,6 @@
 ---
 name: following-health-checker-coding-style
-description: Use when writing, modifying, reviewing, or refactoring TypeScript, React, Next.js, Supabase, health-record UI, tests, or CSS code in the health-checker repository. Applies the project's route-local structure, shared component boundaries, API/lib/type/util placement, health-data safety, AI safety, WebView boundary, and validation conventions.
+description: Use when writing, modifying, reviewing, or refactoring frontend TypeScript, React, Next.js routes, health-record UI, tests, or CSS code in the health-checker repository. Applies route-local structure, shared component boundaries, route-local type/util placement, UI wording, WebView layout concerns, and frontend validation conventions.
 ---
 
 # Health Checker 코딩 스타일
@@ -23,9 +23,6 @@ Health Checker 코드를 작성하거나 수정할 때 다음 규칙을 적용�
 - 두 번째 route에서 같은 도메인 컴포넌트가 필요해지면 `src/components/<domain>/`으로 옮긴다.
 - 도메인과 무관한 공용 UI는 `src/components/common/`에 둔다.
 - React 생명주기에 의존하는 재사용 로직은 `src/hooks/`에 둔다.
-- 새 Supabase와 Edge Function 호출 wrapper는 `src/api/<domain>/index.ts`에 둔다.
-- 새 API 경계 타입은 `src/api/<domain>/type.ts`에 둔다.
-- 환경, Supabase client, 서버/인프라 경계는 `src/lib/`에 둔다.
 - 공용 타입은 `src/types/`에 둔다.
 - 순수 공용 유틸은 `src/utils/`에 둔다.
 - 테스트는 대상 파일 옆에 `*.test.ts` 또는 `*.test.tsx`로 둔다.
@@ -60,25 +57,6 @@ Health Checker 코드를 작성하거나 수정할 때 다음 규칙을 적용�
 - 조건이 충족되지 않으면 조기 반환하여 중첩을 줄인다.
 - 새 UI 프리미티브를 만들기 전에 `src/components/common/`의 기존 컴포넌트를 확인한다.
 
-## 건강 데이터와 Supabase
-
-- 건강 기록은 민감 데이터로 취급한다.
-- 인증 없이 개인 기록을 렌더링하지 않는다.
-- 공개 회원가입 UI를 만들지 않는다.
-- 사용자 소유 테이블에는 RLS와 `user_id = auth.uid()` 소유권 제한을 전제로 작업한다.
-- 쓰기 정책이나 helper를 바꿀 때는 사용자가 행의 소유자를 다른 사용자로 바꿀 수 없는지 확인한다.
-- service role key와 OpenAI key를 Next.js 클라이언트, React Native shell, 브라우저 번들에 노출하지 않는다.
-- WebView localStorage를 건강 데이터의 장기 저장소로 사용하지 않는다. Supabase를 source of truth로 둔다.
-
-## AI 리포트
-
-- AI는 패턴을 요약하고 진단하지 않는다.
-- 치료, 약물, 응급 처치 지시를 생성하지 않는다.
-- 기록이 부족하면 불확실성을 명시한다.
-- 기록이 7일 미만이면 개인 기준선을 수집 중이라고 말한다.
-- 일반 건강 안내는 승인된 참고 출처만 근거로 사용한다.
-- 출처 링크를 지어내지 않는다.
-
 ## UI와 문구
 
 - 제품 문구는 기본적으로 명확한 한국어를 사용한다.
@@ -90,7 +68,7 @@ Health Checker 코드를 작성하거나 수정할 때 다음 규칙을 적용�
 
 ## CSS
 
-- 전역 스타일은 `src/app/globals.scss`에 둔다. reset, CSS variables, body 기본값처럼 앱 전체에 필요한 것만 둔다.
+- 전역 스타일은 `src/assets/scss/global.scss`에 둔다. reset, CSS variables, body 기본값처럼 앱 전체에 필요한 것만 둔다.
 - 화면/컴포넌트 스타일은 `*.module.scss`로 작성한다.
 - SCSS Module 파일명은 소문자로 시작하는 lower camel case를 사용한다. 예: `loginFormClient.module.scss`.
 - SCSS Module은 `styles`라는 이름으로 import한다.
@@ -107,6 +85,5 @@ Health Checker 코드를 작성하거나 수정할 때 다음 규칙을 적용�
 
 - TypeScript 변경: `npm run typecheck`.
 - React UI 변경: 관련 component test 또는 가장 작은 의미 있는 테스트.
-- 데이터 helper, 정책, AI prompt 구성 변경: 단위 테스트 또는 정책 검증.
 - 라우팅, Next.js 설정, 환경 변수, 빌드 동작 변경: `npm run build`.
 - 검증을 실행하지 못하면 이유를 명확히 보고한다.
