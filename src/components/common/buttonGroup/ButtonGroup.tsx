@@ -1,6 +1,6 @@
 import styles from "./buttonGroup.module.scss";
 
-export function ButtonGroup(props: {
+export default function ButtonGroup(props: {
   label: string;
   options: ReadonlyArray<{
     value: string;

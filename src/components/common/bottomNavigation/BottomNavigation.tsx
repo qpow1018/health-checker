@@ -20,7 +20,7 @@ const BOTTOM_NAVIGATION_ITEMS: ReadonlyArray<{
   { href: "/settings", label: "설정", Icon: MdSettings },
 ];
 
-export function BottomNavigation() {
+export default function BottomNavigation() {
   const pathname = usePathname() ?? "";
 
   return (

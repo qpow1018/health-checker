@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { describe, expect, test, vi } from "vitest";
 
-import { Textarea } from "./Textarea";
+import Textarea from "./Textarea";
 
 describe("Textarea", () => {
   test("renders a labeled textarea and emits the next value", async () => {

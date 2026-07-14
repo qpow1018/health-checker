@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { BottomNavigation } from "@/components/common/bottomNavigation/BottomNavigation";
-import { Button } from "@/components/common/button/Button";
+import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
+import Button from "@/components/common/button/Button";
 
 import {
   MdBedtime,

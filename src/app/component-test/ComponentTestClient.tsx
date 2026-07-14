@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import BottomModal from "@/components/common/bottomModal/BottomModal";
-import { Button } from "@/components/common/button/Button";
-import { ButtonGroup } from "@/components/common/buttonGroup/ButtonGroup";
-import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
-import { TextInput } from "@/components/common/form/TextInput";
-import { Textarea } from "@/components/common/form/Textarea";
-import { Tabs } from "@/components/common/tabs/Tabs";
+import Button from "@/components/common/button/Button";
+import ButtonGroup from "@/components/common/buttonGroup/ButtonGroup";
+import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
+import TextInput from "@/components/common/form/TextInput";
+import Textarea from "@/components/common/form/Textarea";
+import Tabs from "@/components/common/tabs/Tabs";
 
 import styles from "./componentTestPage.module.scss";
 

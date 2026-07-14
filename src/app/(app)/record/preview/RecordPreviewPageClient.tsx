@@ -12,8 +12,8 @@ import {
   MdRestaurant,
 } from "react-icons/md";
 
-import { BottomNavigation } from "@/components/common/bottomNavigation/BottomNavigation";
-import { Button } from "@/components/common/button/Button";
+import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
+import Button from "@/components/common/button/Button";
 
 import styles from "./recordPreviewPageClient.module.scss";
 

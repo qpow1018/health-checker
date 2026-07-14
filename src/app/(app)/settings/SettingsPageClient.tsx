@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 import { useAuthSession } from "@/components/auth/AuthGate";
-import { BottomNavigation } from "@/components/common/bottomNavigation/BottomNavigation";
-import { Button } from "@/components/common/button/Button";
-import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
+import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
+import Button from "@/components/common/button/Button";
+import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 
 import styles from "./settingsPageClient.module.scss";
 

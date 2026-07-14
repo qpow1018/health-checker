@@ -1,5 +1,5 @@
 import BottomModal from "@/components/common/bottomModal/BottomModal";
-import { Button } from "@/components/common/button/Button";
+import Button from "@/components/common/button/Button";
 import {
   STOOL_STATE_OPTIONS,
   URGENCY_OPTIONS,

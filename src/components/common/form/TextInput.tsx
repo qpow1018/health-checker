@@ -3,7 +3,7 @@ import styles from "./textInput.module.scss";
 type TTextInputType = "email" | "password" | "search" | "tel" | "text" | "url";
 type TTextInputMode = "decimal" | "email" | "none" | "numeric" | "search" | "tel" | "text" | "url";
 
-export function TextInput(props: {
+export default function TextInput(props: {
   id: string;
   label: string;
   value: string;

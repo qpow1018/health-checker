@@ -7,7 +7,7 @@ export type TButtonColor = "primary" | "accent" | "gray" | "danger";
 type TButtonFill = "solid" | "soft" | "outline" | "ghost";
 type TButtonSize = "small" | "medium" | "large";
 
-export function Button(props: {
+export default function Button(props: {
   type?: TButtonType;
   color?: TButtonColor;
   fill?: TButtonFill;

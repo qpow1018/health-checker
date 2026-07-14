@@ -1,5 +1,5 @@
 import BottomModal from "@/components/common/bottomModal/BottomModal";
-import { Button } from "@/components/common/button/Button";
+import Button from "@/components/common/button/Button";
 import type { TBathroomLogRow } from "@/api/bathroomLogs/type";
 import { RECORD_KIND_LABEL } from "@/app/(app)/record/_define/recordOptions";
 import {

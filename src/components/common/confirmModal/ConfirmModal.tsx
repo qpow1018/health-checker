@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from "react";
 
-import { Button, type TButtonColor } from "@/components/common/button/Button";
+import Button, { type TButtonColor } from "@/components/common/button/Button";
 
 import styles from "./confirmModal.module.scss";
 
@@ -11,7 +11,7 @@ type TConfirmModalAction = {
   isLoading?: boolean;
 };
 
-export function ConfirmModal(props: {
+export default function ConfirmModal(props: {
   isOpen: boolean;
   title: string;
   message: string;

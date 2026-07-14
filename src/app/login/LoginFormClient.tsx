@@ -8,8 +8,8 @@ import {
   signInWithPassword,
   signOut,
 } from "@/api/auth";
-import { Button } from "@/components/common/button/Button";
-import { TextInput } from "@/components/common/form/TextInput";
+import Button from "@/components/common/button/Button";
+import TextInput from "@/components/common/form/TextInput";
 import styles from "./loginFormClient.module.scss";
 
 type TLoginState = "idle" | "checking-session" | "submitting";

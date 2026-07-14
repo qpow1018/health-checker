@@ -1,6 +1,6 @@
 import styles from "./textarea.module.scss";
 
-export function Textarea(props: {
+export default function Textarea(props: {
   id: string;
   label: string;
   value: string;

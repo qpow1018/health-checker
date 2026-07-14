@@ -5,7 +5,7 @@ type TTabItem<TValue extends string> = {
   label: string;
 };
 
-export function Tabs(props: {
+export default function Tabs(props: {
   label: string;
   tabs: ReadonlyArray<TTabItem<string>>;
   value: string;

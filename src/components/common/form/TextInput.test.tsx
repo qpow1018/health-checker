@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { describe, expect, test, vi } from "vitest";
 
-import { TextInput } from "./TextInput";
+import TextInput from "./TextInput";
 
 describe("TextInput", () => {
   test("renders a labeled input and emits the next value", async () => {

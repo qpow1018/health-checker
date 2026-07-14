@@ -19,9 +19,9 @@ import {
   filterLogsByDateKey,
   formatRecordDateKey,
 } from "@/app/(app)/records/_util/recordsCalendar";
-import { BottomNavigation } from "@/components/common/bottomNavigation/BottomNavigation";
-import { ConfirmModal } from "@/components/common/confirmModal/ConfirmModal";
-import { Tabs } from "@/components/common/tabs/Tabs";
+import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
+import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
+import Tabs from "@/components/common/tabs/Tabs";
 import { RecordsCalendarSummary } from "./_component/RecordsCalendarSummary";
 import { RecordsDetailModal } from "./_component/RecordsDetailModal";
 import { RecordsEditModal } from "./_component/RecordsEditModal";
