@@ -16,10 +16,12 @@ import {
 import styles from "./recordPageClient.module.scss";
 
 const SUMMARY_ITEMS = [
-  { label: "마지막 기록", value: "아직 없음" },
-  { label: "오늘 화장실", value: "0회" },
-  { label: "오늘 컨디션", value: "기록 전" },
+  { key: "sleep", label: "수면" },
+  { key: "bathroom", label: "화장실" },
+  { key: "condition", label: "컨디션" },
 ] as const;
+
+type TSummaryValues = Record<(typeof SUMMARY_ITEMS)[number]["key"], string>;
 
 const RECORD_ACTIONS = [
   {
@@ -42,6 +44,11 @@ const RECORD_ACTIONS = [
 export default function RecordPageClient() {
   // TODO
   const [dateText] = useState("7월 14일 화요일");
+  const [summaryValues] = useState<TSummaryValues>({
+    sleep: "07:20 기상",
+    bathroom: "2회",
+    condition: "-",
+  });
 
   function handleClickDateButton() {
     // TODO: 날짜 선택 UI를 열고 선택한 날짜로 기록 화면을 갱신한다.
@@ -67,23 +74,13 @@ export default function RecordPageClient() {
         </Button>
       </section>
 
-      <section
-        className={styles["summary-section"]}
-        aria-label="오늘 기록 요약"
-      >
-        <div className={styles["summary-heading"]}>
-          <h2>요약</h2>
-          <p>오늘 입력할 항목을 한눈에 확인합니다.</p>
-        </div>
-
-        <div className={styles["summary-grid"]}>
-          {SUMMARY_ITEMS.map((item) => (
-            <div className={styles["summary-item"]} key={item.label}>
-              <span>{item.label}</span>
-              <strong>{item.value}</strong>
-            </div>
-          ))}
-        </div>
+      <section className={styles["summary-section"]} aria-label="오늘 기록 요약">
+        {SUMMARY_ITEMS.map((item) => (
+          <div className={styles["summary-item"]} key={item.key}>
+            <span className={styles["label"]}>{item.label}</span>
+            <p className={styles["value"]}>{summaryValues[item.key]}</p>
+          </div>
+        ))}
       </section>
 
       <section className={styles["action-section"]} aria-label="기록 버튼">

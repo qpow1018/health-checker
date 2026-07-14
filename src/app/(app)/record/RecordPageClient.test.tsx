@@ -19,10 +19,11 @@ describe("RecordPageClient", () => {
     expect(
       screen.getByRole("region", { name: "오늘 기록 요약" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "요약" })).toBeInTheDocument();
-    expect(screen.getByText("마지막 기록")).toBeInTheDocument();
-    expect(screen.getByText("오늘 화장실")).toBeInTheDocument();
-    expect(screen.getByText("오늘 컨디션")).toBeInTheDocument();
+    expect(screen.getByText("수면")).toBeInTheDocument();
+    expect(screen.getByText("07:20 기상")).toBeInTheDocument();
+    expect(screen.getByText("화장실")).toBeInTheDocument();
+    expect(screen.getByText("2회")).toBeInTheDocument();
+    expect(screen.getByText("컨디션")).toBeInTheDocument();
 
     const actionSection = screen.getByRole("region", { name: "기록 버튼" });
     expect(actionSection).toBeInTheDocument();

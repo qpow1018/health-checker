@@ -29,7 +29,33 @@
     }
   }
 
-  .summary-section,
+  .summary-section {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 20px 16px;
+    background-color: $primary;
+
+    .summary-item {
+      padding: 12px 8px;
+      background: #ffffff;
+      border-radius: $radius;
+
+      .label {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: $text-muted;
+      }
+
+      .value {
+        margin-top: 4px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+    }
+  }
+
   .action-section {
     display: grid;
     gap: 12px;
@@ -56,37 +82,7 @@
     }
   }
 
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
 
-  .summary-item {
-    min-width: 0;
-    border-radius: $radius;
-    padding: 10px 8px;
-    background: $gray-200;
-
-    span,
-    strong {
-      display: block;
-      overflow-wrap: anywhere;
-    }
-
-    span {
-      color: $text-secondary;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.35;
-    }
-
-    strong {
-      margin-top: 3px;
-      font-size: 13px;
-      line-height: 1.35;
-    }
-  }
 
   .action-list {
     display: grid;
