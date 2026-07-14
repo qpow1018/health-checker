@@ -1,12 +1,27 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 import RecordPageClient from "./RecordPageClient";
 
+const push = vi.fn();
+
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record",
+  useRouter: () => ({
+    push,
+  }),
 }));
 
 describe("RecordPageClient", () => {
+  test("moves to the sleep record page from the sleep action", async () => {
+    const user = userEvent.setup();
+    render(<RecordPageClient />);
+
+    await user.click(screen.getByRole("button", { name: "수면 시간" }));
+
+    expect(push).toHaveBeenCalledWith("/record/sleep");
+  });
+
   test("shows the new record UI sections and bottom tabs", () => {
     render(<RecordPageClient />);
 

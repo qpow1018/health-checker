@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
@@ -21,26 +22,32 @@ const RECORD_ACTIONS = [
   {
     title: "수면 시간",
     Icon: MdBedtime,
+    href: "/record/sleep",
   },
   {
     title: "먹은 음식",
     Icon: MdRestaurant,
+    href: undefined,
   },
   {
     title: "화장실",
     Icon: MdOutlineWc,
+    href: undefined,
   },
   {
     title: "운동",
     Icon: MdDirectionsRun,
+    href: undefined,
   },
   {
     title: "컨디션",
     Icon: MdSentimentSatisfiedAlt,
+    href: undefined,
   },
 ] as const;
 
 export default function RecordPageClient() {
+  const router = useRouter();
   const [dateText] = useState("7월 14일 화요일");
   const [sleepSummary] = useState("07:20 기상");
   const [bathroomSummary] = useState("2회");
@@ -50,8 +57,13 @@ export default function RecordPageClient() {
     // TODO: 날짜 선택 UI를 열고 선택한 날짜로 기록 화면을 갱신한다.
   }
 
-  function handleClickRecordAction() {
-    // TODO: 각 기록 입력 화면이 준비되면 선택한 항목 화면으로 이동한다.
+  function handleClickRecordAction(href?: string) {
+    if (!href) {
+      // TODO: 각 기록 입력 화면이 준비되면 선택한 항목 화면으로 이동한다.
+      return;
+    }
+
+    router.push(href);
   }
 
   return (
@@ -102,7 +114,7 @@ export default function RecordPageClient() {
             size="large"
             isFullWidth
             key={action.title}
-            onClick={handleClickRecordAction}
+            onClick={() => handleClickRecordAction(action.href)}
           >
             <span className={styles["action-main"]}>
               <span className={styles["action-icon"]}>

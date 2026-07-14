@@ -53,6 +53,7 @@ $danger-soft: $red-100;
 
 // size
 $app-max-width: 480px;
+$headerHeight: 56px;
 $bottom-nav-height: 60px;
 $bottom-nav-space: calc($bottom-nav-height + env(safe-area-inset-bottom));
 

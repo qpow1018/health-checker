@@ -1,6 +1,6 @@
 import styles from "./textInput.module.scss";
 
-type TTextInputType = "email" | "password" | "search" | "tel" | "text" | "url";
+type TTextInputType = "email" | "password" | "search" | "tel" | "text" | "time" | "url";
 type TTextInputMode = "decimal" | "email" | "none" | "numeric" | "search" | "tel" | "text" | "url";
 
 export default function TextInput(props: {
