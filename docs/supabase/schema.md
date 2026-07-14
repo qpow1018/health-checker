@@ -10,6 +10,68 @@
 - 제한된 문자열 값은 Postgres enum 대신 `text + check constraint`로 관리한다.
 - 참고 출처는 승인된 것만 AI 리포트 근거로 사용할 수 있다.
 
+## 새 기록 모델 방향
+
+수정된 기획에서는 수면, 음식, 화장실, 운동, 컨디션 기록을 하나의 공통 기록 테이블에서 시작한다.
+
+초기에는 분류별 상세 테이블을 만들지 않고 `health_records.details jsonb`에 분류별 입력값을 저장한다. 각 분류의 입력 필드는 실제 기록 페이지를 만들면서 확정한다.
+
+초기 분류 값:
+
+- `sleep`
+- `food`
+- `toilet`
+- `exercise`
+- `condition`
+
+`details` 운영 원칙:
+
+- `details`는 분류별 입력값만 담는다.
+- 공통 조회에 필요한 값은 `health_records`의 일반 컬럼으로 둔다.
+- `details_version`으로 분류별 JSON 구조 변경을 추적한다.
+- JSON key 이름은 한 번 저장한 뒤 가급적 유지한다.
+- 구조를 바꿔야 하면 기존 데이터를 해석할 수 있도록 `details_version`을 올린다.
+- 통계, 검색, 제약 조건이 중요해진 분류는 이후 별도 상세 테이블로 분리할 수 있다.
+
+상세 테이블로 분리할 때는 `category`와 `details_version`을 기준으로 기존 JSON 데이터를 변환한다. 예를 들어 `toilet` 상세 테이블이 필요해지면 `health_records`의 `category = 'toilet'` 행만 골라 `details` 값을 새 테이블 컬럼으로 옮긴다.
+
+## `health_records`
+
+새 5분류 기록의 source of truth로 예정된 테이블이다.
+
+예상 컬럼:
+
+- `id uuid primary key default gen_random_uuid()`
+- `user_id uuid not null references auth.users(id) on delete cascade`
+- `category text not null`
+- `recorded_at timestamptz not null default now()`
+- `details jsonb not null default '{}'::jsonb`
+- `details_version integer not null default 1`
+- `note text`
+- `created_at timestamptz not null default now()`
+- `updated_at timestamptz not null default now()`
+
+초기 `category` 후보:
+
+- `sleep`
+- `food`
+- `toilet`
+- `exercise`
+- `condition`
+
+조회 방식:
+
+- 특정 날짜와 기간 조회는 `recorded_at` 범위 조건으로 처리한다.
+- 목록 화면은 공통 컬럼과 `category` 기반 요약을 먼저 보여준다.
+- 분류별 전체 상세 내용은 상세 화면 또는 편집 화면에서 `details`를 해석해 보여준다.
+
+RLS 방향:
+
+- 사용자는 자신의 기록만 읽을 수 있다.
+- 사용자는 자신의 기록만 만들 수 있다.
+- 사용자는 자신의 기록만 수정/삭제할 수 있다.
+- update/insert에는 `WITH CHECK ((select auth.uid()) = user_id)`가 필요하다.
+
 ## `allowed_users`
 
 앱 사용이 허용된 이메일을 관리한다.
@@ -55,7 +117,7 @@ RLS 방향:
 
 ## `bathroom_logs`
 
-소변/대변 기록의 source of truth다.
+기존 소변/대변 MVP 기록의 source of truth다. 새 5분류 기록 기획으로 전환하면 `health_records`가 장기 기록 테이블이 되고, 이 테이블은 마이그레이션 또는 폐기 대상을 다시 결정한다.
 
 예상 컬럼:
 
@@ -160,6 +222,8 @@ RLS 방향:
 - 승인된 참고 출처 seed
 
 `ai_reports`는 MVP 구현을 단순하게 유지하기 위해 initial migration에 포함하지 않는다.
+
+새 5분류 기록 모델의 `health_records` migration은 아직 포함하지 않는다. 기록 페이지 개편을 시작할 때 `bathroom_logs` 유지, 변환, 대체 범위를 먼저 확정한 뒤 별도 migration으로 추가한다.
 
 보정 migration은 Supabase advisors 경고를 반영한다.
 
