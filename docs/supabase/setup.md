@@ -53,6 +53,50 @@ cp .env.example .env.local
 
 `.env.local`은 커밋하지 않는다.
 
+## Docker 로컬 Supabase
+
+개발/테스트 데이터는 Docker 로컬 Supabase에 저장하고, 운영 Supabase 프로젝트는 실제 운영 데이터 전용으로 둔다.
+
+필요한 도구:
+
+- Docker 호환 런타임: Docker Desktop, OrbStack 등
+- Supabase CLI: `package.json`의 dev dependency로 고정
+
+로컬 스택을 시작한다.
+
+```bash
+npm run supabase:start
+```
+
+첫 실행은 Supabase Docker 이미지를 내려받기 때문에 시간이 걸릴 수 있다. 시작이 끝나면 출력에 로컬 URL과 publishable key가 표시된다.
+
+`.env.local`에는 로컬 값을 넣는다.
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<npm run supabase:start 또는 npm run supabase:status 출력의 publishable key>
+```
+
+로컬 Studio는 기본적으로 다음 주소에서 확인한다.
+
+```bash
+http://127.0.0.1:54323
+```
+
+마이그레이션과 seed를 다시 적용하려면 로컬 DB를 reset한다.
+
+```bash
+npm run supabase:reset
+```
+
+`supabase/seed.sql`은 로컬 개발용 allowlist 계정으로 `local@example.com`을 추가한다. 로컬 로그인을 테스트하려면 Studio에서 같은 이메일의 Auth 사용자를 직접 만든다. 앱에는 회원가입 UI를 만들지 않는다.
+
+작업이 끝나면 로컬 컨테이너를 정지한다.
+
+```bash
+npm run supabase:stop
+```
+
 ## Edge Function secret
 
 OpenAI API key와 service role key가 필요한 경우 Supabase Edge Function secret으로 설정한다.

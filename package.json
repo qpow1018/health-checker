@@ -10,7 +10,11 @@
     "build": "next build",
     "lint": "eslint .",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "supabase:start": "SUPABASE_TELEMETRY_DISABLED=1 supabase start",
+    "supabase:stop": "SUPABASE_TELEMETRY_DISABLED=1 supabase stop",
+    "supabase:reset": "SUPABASE_TELEMETRY_DISABLED=1 supabase db reset",
+    "supabase:status": "SUPABASE_TELEMETRY_DISABLED=1 supabase status"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.53.0",
@@ -32,6 +36,7 @@
     "eslint-config-next": "^15.3.0",
     "jsdom": "^26.1.0",
     "sass": "^1.101.0",
+    "supabase": "^2.109.1",
     "typescript": "^5.8.0",
     "vitest": "^3.2.0"
   }
