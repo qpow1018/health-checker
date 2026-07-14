@@ -1,110 +1,182 @@
-.record-page-content {
+.record-page-client {
   min-height: 100svh;
-
-  .app-canvas {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-height: 100svh;
-    padding: max(18px, env(safe-area-inset-top)) 18px calc($bottom-nav-space + 22px);
-    background: $gray-100;
-  }
+  padding-bottom: $bottom-nav-space;
 
   .topbar {
     display: flex;
     align-items: flex-start;
-    padding-top: 8px;
-  }
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
 
-  .topbar-title {
-    min-width: 0;
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+    }
 
-    h1 {
-      margin: 0;
-      font-size: 24px;
-      line-height: 1.22;
+    .date {
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      color: $primary;
+    }
+
+    .date-action {
+      flex-shrink: 0;
+      white-space: nowrap;
+      gap: 8px;
+      align-items: center;
     }
   }
 
-  .topbar-description {
-    margin: 8px 0 0;
-    color: $text-secondary;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .eyebrow {
-    margin: 0 0 8px;
-    color: $primary;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.4;
-  }
-
-  .quick-section {
+  .summary-section,
+  .action-section {
     display: grid;
-    gap: 10px;
-    margin-top: 26px;
+    gap: 12px;
+    margin-top: 18px;
   }
 
-  .record-button {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 76px;
-    border: 0;
-    border-radius: 14px;
-    padding: 0 18px;
-    color: #ffffff;
-    cursor: pointer;
-    text-align: left;
+  .summary-heading,
+  .section-heading {
+    display: grid;
+    gap: 4px;
 
-    &.urine {
-      background: $primary-500;
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
     }
 
-    &.bowel {
-      background: $accent-500;
+    p {
+      margin: 0;
+      color: $text-secondary;
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
     }
+  }
 
-    &.both {
-      background: #87847c;
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .summary-item {
+    min-width: 0;
+    border-radius: $radius;
+    padding: 10px 8px;
+    background: $gray-200;
+
+    span,
+    strong {
+      display: block;
+      overflow-wrap: anywhere;
     }
 
     span {
-      font-size: 21px;
-      font-weight: 850;
-      line-height: 1.2;
+      color: $text-secondary;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.35;
     }
 
-    &:disabled {
-      cursor: wait;
-      opacity: 0.72;
+    strong {
+      margin-top: 3px;
+      font-size: 13px;
+      line-height: 1.35;
     }
   }
 
-  .helper-text,
-  .status-message,
-  .error-message {
-    margin: 16px 0 0;
+  .action-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .record-action-button {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: 10px;
+    min-height: 68px;
+    border: 1px solid $border;
     border-radius: $radius;
     padding: 12px;
-    font-size: 14px;
-    line-height: 1.55;
+    background: #ffffff;
+    color: $text;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
   }
 
-  .helper-text {
-    color: $text-secondary;
+  .entry-icon,
+  .add-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius;
   }
 
-  .status-message {
+  .entry-icon {
+    width: 34px;
+    height: 34px;
     background: $primary-soft;
     color: $primary-strong;
+
+    svg {
+      width: 19px;
+      height: 19px;
+    }
   }
 
-  .error-message {
-    background: $danger-soft;
-    color: $danger;
+  .action-copy {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+
+    strong {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    span {
+      color: $text-secondary;
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
   }
 
+  .add-icon {
+    width: 28px;
+    height: 28px;
+    background: $gray-100;
+    color: $gray-600;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .primary-action {
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 360px) {
+  .record-page-client {
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .record-action-button {
+      grid-template-columns: 34px minmax(0, 1fr);
+    }
+
+    .add-icon {
+      grid-column: 2;
+      justify-self: start;
+    }
+  }
 }

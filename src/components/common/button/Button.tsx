@@ -12,6 +12,7 @@ export function Button(props: {
   color?: TButtonColor;
   fill?: TButtonFill;
   size?: TButtonSize;
+  className?: string;
   isFullWidth?: boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
@@ -23,6 +24,7 @@ export function Button(props: {
     color = "gray",
     fill = "solid",
     size = "medium",
+    className = "",
     isFullWidth = false,
     isLoading = false,
     isDisabled = false,
@@ -38,6 +40,7 @@ export function Button(props: {
     styles[`size-${size}`],
     isFullWidth ? styles["is-full-width"] : "",
     isLoading ? styles["is-loading"] : "",
+    className,
   ]
     .filter(Boolean)
     .join(" ");
@@ -54,8 +57,7 @@ export function Button(props: {
       onClick={onClick}
       type={type}
     >
-      <span className={styles.label}>{children}</span>
-
+      {children}
       {isLoading && <span className={styles.spinner} aria-hidden="true" />}
     </button>
   );

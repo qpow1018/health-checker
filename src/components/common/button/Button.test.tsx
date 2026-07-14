@@ -39,6 +39,14 @@ describe("Button", () => {
     expect(button).toHaveAttribute("data-fill", "outline");
   });
 
+  test("passes custom class names to the button element", () => {
+    render(<Button className="custom-button">오늘</Button>);
+
+    expect(screen.getByRole("button", { name: "오늘" })).toHaveClass(
+      "custom-button",
+    );
+  });
+
   test("marks full-width buttons and blocks clicks while loading", async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();

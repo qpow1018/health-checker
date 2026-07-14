@@ -2,207 +2,125 @@
 
 import { useState } from "react";
 
-import {
-  createBathroomLog,
-  deleteBathroomLog,
-  updateBathroomLogDetails,
-} from "@/api/bathroomLogs";
 import { BottomNavigation } from "@/components/common/bottomNavigation/BottomNavigation";
-import { RecordDetailModal } from "@/app/(app)/record/_component/RecordDetailModal";
-import { RecordSavedSummaryModal } from "@/app/(app)/record/_component/RecordSavedSummaryModal";
-import { RECORD_KIND_LABEL, RECORD_KIND_OPTIONS } from "./_define/recordOptions";
-import type {
-  TBathroomLogKind,
-  TJustSavedBathroomLog,
-  TRecordDetailFormState,
-} from "./_type/bathroomLog";
+import { Button } from "@/components/common/button/Button";
+
 import {
-  createEmptyDetailForm,
-  createBathroomLogDetailUpdateRequest,
-} from "./_util/recordDetailForm";
+  MdAdd,
+  MdOutlineCalendarToday,
+  MdOutlineWc,
+  MdRestaurant,
+  MdSentimentSatisfiedAlt,
+} from "react-icons/md";
 
 import styles from "./recordPageClient.module.scss";
 
-const SAVE_ERROR_MESSAGE = "기록을 저장하지 못했습니다. 다시 시도해 주세요.";
-const UNDO_ERROR_MESSAGE =
-  "취소가 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.";
-const DETAIL_ERROR_MESSAGE =
-  "상세 내용을 저장하지 못했습니다. 다시 시도해 주세요.";
+const SUMMARY_ITEMS = [
+  { label: "마지막 기록", value: "아직 없음" },
+  { label: "오늘 화장실", value: "0회" },
+  { label: "오늘 컨디션", value: "기록 전" },
+] as const;
 
-export function RecordPageClient() {
-  const [summaryLog, setSummaryLog] =
-    useState<TJustSavedBathroomLog | null>(null);
-  const [detailLog, setDetailLog] =
-    useState<TJustSavedBathroomLog | null>(null);
-  const [detailForm, setDetailForm] = useState<TRecordDetailFormState>(() =>
-    createEmptyDetailForm(),
-  );
-  const [statusMessage, setStatusMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-  const [isUndoing, setIsUndoing] = useState(false);
-  const [isSavingDetails, setIsSavingDetails] = useState(false);
+const RECORD_ACTIONS = [
+  {
+    title: "화장실 기록",
+    description: "소변, 대변, 복부 불편감",
+    Icon: MdOutlineWc,
+  },
+  {
+    title: "음식 기록",
+    description: "식사, 커피, 영양제, 음주",
+    Icon: MdRestaurant,
+  },
+  {
+    title: "컨디션 기록",
+    description: "두통, 피로, 몸상태 메모",
+    Icon: MdSentimentSatisfiedAlt,
+  },
+] as const;
 
-  async function handleQuickRecord(kind: TBathroomLogKind) {
-    setErrorMessage("");
-    setStatusMessage("");
-    setIsSaving(true);
+export default function RecordPageClient() {
+  // TODO
+  const [dateText] = useState("7월 14일 화요일");
 
-    try {
-      const savedLog = await createBathroomLog({ kind });
-      setSummaryLog(savedLog);
-      setDetailLog(null);
-      setDetailForm(createEmptyDetailForm());
-      setStatusMessage(`${RECORD_KIND_LABEL[kind]} 기록을 저장했습니다.`);
-    } catch {
-      setSummaryLog(null);
-      setDetailLog(null);
-      setStatusMessage("");
-      setErrorMessage(SAVE_ERROR_MESSAGE);
-    } finally {
-      setIsSaving(false);
-    }
-  }
-
-  async function handleUndo() {
-    if (!summaryLog) {
-      return;
-    }
-
-    setErrorMessage("");
-    setIsUndoing(true);
-
-    try {
-      await deleteBathroomLog(summaryLog.id);
-      setSummaryLog(null);
-      setStatusMessage("방금 저장한 기록을 취소했습니다.");
-    } catch {
-      setErrorMessage(UNDO_ERROR_MESSAGE);
-    } finally {
-      setIsUndoing(false);
-    }
-  }
-
-  async function handleSaveDetails() {
-    if (!detailLog) {
-      return;
-    }
-
-    setErrorMessage("");
-    setIsSavingDetails(true);
-
-    try {
-      await updateBathroomLogDetails(
-        detailLog.id,
-        createBathroomLogDetailUpdateRequest(detailLog.kind, detailForm),
-      );
-      setDetailLog(null);
-      setStatusMessage("상세 내용을 저장했습니다.");
-    } catch {
-      setErrorMessage(DETAIL_ERROR_MESSAGE);
-    } finally {
-      setIsSavingDetails(false);
-    }
-  }
-
-  function handleOpenDetails() {
-    if (!summaryLog) {
-      return;
-    }
-
-    setErrorMessage("");
-    setDetailLog(summaryLog);
-    setSummaryLog(null);
-  }
-
-  function handleBackToSummary() {
-    if (!detailLog) {
-      return;
-    }
-
-    setErrorMessage("");
-    setSummaryLog(detailLog);
-    setDetailLog(null);
-  }
-
-  function handleCloseSummary() {
-    setSummaryLog(null);
-    setErrorMessage("");
-  }
-
-  function updateDetailForm(nextForm: Partial<TRecordDetailFormState>) {
-    setDetailForm((currentForm) => ({
-      ...currentForm,
-      ...nextForm,
-    }));
+  function handleClickDateButton() {
+    // TODO: 날짜 선택 UI를 열고 선택한 날짜로 기록 화면을 갱신한다.
   }
 
   return (
-    <main className={styles["record-page-content"]} aria-label="기록 화면">
-      <div className={styles["app-canvas"]}>
-        <header className={styles["topbar"]}>
-          <div className={styles["topbar-title"]}>
-            <p className={styles["eyebrow"]}>오늘 기록</p>
-            <h1>방금 다녀온 기록을 남겨요</h1>
-            <p className={styles["topbar-description"]}>
-              저장 후 필요한 내용만 이어서 적을 수 있습니다.
-            </p>
-          </div>
-        </header>
+    <main className={styles["record-page-client"]} aria-label="기록 화면">
+      <section className={styles["topbar"]}>
+        <div className={styles["title-box"]}>
+          <h1 className={styles["title"]}>기록하기</h1>
+          <p className={styles["date"]}>{dateText}</p>
+        </div>
 
-        <section className={styles["quick-section"]} aria-label="빠른 기록">
-          {RECORD_KIND_OPTIONS.map((option) => (
+        <Button
+          color="gray"
+          fill="outline"
+          size="small"
+          className={styles["date-action"]}
+          onClick={handleClickDateButton}
+        >
+          <MdOutlineCalendarToday aria-hidden="true" />
+          오늘
+        </Button>
+      </section>
+
+      <section
+        className={styles["summary-section"]}
+        aria-label="오늘 기록 요약"
+      >
+        <div className={styles["summary-heading"]}>
+          <h2>요약</h2>
+          <p>오늘 입력할 항목을 한눈에 확인합니다.</p>
+        </div>
+
+        <div className={styles["summary-grid"]}>
+          {SUMMARY_ITEMS.map((item) => (
+            <div className={styles["summary-item"]} key={item.label}>
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles["action-section"]} aria-label="기록 버튼">
+        <div className={styles["section-heading"]}>
+          <h2>기록하기</h2>
+          <p>필요한 항목만 골라 빠르게 남기는 구조입니다.</p>
+        </div>
+
+        <div className={styles["action-list"]}>
+          {RECORD_ACTIONS.map((action) => (
             <button
-              className={`${styles["record-button"]} ${styles[option.kind]}`}
+              className={styles["record-action-button"]}
               type="button"
-              key={option.kind}
-              onClick={() => void handleQuickRecord(option.kind)}
-              disabled={isSaving}
+              key={action.title}
             >
-              <span>{option.label}</span>
+              <span className={styles["entry-icon"]}>
+                <action.Icon aria-hidden="true" />
+              </span>
+              <span className={styles["action-copy"]}>
+                <strong>{action.title}</strong>
+                <span>{action.description}</span>
+              </span>
+              <span className={styles["add-icon"]}>
+                <MdAdd aria-hidden="true" />
+              </span>
             </button>
           ))}
-        </section>
+        </div>
 
-        <p className={styles["helper-text"]}>
-          탭하면 지금 시각으로 바로 저장됩니다.
-        </p>
+        <div className={styles["primary-action"]}>
+          <Button color="primary" size="large" isFullWidth>
+            <MdAdd aria-hidden="true" />새 기록 시작
+          </Button>
+        </div>
+      </section>
 
-        {statusMessage && (
-          <p className={styles["status-message"]} role="status">
-            {statusMessage}
-          </p>
-        )}
-
-        {errorMessage && (
-          <p className={styles["error-message"]} role="status">
-            {errorMessage}
-          </p>
-        )}
-
-        {summaryLog && (
-          <RecordSavedSummaryModal
-            log={summaryLog}
-            isUndoing={isUndoing}
-            onAddDetails={handleOpenDetails}
-            onUndo={() => void handleUndo()}
-            onClose={handleCloseSummary}
-          />
-        )}
-
-        {detailLog && (
-          <RecordDetailModal
-            kind={detailLog.kind}
-            detailForm={detailForm}
-            isSavingDetails={isSavingDetails}
-            onChange={updateDetailForm}
-            onSave={() => void handleSaveDetails()}
-            onBack={handleBackToSummary}
-          />
-        )}
-
-        <BottomNavigation />
-      </div>
+      <BottomNavigation />
     </main>
   );
 }
