@@ -51,6 +51,34 @@ describe("ConfirmModal", () => {
     expect(screen.queryByRole("dialog", { name: "기록 삭제" })).not.toBeInTheDocument();
   });
 
+  test("locks background scrolling while open", () => {
+    const { rerender } = render(
+      <ConfirmModal
+        isOpen={true}
+        onClose={() => undefined}
+        title="기록 삭제"
+        message="삭제할까요?"
+        cancelButton={{ label: "닫기", onClick: () => undefined }}
+        confirmButton={{ label: "삭제", color: "danger", onClick: () => undefined }}
+      />,
+    );
+
+    expect(document.body.style.position).toBe("fixed");
+
+    rerender(
+      <ConfirmModal
+        isOpen={false}
+        onClose={() => undefined}
+        title="기록 삭제"
+        message="삭제할까요?"
+        cancelButton={{ label: "닫기", onClick: () => undefined }}
+        confirmButton={{ label: "삭제", color: "danger", onClick: () => undefined }}
+      />,
+    );
+
+    expect(document.body.style.position).toBe("");
+  });
+
   test("calls the requested handlers for overlay, cancel, and confirm actions", async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();

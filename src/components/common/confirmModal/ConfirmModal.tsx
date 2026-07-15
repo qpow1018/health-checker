@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef } from "react";
 
 import Button, { type TButtonColor } from "@/components/common/button/Button";
+import useScrollLock from "@/hooks/useScrollLock";
 
 import styles from "./confirmModal.module.scss";
 
@@ -34,6 +35,8 @@ export default function ConfirmModal(props: {
   const isLockedRef = useRef(false);
   const titleId = useId();
   const messageId = useId();
+
+  useScrollLock(isOpen);
 
   onCloseRef.current = onClose;
   isLockedRef.current = Boolean(

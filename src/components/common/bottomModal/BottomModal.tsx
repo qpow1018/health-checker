@@ -1,6 +1,8 @@
 import { useEffect, useId, useRef } from "react";
 import type { ReactNode, RefObject } from "react";
 
+import useScrollLock from "@/hooks/useScrollLock";
+
 import styles from "./bottomModal.module.scss";
 
 type TBottomModalProps = {
@@ -24,6 +26,8 @@ export default function BottomModal({
   const onCloseRef = useRef(onClose);
   const generatedTitleId = useId();
   const titleId = title ? generatedTitleId : undefined;
+
+  useScrollLock(isOpen);
 
   onCloseRef.current = onClose;
 

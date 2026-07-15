@@ -39,6 +39,20 @@ describe("BottomModal", () => {
     expect(screen.queryByRole("dialog", { name: "테스트 모달" })).not.toBeInTheDocument();
   });
 
+  test("locks background scrolling while open", () => {
+    const { rerender } = render(
+      <BottomModal title="테스트 모달" isOpen={true} onClose={() => undefined} />,
+    );
+
+    expect(document.body.style.position).toBe("fixed");
+
+    rerender(
+      <BottomModal title="테스트 모달" isOpen={false} onClose={() => undefined} />,
+    );
+
+    expect(document.body.style.position).toBe("");
+  });
+
   test("closes on overlay click but keeps modal content clicks inside", async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
