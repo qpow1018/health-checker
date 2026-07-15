@@ -1,0 +1,16 @@
+.form-row {
+  min-width: 0;
+  margin-bottom: 16px;
+
+  .form-row-label {
+    min-width: 0;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-muted;
+  }
+
+  .form-row-control {
+    min-width: 0;
+  }
+}

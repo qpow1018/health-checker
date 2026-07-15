@@ -5,6 +5,7 @@ import BottomModal from "@/components/common/bottomModal/BottomModal";
 import Button from "@/components/common/button/Button";
 import ButtonGroup from "@/components/common/buttonGroup/ButtonGroup";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
+import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import Textarea from "@/components/common/form/Textarea";
 import Tabs from "@/components/common/tabs/Tabs";
@@ -130,6 +131,14 @@ export function ComponentTestClient() {
           <h2 id="form-section-title">Form</h2>
 
           <div className={styles["form-stack"]}>
+            <FormRow label="날짜">
+              <input
+                aria-label="기록 날짜"
+                className={styles["native-form-control"]}
+                type="date"
+              />
+            </FormRow>
+
             <TextInput
               autoComplete="email"
               helperText="허용된 계정 이메일을 입력하세요."

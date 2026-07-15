@@ -99,6 +99,26 @@
     gap: 14px;
   }
 
+  .native-form-control {
+    width: 100%;
+    min-height: 48px;
+    min-width: 0;
+    border: 1px solid $border;
+    border-radius: $radius;
+    padding: 0 12px;
+    background: $gray-100;
+    color: $text;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+
+    &:focus {
+      border-color: $primary-400;
+      background: #ffffff;
+      outline: 0;
+    }
+  }
+
   .bottom-modal-preview {
     display: grid;
     gap: 18px;
