@@ -12,16 +12,6 @@ export async function createSleepRecord({
   event,
 }: TReqCreateSleepRecord) {
   const supabase = getSupabaseBrowserClient();
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-
-  if (userError) {
-    throw userError;
-  }
-
-  if (!userData.user) {
-    throw new Error("로그인한 사용자만 기록을 저장할 수 있습니다.");
-  }
-
   const details: TSleepDetailsV1 = { event };
   const { data, error } = await supabase
     .from("health_records")

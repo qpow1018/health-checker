@@ -3,15 +3,11 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { createSleepRecord, listHealthRecords } from "./index";
 
 const supabaseMocks = vi.hoisted(() => ({
-  getUser: vi.fn(),
   from: vi.fn(),
 }));
 
 vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
-    auth: {
-      getUser: supabaseMocks.getUser,
-    },
     from: supabaseMocks.from,
   }),
 }));
@@ -26,7 +22,6 @@ describe("healthRecords API", () => {
     const select = vi.fn().mockReturnValue({ single });
     const insert = vi.fn().mockReturnValue({ select });
 
-    supabaseMocks.getUser.mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
     supabaseMocks.from.mockReturnValue({ insert });
 
     await createSleepRecord({ date: "2026-07-15", time: "23:30", event: "slept" });
@@ -54,17 +49,7 @@ describe("healthRecords API", () => {
     expect(limit).toHaveBeenCalledWith(20);
   });
 
-  test("rejects saving without an authenticated user", async () => {
-    supabaseMocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
-
-    await expect(
-      createSleepRecord({ date: "2026-07-15", time: "23:30", event: "slept" }),
-    ).rejects.toThrow("로그인한 사용자만 기록을 저장할 수 있습니다.");
-  });
-
   test("rejects an invalid date before creating a record", async () => {
-    supabaseMocks.getUser.mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
-
     await expect(
       createSleepRecord({ date: "2026-02-31", time: "23:30", event: "slept" }),
     ).rejects.toThrow("날짜와 시간을 올바르게 입력해 주세요.");
