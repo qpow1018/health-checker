@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, RefObject } from "react";
 
 import styles from "./bottomModal.module.scss";
 
@@ -8,6 +8,7 @@ type TBottomModalProps = {
   ariaLabel?: string;
   isOpen: boolean;
   onClose: () => void;
+  initialFocusRef?: RefObject<HTMLElement | null>;
   children?: ReactNode;
 };
 
@@ -16,6 +17,7 @@ export default function BottomModal({
   ariaLabel,
   isOpen,
   onClose,
+  initialFocusRef,
   children,
 }: TBottomModalProps) {
   const dialogRef = useRef<HTMLElement>(null);
@@ -35,7 +37,7 @@ export default function BottomModal({
     const dialog = dialogRef.current;
     const firstEnabledButton = dialog?.querySelector<HTMLButtonElement>("button:not(:disabled)");
 
-    (firstEnabledButton ?? dialog)?.focus();
+    (initialFocusRef?.current ?? firstEnabledButton ?? dialog)?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -77,7 +79,7 @@ export default function BottomModal({
       document.removeEventListener("keydown", handleKeyDown);
       previouslyFocusedElement?.focus();
     };
-  }, [isOpen]);
+  }, [initialFocusRef, isOpen]);
 
   if (!isOpen) {
     return null;

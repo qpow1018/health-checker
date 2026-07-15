@@ -10,6 +10,7 @@ import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import Textarea from "@/components/common/form/Textarea";
+import TimePicker from "@/components/common/form/TimePicker";
 import Tabs from "@/components/common/tabs/Tabs";
 
 import styles from "./componentTestPage.module.scss";
@@ -17,6 +18,7 @@ import styles from "./componentTestPage.module.scss";
 export function ComponentTestClient() {
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("2026-07-15");
+  const [time, setTime] = useState("23:30");
   const [note, setNote] = useState("저녁 이후 물을 적게 마심");
   const [urgency, setUrgency] = useState("ordinary");
   const [wokeFromSleep, setWokeFromSleep] = useState("no");
@@ -139,6 +141,14 @@ export function ComponentTestClient() {
                 id="component-test-date"
                 onChange={setDate}
                 value={date}
+              />
+            </FormRow>
+
+            <FormRow label="시간" htmlFor="component-test-time">
+              <TimePicker
+                id="component-test-time"
+                onChange={setTime}
+                value={time}
               />
             </FormRow>
 
