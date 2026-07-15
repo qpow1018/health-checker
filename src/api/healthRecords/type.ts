@@ -8,6 +8,33 @@ export type TSleepDetailsV1 = {
   event: TSleepEvent;
 };
 
+export type TToiletType = "urine" | "bowel" | "both";
+
+export type TToiletUrgency = "relaxed" | "ordinary" | "urgent";
+
+export type TToiletStoolConsistency = "hard" | "formed" | "loose" | "watery";
+
+type TToiletDetailsBase = {
+  urgency?: TToiletUrgency;
+  wokeFromSleep?: boolean;
+};
+
+export type TToiletDetailsV1 =
+  | (TToiletDetailsBase & {
+      type: "urine";
+      note?: string;
+    })
+  | (TToiletDetailsBase & {
+      type: "bowel";
+      stoolConsistency?: TToiletStoolConsistency;
+      note?: string;
+    })
+  | (TToiletDetailsBase & {
+      type: "both";
+      stoolConsistency?: TToiletStoolConsistency;
+      note?: string;
+    });
+
 export type TReqCreateSleepRecord = {
   date: string;
   time: string;
