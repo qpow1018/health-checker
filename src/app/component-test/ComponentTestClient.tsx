@@ -5,6 +5,7 @@ import BottomModal from "@/components/common/bottomModal/BottomModal";
 import Button from "@/components/common/button/Button";
 import ButtonGroup from "@/components/common/buttonGroup/ButtonGroup";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
+import DatePicker from "@/components/common/form/DatePicker";
 import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
@@ -15,6 +16,7 @@ import styles from "./componentTestPage.module.scss";
 
 export function ComponentTestClient() {
   const [email, setEmail] = useState("");
+  const [date, setDate] = useState("2026-07-15");
   const [note, setNote] = useState("저녁 이후 물을 적게 마심");
   const [urgency, setUrgency] = useState("ordinary");
   const [wokeFromSleep, setWokeFromSleep] = useState("no");
@@ -133,10 +135,10 @@ export function ComponentTestClient() {
 
           <div className={styles["form-stack"]}>
             <FormRow label="날짜" htmlFor="component-test-date">
-              <input
-                className={styles["native-form-control"]}
+              <DatePicker
                 id="component-test-date"
-                type="date"
+                onChange={setDate}
+                value={date}
               />
             </FormRow>
 

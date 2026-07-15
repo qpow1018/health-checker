@@ -1,0 +1,163 @@
+.date-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  min-width: 0;
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 0 12px;
+  background: $gray-100;
+  color: $text;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  transition:
+    background $transition,
+    border-color $transition;
+
+  &:focus {
+    border-color: $primary-400;
+    background: #ffffff;
+    outline: 0;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: $text-secondary;
+  }
+
+  svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: $text-secondary;
+  }
+}
+
+.date-picker-modal {
+  display: grid;
+  gap: 20px;
+  padding: 20px 20px max(22px, env(safe-area-inset-bottom));
+}
+
+.date-picker-calendar {
+  width: 100%;
+
+  :global(.rdp-root) {
+    --rdp-accent-color: #{$primary};
+    --rdp-accent-background-color: #{$primary-soft};
+    --rdp-day-height: 44px;
+    --rdp-day-width: 44px;
+    --rdp-day_button-border: 0;
+    --rdp-day_button-border-radius: 50%;
+    --rdp-day_button-height: 40px;
+    --rdp-day_button-width: 40px;
+    --rdp-nav_button-height: 36px;
+    --rdp-nav_button-width: 36px;
+    --rdp-nav-height: 40px;
+    --rdp-selected-border: 0;
+    --rdp-today-color: #{$primary-strong};
+    --rdp-weekday-padding: 8px 0;
+    width: 100%;
+    color: $text;
+    font: inherit;
+  }
+
+  :global(.rdp-months),
+  :global(.rdp-month),
+  :global(.rdp-month_grid) {
+    width: 100%;
+  }
+
+  :global(.rdp-months) {
+    max-width: none;
+  }
+
+  :global(.rdp-month_caption) {
+    align-items: center;
+    justify-content: center;
+    color: $text;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  :global(.rdp-weekday) {
+    color: $text-muted;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  :global(.rdp-day) {
+    width: calc(100% / 7);
+  }
+
+  :global(.rdp-day_button) {
+    margin: 0 auto;
+    color: $text;
+    font-size: 14px;
+    font-weight: 500;
+
+    &:hover:not(:disabled) {
+      background: $primary-soft;
+    }
+
+    &:active:not(:disabled) {
+      background: $primary-200;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary;
+      outline-offset: 2px;
+    }
+  }
+
+  :global(.rdp-selected .rdp-day_button) {
+    background: $primary;
+    color: #ffffff;
+
+    &:hover:not(:disabled) {
+      background: $primary-strong;
+    }
+
+    &:active:not(:disabled) {
+      background: $primary-500;
+    }
+  }
+
+  :global(.rdp-outside) {
+    color: $text-muted;
+  }
+
+  :global(.rdp-button_previous),
+  :global(.rdp-button_next) {
+    border-radius: $radius;
+    color: $text-secondary;
+
+    &:hover:not(:disabled) {
+      background: $gray-100;
+    }
+
+    &:active:not(:disabled) {
+      background: $gray-200;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary;
+      outline-offset: 2px;
+    }
+
+    :global(.rdp-chevron) {
+      fill: currentcolor;
+    }
+  }
+}
+
+.date-picker-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
