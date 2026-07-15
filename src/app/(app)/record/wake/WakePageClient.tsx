@@ -5,6 +5,7 @@ import { useState } from "react";
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
+import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 
 import { MdWbSunny } from "react-icons/md";
@@ -32,13 +33,14 @@ export default function WakePageClient() {
         </span>
         <div className={styles["card-content"]}>
           <h2 id="woke-at-title">언제 일어났나요?</h2>
-          <TextInput
-            id="woke-at"
-            label="기상 시간"
-            type="time"
-            value={wokeAt}
-            onChange={setWokeAt}
-          />
+          <FormRow label="기상 시간" htmlFor="woke-at">
+            <TextInput
+              id="woke-at"
+              type="time"
+              value={wokeAt}
+              onChange={setWokeAt}
+            />
+          </FormRow>
           <p className={styles["time-preview"]}>
             {wokeAt ? `${wokeAt}에 일어난 것으로 기록됩니다.` : "아직 입력 전"}
           </p>

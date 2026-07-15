@@ -75,4 +75,16 @@ describe("LoginFormClient", () => {
     expect(authApiMocks.signOut).toHaveBeenCalledTimes(1);
     expect(routerMocks.replace).not.toHaveBeenCalledWith("/record");
   });
+
+  test("shows an app message when login fields are empty", async () => {
+    const user = userEvent.setup();
+
+    render(<LoginFormClient />);
+
+    await screen.findByLabelText("이메일");
+    await user.click(screen.getByRole("button", { name: "로그인" }));
+
+    expect(screen.getByText("이메일과 비밀번호를 입력해주세요.")).toBeInTheDocument();
+    expect(authApiMocks.signInWithPassword).not.toHaveBeenCalled();
+  });
 });

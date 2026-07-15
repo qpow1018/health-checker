@@ -6,13 +6,12 @@ import FormRow from "./FormRow";
 describe("FormRow", () => {
   test("renders a row label with form content", () => {
     render(
-      <FormRow label="날짜">
-        <input aria-label="기록 날짜" type="date" />
+      <FormRow label="날짜" htmlFor="record-date">
+        <input id="record-date" type="date" />
       </FormRow>,
     );
 
-    expect(screen.getByText("날짜")).toBeInTheDocument();
-    expect(screen.getByLabelText("기록 날짜")).toHaveAttribute("type", "date");
+    expect(screen.getByLabelText("날짜")).toHaveAttribute("type", "date");
   });
 
   test("merges an additional class name", () => {

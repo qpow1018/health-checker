@@ -1,0 +1,15 @@
+.form-message {
+  min-width: 0;
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+
+  &.type-default {
+    color: $text-secondary;
+  }
+
+  &.type-error {
+    color: $danger;
+  }
+}

@@ -1,32 +1,18 @@
-.textarea-field {
-  display: grid;
-  gap: 8px;
+.textarea {
   min-width: 0;
-  color: $text;
-  font-size: 14px;
-  font-weight: 700;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $gray-100;
+  transition:
+    background $transition,
+    border-color $transition;
 
-  .textarea-label {
-    min-width: 0;
+  &:focus-within {
+    border-color: $primary-400;
+    background: #ffffff;
   }
 
-  .textarea-control-shell {
-    display: flex;
-    min-width: 0;
-    border: 1px solid $border;
-    border-radius: $radius;
-    background: $gray-100;
-    transition:
-      background $transition,
-      border-color $transition;
-
-    &:focus-within {
-      border-color: $primary-400;
-      background: #ffffff;
-    }
-  }
-
-  .textarea-control {
+  & textarea {
     width: 100%;
     min-width: 0;
     border: 0;
@@ -48,19 +34,5 @@
       cursor: not-allowed;
       color: $text-secondary;
     }
-  }
-
-  .textarea-helper-message,
-  .textarea-error-message {
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  .textarea-helper-message {
-    color: $text-secondary;
-  }
-
-  .textarea-error-message {
-    color: $danger;
   }
 }

@@ -9,6 +9,7 @@ import {
   signOut,
 } from "@/api/auth";
 import Button from "@/components/common/button/Button";
+import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import styles from "./loginFormClient.module.scss";
 
@@ -63,12 +64,19 @@ export function LoginFormClient() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoginState("submitting");
     setMessage("");
+
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail || !password) {
+      setMessage("이메일과 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    setLoginState("submitting");
 
     try {
       const session = await signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
       });
 
@@ -105,28 +113,28 @@ export function LoginFormClient() {
         </div>
 
         <form className={styles["form"]} onSubmit={handleSubmit}>
-          <TextInput
-            autoComplete="email"
-            id="login-email"
-            inputMode="email"
-            isDisabled={isBusy}
-            isRequired
-            label="이메일"
-            onChange={setEmail}
-            type="email"
-            value={email}
-          />
+          <FormRow label="이메일" htmlFor="login-email">
+            <TextInput
+              autoComplete="email"
+              id="login-email"
+              inputMode="email"
+              isDisabled={isBusy}
+              onChange={setEmail}
+              type="email"
+              value={email}
+            />
+          </FormRow>
 
-          <TextInput
-            autoComplete="current-password"
-            id="login-password"
-            isDisabled={isBusy}
-            isRequired
-            label="비밀번호"
-            onChange={setPassword}
-            type="password"
-            value={password}
-          />
+          <FormRow label="비밀번호" htmlFor="login-password">
+            <TextInput
+              autoComplete="current-password"
+              id="login-password"
+              isDisabled={isBusy}
+              onChange={setPassword}
+              type="password"
+              value={password}
+            />
+          </FormRow>
 
           <Button
             isDisabled={loginState === "checking-session"}

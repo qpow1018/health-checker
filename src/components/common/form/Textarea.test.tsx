@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { describe, expect, test, vi } from "vitest";
 
+import FormRow from "./FormRow";
 import Textarea from "./Textarea";
 
 describe("Textarea", () => {
@@ -19,13 +20,14 @@ describe("Textarea", () => {
       }
 
       return (
-        <Textarea
-          id="note"
-          label="메모"
-          onChange={handleValueChange}
-          placeholder="남길 내용을 적어주세요."
-          value={value}
-        />
+        <FormRow label="메모" htmlFor="note">
+          <Textarea
+            id="note"
+            onChange={handleValueChange}
+            placeholder="남길 내용을 적어주세요."
+            value={value}
+          />
+        </FormRow>
       );
     }
 
@@ -42,21 +44,20 @@ describe("Textarea", () => {
 
   test("uses the requested row count and disabled state", () => {
     render(
-      <Textarea
-        id="disabled-note"
-        isDisabled
-        isRequired
-        label="메모"
-        onChange={() => undefined}
-        rows={5}
-        value=""
-      />,
+      <FormRow label="메모" htmlFor="disabled-note">
+        <Textarea
+          id="disabled-note"
+          isDisabled
+          onChange={() => undefined}
+          rows={5}
+          value=""
+        />
+      </FormRow>,
     );
 
     const textarea = screen.getByLabelText("메모");
 
     expect(textarea).toBeDisabled();
-    expect(textarea).toHaveAttribute("required");
     expect(textarea).toHaveAttribute("rows", "5");
   });
 });

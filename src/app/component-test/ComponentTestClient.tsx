@@ -5,6 +5,7 @@ import BottomModal from "@/components/common/bottomModal/BottomModal";
 import Button from "@/components/common/button/Button";
 import ButtonGroup from "@/components/common/buttonGroup/ButtonGroup";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
+import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import Textarea from "@/components/common/form/Textarea";
@@ -131,43 +132,46 @@ export function ComponentTestClient() {
           <h2 id="form-section-title">Form</h2>
 
           <div className={styles["form-stack"]}>
-            <FormRow label="날짜">
+            <FormRow label="날짜" htmlFor="component-test-date">
               <input
-                aria-label="기록 날짜"
                 className={styles["native-form-control"]}
+                id="component-test-date"
                 type="date"
               />
             </FormRow>
 
-            <TextInput
-              autoComplete="email"
-              helperText="허용된 계정 이메일을 입력하세요."
-              id="component-test-email"
-              inputMode="email"
-              label="이메일"
-              onChange={setEmail}
-              placeholder="name@example.com"
-              type="email"
-              value={email}
-            />
+            <FormRow label="이메일" htmlFor="component-test-email">
+              <TextInput
+                autoComplete="email"
+                id="component-test-email"
+                inputMode="email"
+                onChange={setEmail}
+                placeholder="name@example.com"
+                type="email"
+                value={email}
+              />
+              <FormMessage>허용된 계정 이메일을 입력하세요.</FormMessage>
+            </FormRow>
 
-            <TextInput
-              errorMessage="비밀번호를 다시 확인해주세요."
-              id="component-test-password"
-              label="비밀번호"
-              onChange={() => undefined}
-              type="password"
-              value="wrong-password"
-            />
+            <FormRow label="비밀번호" htmlFor="component-test-password">
+              <TextInput
+                id="component-test-password"
+                onChange={() => undefined}
+                type="password"
+                value="wrong-password"
+              />
+              <FormMessage type="error">비밀번호를 다시 확인해주세요.</FormMessage>
+            </FormRow>
 
-            <Textarea
-              helperText="상세 기록에 남길 내용을 짧게 적어주세요."
-              id="component-test-note"
-              label="메모"
-              onChange={setNote}
-              rows={4}
-              value={note}
-            />
+            <FormRow label="메모" htmlFor="component-test-note">
+              <Textarea
+                id="component-test-note"
+                onChange={setNote}
+                rows={4}
+                value={note}
+              />
+              <FormMessage>상세 기록에 남길 내용을 짧게 적어주세요.</FormMessage>
+            </FormRow>
           </div>
         </section>
 

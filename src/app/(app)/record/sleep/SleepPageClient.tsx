@@ -5,6 +5,7 @@ import { useState } from "react";
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
+import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 
 import { MdBedtime } from "react-icons/md";
@@ -42,13 +43,14 @@ export default function SleepPageClient() {
           </span>
           <div className={styles["card-content"]}>
             <h2 id="slept-at-title">언제 잠들었나요?</h2>
-            <TextInput
-              id="slept-at"
-              label="잠든 시간"
-              type="time"
-              value={sleptAt}
-              onChange={setSleptAt}
-            />
+            <FormRow label="잠든 시간" htmlFor="slept-at">
+              <TextInput
+                id="slept-at"
+                type="time"
+                value={sleptAt}
+                onChange={setSleptAt}
+              />
+            </FormRow>
             <p className={styles["time-preview"]}>
               {sleptAt
                 ? `${sleptAt}에 잠든 것으로 기록됩니다.`
