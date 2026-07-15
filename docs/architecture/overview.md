@@ -103,14 +103,11 @@ OpenAI 자격 증명은 Edge Function에만 존재할 수 있다.
 
 - `allowed_users`: 앱 접근이 허용된 이메일 목록.
 - `profiles`: 허용 사용자별 1개 행.
-- `health_records`: 새 5분류 기록의 장기 source of truth. 수면, 음식, 화장실, 운동, 컨디션 기록을 공통 컬럼과 `details jsonb`로 시작한다.
-- `bathroom_logs`: 기존 소변/대변 MVP 기록 테이블. 새 기록 모델로 전환할 때 유지, 변환, 대체 범위를 다시 결정한다.
+- `health_records`: 기록 모델을 다시 설계한 뒤 추가할 장기 source of truth.
 - `reference_sources`: 승인 또는 후보 상태의 참고 출처 링크.
 - `ai_reports`: 선택적으로 저장하는 리포트 결과.
 
 구현을 단순하게 유지하려면 MVP에서는 생성된 리포트를 저장하지 않아도 된다. 이 경우 리포트는 요청 시 생성하고, 기록이 source of truth로 남는다.
-
-`health_records.details`의 분류별 JSON 구조는 각 기록 페이지를 만들면서 확정한다. 구조 변경은 `details_version`으로 추적하고, 통계나 검색이 중요해진 분류는 이후 별도 상세 테이블로 분리할 수 있다.
 
 ## 배포 메모
 

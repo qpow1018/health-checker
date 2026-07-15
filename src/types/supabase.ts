@@ -9,54 +9,75 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      bathroom_logs: {
+      allowed_users: {
         Row: {
-          id: string;
-          user_id: string;
-          logged_at: string;
-          kind: "urine" | "bowel" | "both";
-          urgency: "relaxed" | "ordinary" | "urgent" | null;
-          woke_from_sleep: boolean | null;
-          note: string | null;
-          urine_pain: boolean | null;
-          urine_color_unusual: boolean | null;
-          stool_state: "usual" | "loose" | "hard" | null;
-          bowel_pain: boolean | null;
-          possible_blood: boolean | null;
           created_at: string;
-          updated_at: string;
+          email: string;
+          is_active: boolean;
         };
         Insert: {
-          id?: string;
-          user_id: string;
-          logged_at?: string;
-          kind: "urine" | "bowel" | "both";
-          urgency?: "relaxed" | "ordinary" | "urgent" | null;
-          woke_from_sleep?: boolean | null;
-          note?: string | null;
-          urine_pain?: boolean | null;
-          urine_color_unusual?: boolean | null;
-          stool_state?: "usual" | "loose" | "hard" | null;
-          bowel_pain?: boolean | null;
-          possible_blood?: boolean | null;
           created_at?: string;
-          updated_at?: string;
+          email: string;
+          is_active?: boolean;
         };
         Update: {
-          id?: string;
-          user_id?: string;
-          logged_at?: string;
-          kind?: "urine" | "bowel" | "both";
-          urgency?: "relaxed" | "ordinary" | "urgent" | null;
-          woke_from_sleep?: boolean | null;
-          note?: string | null;
-          urine_pain?: boolean | null;
-          urine_color_unusual?: boolean | null;
-          stool_state?: "usual" | "loose" | "hard" | null;
-          bowel_pain?: boolean | null;
-          possible_blood?: boolean | null;
           created_at?: string;
+          email?: string;
+          is_active?: boolean;
+        };
+        Relationships: [];
+      };
+      profiles: {
+        Row: {
+          created_at: string;
+          email: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
           updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          email?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      reference_sources: {
+        Row: {
+          created_at: string;
+          id: string;
+          organization: string;
+          status: string;
+          title: string;
+          topic: string;
+          updated_at: string;
+          url: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          organization: string;
+          status?: string;
+          title: string;
+          topic: string;
+          updated_at?: string;
+          url: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          organization?: string;
+          status?: string;
+          title?: string;
+          topic?: string;
+          updated_at?: string;
+          url?: string;
         };
         Relationships: [];
       };

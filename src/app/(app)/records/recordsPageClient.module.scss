@@ -3,7 +3,6 @@
   color: $text;
 
   .app-canvas {
-    position: relative;
     display: flex;
     min-height: 100svh;
     flex-direction: column;
@@ -13,10 +12,6 @@
   }
 
   .topbar {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 24px;
     padding-top: 8px;
 
     h1 {
@@ -34,63 +29,6 @@
     line-height: 1.4;
   }
 
-  .topbar-description {
-    margin: 8px 0 0;
-    color: $text-secondary;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .tab-panel {
-    display: grid;
-    gap: 18px;
-    margin-top: 18px;
-  }
-
-  .filter-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    h2 {
-      min-width: 0;
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.35;
-    }
-
-    button {
-      flex: 0 0 auto;
-      border: 0;
-      padding: 6px 0;
-      background: transparent;
-      color: $primary-strong;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 800;
-    }
-  }
-
-  .status-message,
-  .error-message {
-    margin: 0;
-    border-radius: $radius;
-    padding: 12px;
-    font-size: 14px;
-    line-height: 1.55;
-  }
-
-  .status-message {
-    background: $primary-soft;
-    color: $primary-strong;
-  }
-
-  .error-message {
-    background: $danger-soft;
-    color: $danger;
-  }
-
   .empty-state {
     display: grid;
     gap: 10px;
@@ -103,7 +41,6 @@
     }
 
     h2 {
-      color: $text;
       font-size: 20px;
       line-height: 1.25;
     }
@@ -121,73 +58,5 @@
     color: $primary-strong;
     font-weight: 800;
     text-decoration: none;
-  }
-
-  .record-groups {
-    display: grid;
-    gap: 26px;
-  }
-
-  .record-group {
-    display: grid;
-    gap: 10px;
-
-    h2 {
-      margin: 0;
-      color: $text-secondary;
-      font-size: 15px;
-      line-height: 1.4;
-    }
-  }
-
-  .record-list {
-    display: grid;
-    gap: 10px;
-  }
-
-  .record-item {
-    display: grid;
-    width: 100%;
-    gap: 6px;
-    border: 1px solid $border;
-    border-radius: $radius;
-    padding: 14px;
-    background: #ffffff;
-    color: $text;
-    cursor: pointer;
-    text-align: left;
-    transition:
-      border-color $transition,
-      background $transition;
-
-    &:hover {
-      border-color: $primary;
-      background: $primary-soft;
-    }
-  }
-
-  .record-main {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .record-time {
-    font-size: 15px;
-    font-weight: 800;
-  }
-
-  .record-kind {
-    color: $primary-strong;
-    font-size: 15px;
-    font-weight: 800;
-  }
-
-  .record-meta,
-  .record-note {
-    color: $text-secondary;
-    font-size: 13px;
-    line-height: 1.45;
   }
 }
