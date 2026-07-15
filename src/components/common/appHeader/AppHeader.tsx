@@ -16,16 +16,19 @@ export default function AppHeader(props: { title: string }) {
   }
 
   return (
-    <header className={styles["app-header"]}>
-      <button
-        aria-label="뒤로가기"
-        className={styles["back-button"]}
-        onClick={handleClickBackButton}
-      >
-        <MdArrowBack aria-hidden="true" />
-      </button>
+    <>
+      <header className={styles["app-header"]}>
+        <button
+          aria-label="뒤로가기"
+          className={styles["back-button"]}
+          onClick={handleClickBackButton}
+        >
+          <MdArrowBack aria-hidden="true" />
+        </button>
 
-      <h2 className={styles["title"]}>{title}</h2>
-    </header>
+        <h2 className={styles["title"]}>{title}</h2>
+      </header>
+      <div className={styles["app-header-spacer"]} aria-hidden="true" />
+    </>
   );
 }
