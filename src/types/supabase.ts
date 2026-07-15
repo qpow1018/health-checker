@@ -27,6 +27,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      health_records: {
+        Row: {
+          category: string;
+          created_at: string;
+          details: Json;
+          details_version: number;
+          id: string;
+          recorded_at: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          category: string;
+          created_at?: string;
+          details?: Json;
+          details_version?: number;
+          id?: string;
+          recorded_at: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          category?: string;
+          created_at?: string;
+          details?: Json;
+          details_version?: number;
+          id?: string;
+          recorded_at?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           created_at: string;

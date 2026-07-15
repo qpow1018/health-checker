@@ -52,6 +52,53 @@
     }
   }
 
+  .status-message,
+  .error-message {
+    margin: 32px 0 0;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .status-message {
+    background: $primary-soft;
+    color: $primary-strong;
+  }
+
+  .error-message {
+    background: $danger-soft;
+    color: $danger;
+  }
+
+  .record-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 26px;
+  }
+
+  .record-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid $border;
+    padding: 14px;
+    background: #ffffff;
+  }
+
+  .record-category {
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .record-time {
+    flex: 0 0 auto;
+    color: $text-secondary;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
   .record-link {
     justify-self: center;
     margin-top: 8px;
