@@ -10,6 +10,53 @@
 - 제한된 문자열 값은 Postgres enum 대신 `text + check constraint`로 관리한다.
 - 참고 출처는 승인된 것만 AI 리포트 근거로 사용할 수 있다.
 
+## `health_records`
+
+수면, 음식, 화장실, 운동, 컨디션을 발생 이벤트 단위로 저장하는 공통 테이블이다. 날짜별 부모 행이나 category·날짜 단위 unique 제약은 두지 않는다.
+
+v1 컬럼:
+
+- `id uuid primary key default gen_random_uuid()`
+- `user_id uuid not null default auth.uid() references auth.users(id) on delete cascade`
+- `category text not null`
+- `recorded_at timestamptz not null`
+- `details jsonb not null default '{}'::jsonb`
+- `details_version integer not null default 1`
+- `created_at timestamptz not null default now()`
+- `updated_at timestamptz not null default now()`
+
+제약과 인덱스:
+
+- `category`는 `sleep`, `food`, `toilet`, `exercise`, `condition`만 허용한다.
+- `details_version`은 1 이상이어야 한다.
+- 최근 기록과 분류별 기록 조회를 위해 `(user_id, recorded_at desc)`, `(user_id, category, recorded_at desc)` 인덱스를 둔다.
+
+시간과 상세값 규칙:
+
+- `recorded_at`은 사용자가 선택한 기기 로컬 날짜·시간을 UTC로 변환한 실제 발생 시각이다.
+- `created_at`, `updated_at`은 저장과 수정 시각이며 기록 보기의 날짜 기준으로 사용하지 않는다.
+- `details`는 category별 값만 담고, 앱에서는 category별 TypeScript 타입과 변환 함수로 해석한다.
+- v1에는 공통 `note` 컬럼을 넣지 않는다.
+
+수면 v1 상세값:
+
+```ts
+type TSleepDetailsV1 = {
+  event: "slept" | "woke";
+};
+```
+
+수정과 삭제 규칙:
+
+- 수정은 `recorded_at`, `details`만 허용하며 `category`는 변경하지 않는다.
+- 삭제는 `id` 한 건을 대상으로 한다.
+
+RLS 방향:
+
+- 허용된 사용자는 자신의 기록만 조회·생성·수정·삭제할 수 있다.
+- 모든 정책은 `is_allowed_user()`와 `(select auth.uid()) = user_id`를 함께 확인한다.
+- update 정책은 `USING`과 `WITH CHECK` 모두에서 소유자 조건을 확인한다.
+
 ## `allowed_users`
 
 앱 사용이 허용된 이메일을 관리한다.

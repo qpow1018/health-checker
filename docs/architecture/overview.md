@@ -103,11 +103,13 @@ OpenAI 자격 증명은 Edge Function에만 존재할 수 있다.
 
 - `allowed_users`: 앱 접근이 허용된 이메일 목록.
 - `profiles`: 허용 사용자별 1개 행.
-- `health_records`: 기록 모델을 다시 설계한 뒤 추가할 장기 source of truth.
+- `health_records`: 수면, 음식, 화장실, 운동, 컨디션 이벤트를 저장할 장기 source of truth.
 - `reference_sources`: 승인 또는 후보 상태의 참고 출처 링크.
 - `ai_reports`: 선택적으로 저장하는 리포트 결과.
 
 구현을 단순하게 유지하려면 MVP에서는 생성된 리포트를 저장하지 않아도 된다. 이 경우 리포트는 요청 시 생성하고, 기록이 source of truth로 남는다.
+
+기록은 날짜별 부모 행 없이 발생한 이벤트 한 건당 한 행을 저장한다. 날짜별 기록 보기와 요약은 `recorded_at` 범위를 조회해 구성한다.
 
 ## 배포 메모
 
