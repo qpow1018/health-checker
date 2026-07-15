@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { DayPicker } from "react-day-picker";
+
+import { formatDateString } from "@/utils/date";
 import { ko } from "react-day-picker/locale";
 
 import "react-day-picker/style.css";
@@ -41,7 +43,7 @@ export default function DatePicker(props: {
       return;
     }
 
-    onChange(formatDateValue(draftDate));
+    onChange(formatDateString(draftDate));
     handleClose();
   }
 
@@ -117,14 +119,6 @@ function parseDateValue(value: string) {
   }
 
   return new Date(year, month - 1, day);
-}
-
-function formatDateValue(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
 }
 
 function getDisabledDates(min?: string, max?: string) {

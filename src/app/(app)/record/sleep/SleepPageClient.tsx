@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { createSleepRecord } from "@/api/healthRecords";
+import { getTodayDateString } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -18,7 +19,7 @@ import styles from "./sleepPageClient.module.scss";
 export default function SleepPageClient() {
   const router = useRouter();
 
-  const [sleptOn, setSleptOn] = useState(getToday);
+  const [sleptOn, setSleptOn] = useState(getTodayDateString);
   const [sleptAt, setSleptAt] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -82,13 +83,4 @@ export default function SleepPageClient() {
       <BottomNavigation />
     </main>
   );
-}
-
-function getToday() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
 }
