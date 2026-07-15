@@ -13,15 +13,17 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("RecordPageClient", () => {
-  test("moves to the wake and sleep record pages from their actions", async () => {
+  test("moves to the available record pages from their actions", async () => {
     const user = userEvent.setup();
     render(<RecordPageClient />);
 
     await user.click(screen.getByRole("button", { name: "기상 시간" }));
     await user.click(screen.getByRole("button", { name: "잠든 시간" }));
+    await user.click(screen.getByRole("button", { name: "화장실" }));
 
     expect(push).toHaveBeenCalledWith("/record/wake");
     expect(push).toHaveBeenCalledWith("/record/sleep");
+    expect(push).toHaveBeenCalledWith("/record/toilet");
   });
 
   test("shows the new record UI sections and bottom tabs", () => {

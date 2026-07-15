@@ -38,7 +38,7 @@ const RECORD_ACTIONS = [
   {
     title: "화장실",
     Icon: MdOutlineWc,
-    href: undefined,
+    href: "/record/toilet",
   },
   {
     title: "운동",

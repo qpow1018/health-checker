@@ -2,8 +2,10 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 import type {
   TReqCreateSleepRecord,
+  TReqCreateToiletRecord,
   TReqListHealthRecords,
   TSleepDetailsV1,
+  TToiletDetailsV1,
 } from "./type";
 
 export async function createSleepRecord({
@@ -11,12 +13,34 @@ export async function createSleepRecord({
   time,
   event,
 }: TReqCreateSleepRecord) {
-  const supabase = getSupabaseBrowserClient();
   const details: TSleepDetailsV1 = { event };
+  return createHealthRecord({ category: "sleep", date, time, details });
+}
+
+export async function createToiletRecord({
+  date,
+  time,
+  details,
+}: TReqCreateToiletRecord) {
+  return createHealthRecord({ category: "toilet", date, time, details });
+}
+
+async function createHealthRecord({
+  category,
+  date,
+  time,
+  details,
+}: {
+  category: "sleep" | "toilet";
+  date: string;
+  time: string;
+  details: TSleepDetailsV1 | TToiletDetailsV1;
+}) {
+  const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
     .from("health_records")
     .insert({
-      category: "sleep",
+      category,
       recorded_at: createRecordedAt(date, time),
       details,
       details_version: 1,

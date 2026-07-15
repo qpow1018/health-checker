@@ -41,6 +41,12 @@ export type TReqCreateSleepRecord = {
   event: TSleepEvent;
 };
 
+export type TReqCreateToiletRecord = {
+  date: string;
+  time: string;
+  details: TToiletDetailsV1;
+};
+
 export type TReqListHealthRecords = {
   limit?: number;
 };

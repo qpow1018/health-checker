@@ -48,4 +48,24 @@ describe("RecordsPageClient", () => {
       "잠든 시간",
     );
   });
+
+  test("shows the toilet record type", async () => {
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-2",
+        user_id: "user-1",
+        category: "toilet",
+        recorded_at: "2026-07-15T06:30:00.000Z",
+        details: { type: "bowel", stoolConsistency: "loose" },
+        details_version: 1,
+        created_at: "2026-07-15T06:30:00.000Z",
+        updated_at: "2026-07-15T06:30:00.000Z",
+      },
+    ]);
+    render(<RecordsPageClient />);
+
+    expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
+      "대변 기록",
+    );
+  });
 });

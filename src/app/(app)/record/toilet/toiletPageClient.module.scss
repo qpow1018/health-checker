@@ -1,0 +1,13 @@
+.toilet-page-client {
+  min-height: 100svh;
+  padding-bottom: $bottom-nav-space;
+
+  .toilet-page-content {
+    padding: 24px 16px;
+  }
+
+  .toilet-form {
+    display: grid;
+    gap: 8px;
+  }
+}

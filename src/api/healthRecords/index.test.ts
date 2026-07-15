@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { createSleepRecord, listHealthRecords } from "./index";
+import { createSleepRecord, createToiletRecord, listHealthRecords } from "./index";
 
 const supabaseMocks = vi.hoisted(() => ({
   from: vi.fn(),
@@ -47,6 +47,35 @@ describe("healthRecords API", () => {
     expect(supabaseMocks.from).toHaveBeenCalledWith("health_records");
     expect(order).toHaveBeenCalledWith("recorded_at", { ascending: false });
     expect(limit).toHaveBeenCalledWith(20);
+  });
+
+  test("stores a toilet record with selected details", async () => {
+    const single = vi.fn().mockResolvedValue({ data: { id: "record-2" }, error: null });
+    const select = vi.fn().mockReturnValue({ single });
+    const insert = vi.fn().mockReturnValue({ select });
+
+    supabaseMocks.from.mockReturnValue({ insert });
+
+    await createToiletRecord({
+      date: "2026-07-15",
+      time: "06:30",
+      details: {
+        type: "bowel",
+        stoolConsistency: "loose",
+        note: "복통 있음",
+      },
+    });
+
+    expect(insert).toHaveBeenCalledWith({
+      category: "toilet",
+      recorded_at: new Date("2026-07-15T06:30:00").toISOString(),
+      details: {
+        type: "bowel",
+        stoolConsistency: "loose",
+        note: "복통 있음",
+      },
+      details_version: 1,
+    });
   });
 
   test("rejects an invalid date before creating a record", async () => {
