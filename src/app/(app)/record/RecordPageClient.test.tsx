@@ -13,12 +13,14 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("RecordPageClient", () => {
-  test("moves to the sleep record page from the sleep action", async () => {
+  test("moves to the wake and sleep record pages from their actions", async () => {
     const user = userEvent.setup();
     render(<RecordPageClient />);
 
-    await user.click(screen.getByRole("button", { name: "수면 시간" }));
+    await user.click(screen.getByRole("button", { name: "기상 시간" }));
+    await user.click(screen.getByRole("button", { name: "잠든 시간" }));
 
+    expect(push).toHaveBeenCalledWith("/record/wake");
     expect(push).toHaveBeenCalledWith("/record/sleep");
   });
 
@@ -43,7 +45,8 @@ describe("RecordPageClient", () => {
 
     const actionSection = screen.getByRole("region", { name: "기록 버튼" });
     expect(actionSection).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "수면 시간" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "기상 시간" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "잠든 시간" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "먹은 음식" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "화장실" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "운동" })).toBeInTheDocument();

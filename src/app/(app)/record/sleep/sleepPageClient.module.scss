@@ -66,46 +66,10 @@
       color: $text;
     }
 
-    .duration-preview {
-      font-size: 14px;
-      font-weight: 800;
-      color: $primary-strong;
-    }
-
-    .feeling-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .summary-list {
-      display: grid;
-      gap: 10px;
-
-      div {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid $border;
-
-        &:last-child {
-          padding-bottom: 0;
-          border-bottom: 0;
-        }
-      }
-
-      dt {
-        font-size: 13px;
-        font-weight: 700;
-        color: $text-muted;
-      }
-
-      dd {
-        font-size: 14px;
-        font-weight: 800;
-        color: $text;
-      }
+    .time-preview {
+      font-size: 13px;
+      font-weight: 700;
+      color: $text-muted;
     }
   }
 }

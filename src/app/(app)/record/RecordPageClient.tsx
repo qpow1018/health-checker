@@ -14,13 +14,19 @@ import {
   MdOutlineWc,
   MdRestaurant,
   MdSentimentSatisfiedAlt,
+  MdWbSunny,
 } from "react-icons/md";
 
 import styles from "./recordPageClient.module.scss";
 
 const RECORD_ACTIONS = [
   {
-    title: "수면 시간",
+    title: "기상 시간",
+    Icon: MdWbSunny,
+    href: "/record/wake",
+  },
+  {
+    title: "잠든 시간",
     Icon: MdBedtime,
     href: "/record/sleep",
   },
