@@ -14,27 +14,28 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("SleepPageClient", () => {
-  test("shows the slept time record UI", () => {
+  test("shows the slept time form", () => {
     render(<SleepPageClient />);
 
     expect(
       screen.getByRole("main", { name: "잠든 시간 기록 화면" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "잠든 시간을 남겨요", level: 1 })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "언제 잠들었나요?", level: 2 })).toBeInTheDocument();
-    expect(screen.getByLabelText("잠든 시간")).toHaveValue("");
-    expect(screen.getByText("아직 입력 전")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "잠든 시간 저장" })).toBeInTheDocument();
+    expect(screen.getByLabelText("날짜")).toBeInTheDocument();
+    expect(screen.getByLabelText("시간")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "저장" })).toBeDisabled();
     expect(screen.getByRole("navigation", { name: "하단 탭" })).toBeInTheDocument();
   });
 
-  test("updates the slept time preview", async () => {
+  test("enables saving after selecting a time", async () => {
     const user = userEvent.setup();
     render(<SleepPageClient />);
 
-    await user.type(screen.getByLabelText("잠든 시간"), "23:30");
+    await user.click(screen.getByLabelText("시간"));
+    await user.click(screen.getAllByRole("option", { name: "23" })[0]);
+    await user.click(screen.getAllByRole("option", { name: "30" })[0]);
+    await user.click(screen.getByRole("button", { name: "적용하기" }));
 
-    expect(screen.getByText("23:30에 잠든 것으로 기록됩니다.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "저장" })).toBeEnabled();
   });
 
   test("moves back to the record page", async () => {
