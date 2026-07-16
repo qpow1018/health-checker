@@ -1,21 +1,14 @@
 .records-page-content {
   min-height: 100svh;
-  color: $text;
+  padding-bottom: $bottom-nav-space;
+  background: #ffffff;
 
-  .app-canvas {
-    min-height: 100svh;
-    padding: max(18px, env(safe-area-inset-top)) 18px
-      calc($bottom-nav-space + 22px);
-    background: #ffffff;
-  }
-
-  .page-header {
-    padding: 8px 0 18px;
+  .page-title-box {
+    padding: 12px 16px;
 
     h1 {
-      margin: 0;
       font-size: 22px;
-      line-height: 1.3;
+      font-weight: 800;
     }
   }
 
@@ -62,61 +55,8 @@
 
   .record-list {
     display: grid;
-    gap: 28px;
-    margin-top: 10px;
-  }
-
-  .date-section {
-    display: grid;
     gap: 8px;
-  }
-
-  .date-heading {
-    margin: 0;
-    color: $text-secondary;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.4;
-  }
-
-  .date-records {
-    border-top: 1px solid $border;
-  }
-
-  .record-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    border-bottom: 1px solid $border;
-    padding: 14px 2px;
-  }
-
-  .record-category {
-    min-width: 0;
-    font-size: 15px;
-    font-weight: 800;
-  }
-
-  .record-content {
-    min-width: 0;
-  }
-
-  .record-description {
-    overflow: hidden;
-    margin: 4px 0 0;
-    color: $text-secondary;
-    font-size: 13px;
-    line-height: 1.4;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .record-time {
-    flex: 0 0 auto;
-    color: $text-secondary;
-    font-size: 13px;
-    font-weight: 600;
+    margin-top: 8px;
   }
 
   .record-link {

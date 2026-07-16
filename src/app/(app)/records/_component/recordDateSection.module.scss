@@ -1,0 +1,66 @@
+.date-section {
+  .date-heading {
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: $accent;
+    background-color: $accent-soft;
+  }
+
+  .record-item {
+    display: flex;
+    align-items: flex-start;
+    column-gap: 12px;
+    padding: 16px;
+    min-height: 64px;
+    border-bottom: 1px solid $border;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    .record-time {
+      flex: 0 0 auto;
+      padding-top: 4px;
+      color: $text-muted;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .record-content {
+      min-width: 0;
+      flex: 1;
+
+      .record-category {
+        min-width: 0;
+        font-size: 15px;
+      }
+
+      .record-description {
+        overflow: hidden;
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: $text-secondary;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .record-icon {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: $primary-soft;
+      color: $primary-strong;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}

@@ -14,6 +14,7 @@ vi.mock("@/api/healthRecords", () => ({
 describe("RecordsPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.history.replaceState({}, "", "/records");
   });
 
   test("shows an empty state when there are no records", async () => {
@@ -27,6 +28,14 @@ describe("RecordsPageClient", () => {
       "href",
       "/record",
     );
+  });
+
+  test("shows preview records without loading saved records", () => {
+    window.history.replaceState({}, "", "/records?preview=1");
+    render(<RecordsPageClient />);
+
+    expect(screen.getByText("커피 2잔, 토스트")).toBeInTheDocument();
+    expect(healthRecordMocks.listHealthRecords).not.toHaveBeenCalled();
   });
 
   test("shows recent sleep records", async () => {
