@@ -3,10 +3,29 @@ export function getTodayDateString() {
 }
 
 export function getCurrentTimeString() {
-  const now = new Date();
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(Math.floor(now.getMinutes() / 5) * 5).padStart(2, "0");
+  return formatTime(getRoundedCurrentTime());
+}
 
+export function getCurrentRecordDateTime() {
+  const roundedTime = getRoundedCurrentTime();
+
+  return {
+    date: formatDateString(roundedTime),
+    time: formatTime(roundedTime),
+  };
+}
+
+function getRoundedCurrentTime() {
+  const roundedTime = new Date();
+  roundedTime.setSeconds(0, 0);
+  roundedTime.setMinutes(Math.round(roundedTime.getMinutes() / 5) * 5);
+
+  return roundedTime;
+}
+
+function formatTime(date: Date) {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${hours}:${minutes}`;
 }
 

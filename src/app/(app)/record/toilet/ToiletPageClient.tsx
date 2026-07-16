@@ -10,7 +10,7 @@ import type {
   TToiletType,
   TToiletUrgency,
 } from "@/api/healthRecords/type";
-import { formatDateString, getTodayDateString } from "@/utils/date";
+import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -21,6 +21,7 @@ import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import Textarea from "@/components/common/form/Textarea";
 import TimePicker from "@/components/common/form/TimePicker";
+import BoxLoading from "@/components/common/loading/BoxLoading";
 
 import styles from "./toiletPageClient.module.scss";
 
@@ -55,22 +56,25 @@ export default function ToiletPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
+  const isEditing = Boolean(editId);
 
-  const [recordedOn, setRecordedOn] = useState(getTodayDateString);
-  const [recordedAt, setRecordedAt] = useState("");
+  const [defaultRecordDateTime] = useState(getCurrentRecordDateTime);
+  const [recordedOn, setRecordedOn] = useState(defaultRecordDateTime.date);
+  const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
   const [type, setType] = useState<TToiletType | "">("");
   const [urgency, setUrgency] = useState<TToiletUrgency | "">("");
   const [wokeFromSleep, setWokeFromSleep] = useState<"" | "yes" | "no">("");
   const [stoolConsistency, setStoolConsistency] = useState<TToiletStoolConsistency | "">("");
   const [note, setNote] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const { mutateAsync: createToiletRecord, isPending: isSaving } = useCreateToiletRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
-  const { data: record } = useHealthRecord(editId ?? "");
+  const { data: record, isLoading: isLoadingRecord, isError: isRecordError } = useHealthRecord(editId ?? "");
   const canRecordStoolConsistency = type === "bowel" || type === "both";
 
   useEffect(() => {
-    if (!record || record.category !== "toilet" || !isRecord(record.details)) return;
+    if (!isEditing || !record || record.category !== "toilet" || !isRecord(record.details)) return;
 
     const date = new Date(record.recorded_at);
     setRecordedOn(formatDateString(date));
@@ -82,7 +86,35 @@ export default function ToiletPageClient() {
     );
     setStoolConsistency(isStoolConsistency(record.details.stoolConsistency) ? record.details.stoolConsistency : "");
     setNote(typeof record.details.note === "string" ? record.details.note : "");
-  }, [record]);
+    setIsEditFormReady(true);
+  }, [isEditing, record]);
+
+  if (isEditing && isLoadingRecord) {
+    return (
+      <main className={styles["toilet-page-client"]} aria-label="화장실 기록 수정 화면">
+        <AppHeader title="화장실 기록 수정" />
+        <BoxLoading />
+      </main>
+    );
+  }
+
+  if (isEditing && (isRecordError || !record || record.category !== "toilet")) {
+    return (
+      <main className={styles["toilet-page-client"]} aria-label="화장실 기록 수정 화면">
+        <AppHeader title="화장실 기록 수정" />
+        <p className={styles["notice-message"]}>수정할 기록을 찾을 수 없습니다.</p>
+      </main>
+    );
+  }
+
+  if (isEditing && !isEditFormReady) {
+    return (
+      <main className={styles["toilet-page-client"]} aria-label="화장실 기록 수정 화면">
+        <AppHeader title="화장실 기록 수정" />
+        <BoxLoading />
+      </main>
+    );
+  }
 
   async function handleSubmit() {
     if (!recordedOn || !recordedAt || !type) {
@@ -113,13 +145,13 @@ export default function ToiletPageClient() {
       });
       router.back();
     } catch {
-      setErrorMessage("화장실 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      setErrorMessage(isEditing ? "화장실 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "화장실 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
   return (
-    <main className={styles["toilet-page-client"]} aria-label="화장실 기록 화면">
-      <AppHeader title="화장실" />
+    <main className={styles["toilet-page-client"]} aria-label={isEditing ? "화장실 기록 수정 화면" : "화장실 기록 화면"}>
+      <AppHeader title={isEditing ? "화장실 기록 수정" : "화장실"} />
 
       <div className={styles["toilet-page-content"]}>
         <form
@@ -186,13 +218,13 @@ export default function ToiletPageClient() {
             size="large"
             type="submit"
           >
-            {editId ? "수정 완료" : "저장"}
+            {isEditing ? "수정 완료" : "저장"}
           </Button>
           {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
       </div>
 
-      <BottomNavigation />
+      {!isEditing && <BottomNavigation />}
     </main>
   );
 }

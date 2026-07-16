@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCreateFoodRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
-import { formatDateString, getTodayDateString } from "@/utils/date";
+import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -14,6 +14,7 @@ import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import TimePicker from "@/components/common/form/TimePicker";
+import BoxLoading from "@/components/common/loading/BoxLoading";
 
 import { MdClose } from "react-icons/md";
 
@@ -31,18 +32,27 @@ export default function FoodPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
+  const isEditing = Boolean(editId);
 
-  const [recordedOn, setRecordedOn] = useState(getTodayDateString);
-  const [recordedAt, setRecordedAt] = useState("");
+  const [defaultRecordDateTime] = useState(getCurrentRecordDateTime);
+  const [recordedOn, setRecordedOn] = useState(defaultRecordDateTime.date);
+  const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
   const [foods, setFoods] = useState<TFoodFormItem[]>(() => [createFoodFormItem()]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const { mutateAsync: createFoodRecord, isPending: isSaving } = useCreateFoodRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
-  const { data: record } = useHealthRecord(editId ?? "");
+  const { data: record, isLoading: isLoadingRecord, isError: isRecordError } = useHealthRecord(editId ?? "");
   const hasFood = foods.some((food) => food.name.trim());
 
   useEffect(() => {
-    if (!record || record.category !== "food" || !isRecord(record.details) || !Array.isArray(record.details.foods)) {
+    if (
+      !isEditing ||
+      !record ||
+      record.category !== "food" ||
+      !isRecord(record.details) ||
+      !Array.isArray(record.details.foods)
+    ) {
       return;
     }
 
@@ -56,7 +66,35 @@ export default function FoodPageClient() {
     setRecordedOn(formatDateString(date));
     setRecordedAt(formatTimeString(date));
     setFoods(recordFoods.length > 0 ? recordFoods : [createFoodFormItem()]);
-  }, [record]);
+    setIsEditFormReady(true);
+  }, [isEditing, record]);
+
+  if (isEditing && isLoadingRecord) {
+    return (
+      <main className={styles["food-page-client"]} aria-label="음식 기록 수정 화면">
+        <AppHeader title="음식 기록 수정" />
+        <BoxLoading />
+      </main>
+    );
+  }
+
+  if (isEditing && (isRecordError || !record || record.category !== "food")) {
+    return (
+      <main className={styles["food-page-client"]} aria-label="음식 기록 수정 화면">
+        <AppHeader title="음식 기록 수정" />
+        <p className={styles["notice-message"]}>수정할 기록을 찾을 수 없습니다.</p>
+      </main>
+    );
+  }
+
+  if (isEditing && !isEditFormReady) {
+    return (
+      <main className={styles["food-page-client"]} aria-label="음식 기록 수정 화면">
+        <AppHeader title="음식 기록 수정" />
+        <BoxLoading />
+      </main>
+    );
+  }
 
   function handleAddFood() {
     setFoods((currentFoods) => [...currentFoods, createFoodFormItem()]);
@@ -100,13 +138,13 @@ export default function FoodPageClient() {
       });
       router.back();
     } catch {
-      setErrorMessage("음식 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      setErrorMessage(isEditing ? "음식 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "음식 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
   return (
-    <main className={styles["food-page-client"]} aria-label="음식 기록 화면">
-      <AppHeader title="먹은 음식" />
+    <main className={styles["food-page-client"]} aria-label={isEditing ? "음식 기록 수정 화면" : "음식 기록 화면"}>
+      <AppHeader title={isEditing ? "음식 기록 수정" : "먹은 음식"} />
 
       <div className={styles["food-page-content"]}>
         <form
@@ -171,13 +209,13 @@ export default function FoodPageClient() {
             size="large"
             type="submit"
           >
-            {editId ? "수정 완료" : "저장"}
+            {isEditing ? "수정 완료" : "저장"}
           </Button>
           {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
       </div>
 
-      <BottomNavigation />
+      {!isEditing && <BottomNavigation />}
     </main>
   );
 }

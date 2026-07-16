@@ -6,28 +6,36 @@ import QueryProvider from "@/components/QueryProvider";
 
 import FoodPageClient from "./FoodPageClient";
 
-const back = vi.fn();
+const routerMocks = vi.hoisted(() => ({
+  back: vi.fn(),
+  replace: vi.fn(),
+  editId: "",
+}));
 const healthRecordMocks = vi.hoisted(() => ({
   createFoodRecord: vi.fn(),
+  getHealthRecord: vi.fn(),
   updateHealthRecord: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/food",
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => new URLSearchParams(routerMocks.editId ? `edit=${routerMocks.editId}` : ""),
   useRouter: () => ({
-    back,
+    back: routerMocks.back,
+    replace: routerMocks.replace,
   }),
 }));
 
 vi.mock("@/api/healthRecords", () => ({
   createFoodRecord: healthRecordMocks.createFoodRecord,
+  getHealthRecord: healthRecordMocks.getHealthRecord,
   updateHealthRecord: healthRecordMocks.updateHealthRecord,
 }));
 
 describe("FoodPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    routerMocks.editId = "";
   });
 
   test("shows the food record form", () => {
@@ -75,7 +83,7 @@ describe("FoodPageClient", () => {
         { name: "토스트", amount: "" },
       ],
     });
-    expect(back).toHaveBeenCalled();
+    expect(routerMocks.back).toHaveBeenCalled();
   });
 
   test("shows an error when saving fails", async () => {
@@ -90,6 +98,49 @@ describe("FoodPageClient", () => {
     expect(
       await screen.findByText("음식 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
     ).toBeInTheDocument();
+  });
+
+  test("keeps the form hidden while an existing record is loading", () => {
+    routerMocks.editId = "record-4";
+    healthRecordMocks.getHealthRecord.mockReturnValue(new Promise(() => {}));
+
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    expect(screen.getByRole("main", { name: "음식 기록 수정 화면" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("음식 이름")).not.toBeInTheDocument();
+  });
+
+  test("loads an existing record and saves it through the edit flow", async () => {
+    const user = userEvent.setup();
+    routerMocks.editId = "record-4";
+    healthRecordMocks.getHealthRecord.mockResolvedValue({
+      id: "record-4",
+      user_id: "user-1",
+      category: "food",
+      recorded_at: "2026-07-14T23:30:00.000Z",
+      details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
+      details_version: 1,
+      created_at: "2026-07-14T23:30:00.000Z",
+      updated_at: "2026-07-14T23:30:00.000Z",
+    });
+    healthRecordMocks.updateHealthRecord.mockResolvedValue({ id: "record-4" });
+
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    expect(await screen.findByRole("main", { name: "음식 기록 수정 화면" })).toBeInTheDocument();
+    expect(await screen.findByDisplayValue("커피")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("토스트")).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "하단 탭" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "수정 완료" }));
+
+    expect(healthRecordMocks.updateHealthRecord).toHaveBeenCalledWith({
+      id: "record-4",
+      date: "2026-07-15",
+      time: "08:30",
+      details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
+    });
+    expect(routerMocks.replace).toHaveBeenCalledWith("/records/record-4");
   });
 });
 

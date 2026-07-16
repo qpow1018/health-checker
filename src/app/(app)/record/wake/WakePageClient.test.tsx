@@ -36,7 +36,7 @@ describe("WakePageClient", () => {
     expect(screen.getByRole("main", { name: "기상 시간 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
     expect(screen.getByLabelText("시간")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "저장" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "저장" })).toBeEnabled();
     expect(screen.getByRole("navigation", { name: "하단 탭" })).toBeInTheDocument();
   });
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCreateConditionRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
-import { formatDateString, getCurrentTimeString, getTodayDateString } from "@/utils/date";
+import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -14,6 +14,7 @@ import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import Textarea from "@/components/common/form/Textarea";
 import TimePicker from "@/components/common/form/TimePicker";
+import BoxLoading from "@/components/common/loading/BoxLoading";
 
 import styles from "./conditionPageClient.module.scss";
 
@@ -21,23 +22,54 @@ export default function ConditionPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
+  const isEditing = Boolean(editId);
 
-  const [recordedOn, setRecordedOn] = useState(getTodayDateString);
-  const [recordedAt, setRecordedAt] = useState(getCurrentTimeString);
+  const [defaultRecordDateTime] = useState(getCurrentRecordDateTime);
+  const [recordedOn, setRecordedOn] = useState(defaultRecordDateTime.date);
+  const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
   const [note, setNote] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const { mutateAsync: createConditionRecord, isPending: isSaving } = useCreateConditionRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
-  const { data: record } = useHealthRecord(editId ?? "");
+  const { data: record, isLoading: isLoadingRecord, isError: isRecordError } = useHealthRecord(editId ?? "");
 
   useEffect(() => {
-    if (!record || record.category !== "condition" || !isRecord(record.details)) return;
+    if (!isEditing || !record || record.category !== "condition" || !isRecord(record.details)) return;
 
     const date = new Date(record.recorded_at);
     setRecordedOn(formatDateString(date));
     setRecordedAt(formatTimeString(date));
     setNote(typeof record.details.note === "string" ? record.details.note : "");
-  }, [record]);
+    setIsEditFormReady(true);
+  }, [isEditing, record]);
+
+  if (isEditing && isLoadingRecord) {
+    return (
+      <main className={styles["condition-page-client"]} aria-label="컨디션 기록 수정 화면">
+        <AppHeader title="컨디션 기록 수정" />
+        <BoxLoading />
+      </main>
+    );
+  }
+
+  if (isEditing && (isRecordError || !record || record.category !== "condition")) {
+    return (
+      <main className={styles["condition-page-client"]} aria-label="컨디션 기록 수정 화면">
+        <AppHeader title="컨디션 기록 수정" />
+        <p className={styles["notice-message"]}>수정할 기록을 찾을 수 없습니다.</p>
+      </main>
+    );
+  }
+
+  if (isEditing && !isEditFormReady) {
+    return (
+      <main className={styles["condition-page-client"]} aria-label="컨디션 기록 수정 화면">
+        <AppHeader title="컨디션 기록 수정" />
+        <BoxLoading />
+      </main>
+    );
+  }
 
   async function handleSubmit() {
     if (!recordedOn || !recordedAt || !note.trim()) {
@@ -62,13 +94,13 @@ export default function ConditionPageClient() {
       await createConditionRecord(variables);
       router.back();
     } catch {
-      setErrorMessage("컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      setErrorMessage(isEditing ? "컨디션 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
   return (
-    <main className={styles["condition-page-client"]} aria-label="컨디션 기록 화면">
-      <AppHeader title="컨디션" />
+    <main className={styles["condition-page-client"]} aria-label={isEditing ? "컨디션 기록 수정 화면" : "컨디션 기록 화면"}>
+      <AppHeader title={isEditing ? "컨디션 기록 수정" : "컨디션"} />
 
       <div className={styles["condition-page-content"]}>
         <form
@@ -101,13 +133,13 @@ export default function ConditionPageClient() {
             size="large"
             type="submit"
           >
-            {editId ? "수정 완료" : "저장"}
+            {isEditing ? "수정 완료" : "저장"}
           </Button>
           {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
       </div>
 
-      <BottomNavigation />
+      {!isEditing && <BottomNavigation />}
     </main>
   );
 }
