@@ -1,6 +1,9 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 import type {
+  TFoodDetailsV1,
+  TFoodItemV1,
+  TReqCreateFoodRecord,
   TReqCreateSleepRecord,
   TReqCreateToiletRecord,
   TReqListHealthRecords,
@@ -25,16 +28,27 @@ export async function createToiletRecord({
   return createHealthRecord({ category: "toilet", date, time, details });
 }
 
+export async function createFoodRecord({ date, time, foods }: TReqCreateFoodRecord) {
+  const normalizedFoods = normalizeFoodItems(foods);
+
+  if (normalizedFoods.length === 0) {
+    throw new Error("음식을 하나 이상 입력해 주세요.");
+  }
+
+  const details: TFoodDetailsV1 = { foods: normalizedFoods };
+  return createHealthRecord({ category: "food", date, time, details });
+}
+
 async function createHealthRecord({
   category,
   date,
   time,
   details,
 }: {
-  category: "sleep" | "toilet";
+  category: "sleep" | "toilet" | "food";
   date: string;
   time: string;
-  details: TSleepDetailsV1 | TToiletDetailsV1;
+  details: TSleepDetailsV1 | TToiletDetailsV1 | TFoodDetailsV1;
 }) {
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
@@ -53,6 +67,20 @@ async function createHealthRecord({
   }
 
   return data;
+}
+
+function normalizeFoodItems(foods: TFoodItemV1[]) {
+  return foods.reduce<TFoodItemV1[]>((items, food) => {
+    const name = food.name.trim();
+    const amount = food.amount?.trim();
+
+    if (!name) {
+      return items;
+    }
+
+    items.push({ name, ...(amount && { amount }) });
+    return items;
+  }, []);
 }
 
 export async function listHealthRecords({ limit = 50 }: TReqListHealthRecords = {}) {

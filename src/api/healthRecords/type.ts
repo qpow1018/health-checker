@@ -35,6 +35,15 @@ export type TToiletDetailsV1 =
       note?: string;
     });
 
+export type TFoodItemV1 = {
+  name: string;
+  amount?: string;
+};
+
+export type TFoodDetailsV1 = {
+  foods: TFoodItemV1[];
+};
+
 export type TReqCreateSleepRecord = {
   date: string;
   time: string;
@@ -45,6 +54,12 @@ export type TReqCreateToiletRecord = {
   date: string;
   time: string;
   details: TToiletDetailsV1;
+};
+
+export type TReqCreateFoodRecord = {
+  date: string;
+  time: string;
+  foods: TFoodItemV1[];
 };
 
 export type TReqListHealthRecords = {

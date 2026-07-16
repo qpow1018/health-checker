@@ -19,10 +19,12 @@ describe("RecordPageClient", () => {
 
     await user.click(screen.getByRole("button", { name: "기상 시간" }));
     await user.click(screen.getByRole("button", { name: "잠든 시간" }));
+    await user.click(screen.getByRole("button", { name: "먹은 음식" }));
     await user.click(screen.getByRole("button", { name: "화장실" }));
 
     expect(push).toHaveBeenCalledWith("/record/wake");
     expect(push).toHaveBeenCalledWith("/record/sleep");
+    expect(push).toHaveBeenCalledWith("/record/food");
     expect(push).toHaveBeenCalledWith("/record/toilet");
   });
 

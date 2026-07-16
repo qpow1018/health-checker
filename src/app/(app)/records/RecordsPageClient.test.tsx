@@ -68,4 +68,24 @@ describe("RecordsPageClient", () => {
       "대변 기록",
     );
   });
+
+  test("shows food records", async () => {
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-3",
+        user_id: "user-1",
+        category: "food",
+        recorded_at: "2026-07-15T08:30:00.000Z",
+        details: { foods: [{ name: "커피", amount: "2잔" }] },
+        details_version: 1,
+        created_at: "2026-07-15T08:30:00.000Z",
+        updated_at: "2026-07-15T08:30:00.000Z",
+      },
+    ]);
+    render(<RecordsPageClient />);
+
+    expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
+      "음식 기록",
+    );
+  });
 });

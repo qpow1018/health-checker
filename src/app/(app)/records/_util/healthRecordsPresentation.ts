@@ -9,6 +9,10 @@ export function getRecordCategoryLabel(record: THealthRecordRow) {
     return getToiletTypeLabel(record.details);
   }
 
+  if (record.category === "food") {
+    return "음식 기록";
+  }
+
   return record.category;
 }
 

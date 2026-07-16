@@ -46,6 +46,21 @@ type TSleepDetailsV1 = {
 };
 ```
 
+음식 v1 상세값:
+
+```ts
+type TFoodDetailsV1 = {
+  foods: Array<{
+    name: string;
+    amount?: string;
+  }>;
+};
+```
+
+- 한 음식 기록은 한 번의 식사 또는 간식 시간에 해당한다.
+- `foods`는 한 개 이상이어야 한다. `name`은 음식 이름, `amount`는 `2잔`, `반 그릇`처럼 필요할 때만 적는 선택 값이다.
+- 서로 다른 시간에 먹은 음식은 별도 기록으로 저장해 실제 발생 시각을 보존한다.
+
 화장실 v1 상세값:
 
 ```ts

@@ -33,7 +33,7 @@ const RECORD_ACTIONS = [
   {
     title: "먹은 음식",
     Icon: MdRestaurant,
-    href: undefined,
+    href: "/record/food",
   },
   {
     title: "화장실",
