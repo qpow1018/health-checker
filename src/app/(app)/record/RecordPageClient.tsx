@@ -5,17 +5,23 @@ import { useRouter } from "next/navigation";
 
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
+import { useHealthRecords } from "@/queries/healthRecordsQuery";
 
 import {
   MdBedtime,
-  MdChevronRight,
   MdDirectionsRun,
-  MdOutlineCalendarToday,
   MdOutlineWc,
   MdRestaurant,
   MdSentimentSatisfiedAlt,
   MdWbSunny,
 } from "react-icons/md";
+
+import TodayRecordsDashboard from "./_component/TodayRecordsDashboard";
+import {
+  formatRecordDashboardDate,
+  getRecordDashboardDateRange,
+  getRecordDashboardMonthKey,
+} from "./_util/recordDashboard";
 
 import styles from "./recordPageClient.module.scss";
 
@@ -24,44 +30,46 @@ const RECORD_ACTIONS = [
     title: "기상 시간",
     Icon: MdWbSunny,
     href: "/record/wake",
+    status: undefined,
   },
   {
     title: "잠든 시간",
     Icon: MdBedtime,
     href: "/record/sleep",
+    status: undefined,
   },
   {
     title: "먹은 음식",
     Icon: MdRestaurant,
     href: "/record/food",
+    status: undefined,
   },
   {
     title: "화장실",
     Icon: MdOutlineWc,
     href: "/record/toilet",
+    status: undefined,
   },
   {
     title: "운동",
     Icon: MdDirectionsRun,
     href: undefined,
+    status: "준비 중",
   },
   {
     title: "컨디션",
     Icon: MdSentimentSatisfiedAlt,
     href: "/record/condition",
+    status: undefined,
   },
 ] as const;
 
 export default function RecordPageClient() {
   const router = useRouter();
-  const [dateText] = useState("7월 14일 화요일");
-  const [sleepSummary] = useState("07:20 기상");
-  const [bathroomSummary] = useState("2회");
-  const [conditionSummary] = useState("-");
-
-  function handleClickDateButton() {
-    // TODO: 날짜 선택 UI를 열고 선택한 날짜로 기록 화면을 갱신한다.
-  }
+  const [today] = useState(() => new Date());
+  const todayRange = getRecordDashboardDateRange(today);
+  const monthKey = getRecordDashboardMonthKey(today);
+  const { data, isError, isPending } = useHealthRecords(todayRange);
 
   function handleClickRecordAction(href?: string) {
     if (!href) {
@@ -77,38 +85,16 @@ export default function RecordPageClient() {
       <section className={styles["topbar"]}>
         <div className={styles["title-box"]}>
           <h1 className={styles["title"]}>기록하기</h1>
-          <p className={styles["date"]}>{dateText}</p>
-        </div>
-
-        <Button
-          color="gray"
-          fill="outline"
-          size="small"
-          className={styles["date-action"]}
-          onClick={handleClickDateButton}
-        >
-          <MdOutlineCalendarToday aria-hidden="true" />
-          오늘
-        </Button>
-      </section>
-
-      <section
-        className={styles["summary-section"]}
-        aria-label="오늘 기록 요약"
-      >
-        <div className={styles["summary-item"]}>
-          <span className={styles["label"]}>수면</span>
-          <p className={styles["value"]}>{sleepSummary}</p>
-        </div>
-        <div className={styles["summary-item"]}>
-          <span className={styles["label"]}>화장실</span>
-          <p className={styles["value"]}>{bathroomSummary}</p>
-        </div>
-        <div className={styles["summary-item"]}>
-          <span className={styles["label"]}>컨디션</span>
-          <p className={styles["value"]}>{conditionSummary}</p>
+          <p className={styles["date"]}>{formatRecordDashboardDate(today)}</p>
         </div>
       </section>
+
+      <TodayRecordsDashboard
+        isError={isError}
+        isLoading={isPending}
+        monthKey={monthKey}
+        records={data ?? []}
+      />
 
       <section className={styles["action-section"]} aria-label="기록 버튼">
         {RECORD_ACTIONS.map((action) => (
@@ -117,6 +103,7 @@ export default function RecordPageClient() {
             type="button"
             color="primary"
             fill="soft"
+            isDisabled={!action.href}
             size="large"
             isFullWidth
             key={action.title}
@@ -126,13 +113,11 @@ export default function RecordPageClient() {
               <span className={styles["action-icon"]}>
                 <action.Icon aria-hidden="true" />
               </span>
-              <span>{action.title}</span>
+              <span className={styles["action-label"]}>{action.title}</span>
+              {action.status && (
+                <span className={styles["action-status"]}>{action.status}</span>
+              )}
             </span>
-
-            <MdChevronRight
-              aria-hidden="true"
-              className={styles["chevron-icon"]}
-            />
           </Button>
         ))}
       </section>

@@ -1,6 +1,6 @@
 import type { THealthRecordRow } from "@/api/healthRecords/type";
 
-import { getRecordCategoryLabel } from "@/app/(app)/records/_util/healthRecordsPresentation";
+import { getRecordCategoryLabel } from "@/utils/healthRecordsPresentation";
 
 export function getRecordDetailItems(record: THealthRecordRow) {
   if (!isRecord(record.details)) {

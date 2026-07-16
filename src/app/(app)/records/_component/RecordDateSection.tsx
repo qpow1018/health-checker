@@ -5,7 +5,7 @@ import {
   formatRecordTime,
   getRecordCategoryLabel,
   getRecordDescription,
-} from "@/app/(app)/records/_util/healthRecordsPresentation";
+} from "@/utils/healthRecordsPresentation";
 
 import {
   MdBedtime,

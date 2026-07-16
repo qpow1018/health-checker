@@ -10,8 +10,8 @@ import Button from "@/components/common/button/Button";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 import BoxLoading from "@/components/common/loading/BoxLoading";
 
-import { formatRecordTime, getRecordCategoryLabel } from "@/app/(app)/records/_util/healthRecordsPresentation";
 import { getRecordMonthKey, isRecordMonthKey } from "@/app/(app)/records/_util/recordsMonth";
+import { formatRecordTime, getRecordCategoryLabel } from "@/utils/healthRecordsPresentation";
 import { getRecordDetailItems, getRecordEditPath } from "./_util/recordDetailPresentation";
 
 import styles from "./recordDetailPageClient.module.scss";

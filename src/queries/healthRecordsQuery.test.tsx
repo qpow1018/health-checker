@@ -20,7 +20,12 @@ describe("useCreateSleepRecord", () => {
       },
     });
     healthRecordMocks.createSleepRecord.mockResolvedValue({ id: "record-1" });
-    queryClient.setQueryData(HEALTH_RECORDS_QUERY_KEY, []);
+    const rangeQueryKey = [
+      ...HEALTH_RECORDS_QUERY_KEY,
+      "2026-07-15T15:00:00.000Z",
+      "2026-07-16T15:00:00.000Z",
+    ];
+    queryClient.setQueryData(rangeQueryKey, []);
 
     const { result } = renderHook(() => useCreateSleepRecord(), {
       wrapper: ({ children }) => (
@@ -41,6 +46,6 @@ describe("useCreateSleepRecord", () => {
       time: "23:30",
       event: "slept",
     });
-    expect(queryClient.getQueryState(HEALTH_RECORDS_QUERY_KEY)?.isInvalidated).toBe(true);
+    expect(queryClient.getQueryState(rangeQueryKey)?.isInvalidated).toBe(true);
   });
 });

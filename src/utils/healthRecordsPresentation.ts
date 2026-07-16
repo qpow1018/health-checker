@@ -70,6 +70,15 @@ export function groupRecordsByDate(records: THealthRecordRow[]) {
   }, []);
 }
 
+export function formatRecordTime(recordedAt: string) {
+  const date = new Date(recordedAt);
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
 function getToiletTypeLabel(details: THealthRecordRow["details"]) {
   if (!isRecord(details)) {
     return "화장실 기록";
@@ -90,21 +99,6 @@ function getToiletTypeLabel(details: THealthRecordRow["details"]) {
   return "화장실 기록";
 }
 
-export function formatRecordTime(recordedAt: string) {
-  const date = new Date(recordedAt);
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
-type TRecordDateGroup = {
-  dateKey: string;
-  dateLabel: string;
-  records: THealthRecordRow[];
-};
-
 function getSleepEvent(details: THealthRecordRow["details"]) {
   if (!isRecord(details) || typeof details.event !== "string") {
     return undefined;
@@ -116,3 +110,9 @@ function getSleepEvent(details: THealthRecordRow["details"]) {
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
+
+type TRecordDateGroup = {
+  dateKey: string;
+  dateLabel: string;
+  records: THealthRecordRow[];
+};
