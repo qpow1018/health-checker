@@ -75,3 +75,10 @@ export type TReqCreateConditionRecord = {
 export type TReqListHealthRecords = {
   limit?: number;
 };
+
+export type TReqUpdateHealthRecord = {
+  id: string;
+  date: string;
+  time: string;
+  details: TSleepDetailsV1 | TToiletDetailsV1 | TFoodDetailsV1 | TConditionDetailsV1;
+};

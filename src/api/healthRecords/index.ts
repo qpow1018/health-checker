@@ -9,6 +9,7 @@ import type {
   TReqCreateSleepRecord,
   TReqCreateToiletRecord,
   TReqListHealthRecords,
+  TReqUpdateHealthRecord,
   TSleepDetailsV1,
   TToiletDetailsV1,
 } from "./type";
@@ -113,6 +114,55 @@ export async function listHealthRecords({ limit = 50 }: TReqListHealthRecords = 
   }
 
   return data;
+}
+
+export async function getHealthRecord(id: string) {
+  const supabase = getSupabaseBrowserClient();
+  const { data, error } = await supabase
+    .from("health_records")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function updateHealthRecord({
+  id,
+  date,
+  time,
+  details,
+}: TReqUpdateHealthRecord) {
+  const supabase = getSupabaseBrowserClient();
+  const { data, error } = await supabase
+    .from("health_records")
+    .update({ recorded_at: createRecordedAt(date, time), details })
+    .eq("id", id)
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new Error("기록을 찾을 수 없습니다.");
+  }
+
+  return data;
+}
+
+export async function deleteHealthRecord(id: string) {
+  const supabase = getSupabaseBrowserClient();
+  const { error } = await supabase.from("health_records").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
 }
 
 function createRecordedAt(date: string, time: string) {

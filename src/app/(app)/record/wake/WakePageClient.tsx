@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { useCreateSleepRecord } from "@/queries/healthRecordsQuery";
-import { getTodayDateString } from "@/utils/date";
+import { useCreateSleepRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
+import { formatDateString, getTodayDateString } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -18,11 +18,23 @@ import styles from "./wakePageClient.module.scss";
 
 export default function WakePageClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
 
   const [wokeOn, setWokeOn] = useState(getTodayDateString);
   const [wokeAt, setWokeAt] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { mutateAsync: createSleepRecord, isPending: isSaving } = useCreateSleepRecord();
+  const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
+  const { data: record } = useHealthRecord(editId ?? "");
+
+  useEffect(() => {
+    if (!record || record.category !== "sleep") return;
+
+    const date = new Date(record.recorded_at);
+    setWokeOn(formatDateString(date));
+    setWokeAt(formatTimeString(date));
+  }, [record]);
 
   async function handleSubmit() {
     if (!wokeOn || !wokeAt) {
@@ -32,6 +44,12 @@ export default function WakePageClient() {
     setErrorMessage("");
 
     try {
+      if (editId) {
+        await updateHealthRecord({ id: editId, date: wokeOn, time: wokeAt, details: { event: "woke" } });
+        router.replace(`/records/${editId}`);
+        return;
+      }
+
       await createSleepRecord({ date: wokeOn, time: wokeAt, event: "woke" });
       router.back();
     } catch {
@@ -62,11 +80,11 @@ export default function WakePageClient() {
             color="primary"
             isDisabled={!wokeOn || !wokeAt}
             isFullWidth
-            isLoading={isSaving}
+            isLoading={isSaving || isUpdating}
             size="large"
             type="submit"
           >
-            저장
+            {editId ? "수정 완료" : "저장"}
           </Button>
           {errorMessage && (
             <FormMessage type="error">{errorMessage}</FormMessage>
@@ -77,4 +95,8 @@ export default function WakePageClient() {
       <BottomNavigation />
     </main>
   );
+}
+
+function formatTimeString(date: Date) {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { useCreateFoodRecord } from "@/queries/healthRecordsQuery";
-import { getTodayDateString } from "@/utils/date";
+import { useCreateFoodRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
+import { formatDateString, getTodayDateString } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -29,13 +29,34 @@ let nextFoodItemId = 0;
 
 export default function FoodPageClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
 
   const [recordedOn, setRecordedOn] = useState(getTodayDateString);
   const [recordedAt, setRecordedAt] = useState("");
   const [foods, setFoods] = useState<TFoodFormItem[]>(() => [createFoodFormItem()]);
   const [errorMessage, setErrorMessage] = useState("");
   const { mutateAsync: createFoodRecord, isPending: isSaving } = useCreateFoodRecord();
+  const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
+  const { data: record } = useHealthRecord(editId ?? "");
   const hasFood = foods.some((food) => food.name.trim());
+
+  useEffect(() => {
+    if (!record || record.category !== "food" || !isRecord(record.details) || !Array.isArray(record.details.foods)) {
+      return;
+    }
+
+    const date = new Date(record.recorded_at);
+    const recordFoods = record.details.foods.flatMap((food) => {
+      if (!isRecord(food) || typeof food.name !== "string") return [];
+
+      return [{ id: nextFoodItemId += 1, name: food.name, amount: typeof food.amount === "string" ? food.amount : "" }];
+    });
+
+    setRecordedOn(formatDateString(date));
+    setRecordedAt(formatTimeString(date));
+    setFoods(recordFoods.length > 0 ? recordFoods : [createFoodFormItem()]);
+  }, [record]);
 
   function handleAddFood() {
     setFoods((currentFoods) => [...currentFoods, createFoodFormItem()]);
@@ -59,10 +80,23 @@ export default function FoodPageClient() {
     setErrorMessage("");
 
     try {
+      const foodValues = foods.map(({ name, amount }) => ({ name, amount }));
+
+      if (editId) {
+        await updateHealthRecord({
+          id: editId,
+          date: recordedOn,
+          time: recordedAt,
+          details: { foods: foodValues.filter((food) => food.name.trim()).map((food) => ({ name: food.name.trim(), ...(food.amount.trim() && { amount: food.amount.trim() }) })) },
+        });
+        router.replace(`/records/${editId}`);
+        return;
+      }
+
       await createFoodRecord({
         date: recordedOn,
         time: recordedAt,
-        foods: foods.map(({ name, amount }) => ({ name, amount })),
+        foods: foodValues,
       });
       router.back();
     } catch {
@@ -133,11 +167,11 @@ export default function FoodPageClient() {
             color="primary"
             isDisabled={!recordedOn || !recordedAt || !hasFood}
             isFullWidth
-            isLoading={isSaving}
+            isLoading={isSaving || isUpdating}
             size="large"
             type="submit"
           >
-            저장
+            {editId ? "수정 완료" : "저장"}
           </Button>
           {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
@@ -156,4 +190,12 @@ function createFoodFormItem(): TFoodFormItem {
     name: "",
     amount: "",
   };
+}
+
+function formatTimeString(date: Date) {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

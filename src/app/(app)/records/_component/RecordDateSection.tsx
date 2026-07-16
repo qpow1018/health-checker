@@ -1,4 +1,5 @@
 import type { THealthRecordRow } from "@/api/healthRecords/type";
+import Link from "next/link";
 
 import {
   formatRecordTime,
@@ -31,7 +32,7 @@ export default function RecordDateSection(props: {
         const Icon = getRecordIcon(record.category);
 
         return (
-          <article className={styles["record-item"]} key={record.id}>
+          <Link className={styles["record-item"]} href={`/records/${record.id}`} key={record.id}>
             <time
               className={styles["record-time"]}
               dateTime={record.recorded_at}
@@ -51,7 +52,7 @@ export default function RecordDateSection(props: {
             <span className={styles["record-icon"]} aria-hidden="true">
               <Icon />
             </span>
-          </article>
+          </Link>
         );
       })}
     </section>

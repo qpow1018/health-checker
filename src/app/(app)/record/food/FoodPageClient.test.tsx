@@ -9,10 +9,12 @@ import FoodPageClient from "./FoodPageClient";
 const back = vi.fn();
 const healthRecordMocks = vi.hoisted(() => ({
   createFoodRecord: vi.fn(),
+  updateHealthRecord: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/food",
+  useSearchParams: () => new URLSearchParams(),
   useRouter: () => ({
     back,
   }),
@@ -20,6 +22,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/api/healthRecords", () => ({
   createFoodRecord: healthRecordMocks.createFoodRecord,
+  updateHealthRecord: healthRecordMocks.updateHealthRecord,
 }));
 
 describe("FoodPageClient", () => {

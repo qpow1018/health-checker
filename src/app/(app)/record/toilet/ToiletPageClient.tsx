@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { useCreateToiletRecord } from "@/queries/healthRecordsQuery";
+import { useCreateToiletRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
 import type {
   TToiletDetailsV1,
   TToiletStoolConsistency,
   TToiletType,
   TToiletUrgency,
 } from "@/api/healthRecords/type";
-import { getTodayDateString } from "@/utils/date";
+import { formatDateString, getTodayDateString } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -53,6 +53,8 @@ const STOOL_CONSISTENCY_OPTIONS = [
 
 export default function ToiletPageClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
 
   const [recordedOn, setRecordedOn] = useState(getTodayDateString);
   const [recordedAt, setRecordedAt] = useState("");
@@ -63,7 +65,24 @@ export default function ToiletPageClient() {
   const [note, setNote] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { mutateAsync: createToiletRecord, isPending: isSaving } = useCreateToiletRecord();
+  const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
+  const { data: record } = useHealthRecord(editId ?? "");
   const canRecordStoolConsistency = type === "bowel" || type === "both";
+
+  useEffect(() => {
+    if (!record || record.category !== "toilet" || !isRecord(record.details)) return;
+
+    const date = new Date(record.recorded_at);
+    setRecordedOn(formatDateString(date));
+    setRecordedAt(formatTimeString(date));
+    setType(isToiletType(record.details.type) ? record.details.type : "");
+    setUrgency(isUrgency(record.details.urgency) ? record.details.urgency : "");
+    setWokeFromSleep(
+      typeof record.details.wokeFromSleep === "boolean" ? (record.details.wokeFromSleep ? "yes" : "no") : "",
+    );
+    setStoolConsistency(isStoolConsistency(record.details.stoolConsistency) ? record.details.stoolConsistency : "");
+    setNote(typeof record.details.note === "string" ? record.details.note : "");
+  }, [record]);
 
   async function handleSubmit() {
     if (!recordedOn || !recordedAt || !type) {
@@ -73,16 +92,24 @@ export default function ToiletPageClient() {
     setErrorMessage("");
 
     try {
+      const details = createToiletDetails({
+        type,
+        urgency,
+        wokeFromSleep,
+        stoolConsistency,
+        note,
+      });
+
+      if (editId) {
+        await updateHealthRecord({ id: editId, date: recordedOn, time: recordedAt, details });
+        router.replace(`/records/${editId}`);
+        return;
+      }
+
       await createToiletRecord({
         date: recordedOn,
         time: recordedAt,
-        details: createToiletDetails({
-          type,
-          urgency,
-          wokeFromSleep,
-          stoolConsistency,
-          note,
-        }),
+        details,
       });
       router.back();
     } catch {
@@ -155,11 +182,11 @@ export default function ToiletPageClient() {
             color="primary"
             isDisabled={!recordedOn || !recordedAt || !type}
             isFullWidth
-            isLoading={isSaving}
+            isLoading={isSaving || isUpdating}
             size="large"
             type="submit"
           >
-            저장
+            {editId ? "수정 완료" : "저장"}
           </Button>
           {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
@@ -168,6 +195,26 @@ export default function ToiletPageClient() {
       <BottomNavigation />
     </main>
   );
+}
+
+function formatTimeString(date: Date) {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isToiletType(value: unknown): value is TToiletType {
+  return value === "urine" || value === "bowel" || value === "both";
+}
+
+function isUrgency(value: unknown): value is TToiletUrgency {
+  return value === "relaxed" || value === "ordinary" || value === "urgent";
+}
+
+function isStoolConsistency(value: unknown): value is TToiletStoolConsistency {
+  return value === "hard" || value === "formed" || value === "loose" || value === "watery";
 }
 
 function createToiletDetails(props: {

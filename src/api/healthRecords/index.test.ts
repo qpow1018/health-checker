@@ -5,7 +5,9 @@ import {
   createFoodRecord,
   createSleepRecord,
   createToiletRecord,
+  deleteHealthRecord,
   listHealthRecords,
+  updateHealthRecord,
 } from "./index";
 
 const supabaseMocks = vi.hoisted(() => ({
@@ -53,6 +55,40 @@ describe("healthRecords API", () => {
     expect(supabaseMocks.from).toHaveBeenCalledWith("health_records");
     expect(order).toHaveBeenCalledWith("recorded_at", { ascending: false });
     expect(limit).toHaveBeenCalledWith(20);
+  });
+
+  test("updates the selected record without changing its category", async () => {
+    const maybeSingle = vi.fn().mockResolvedValue({ data: { id: "record-1" }, error: null });
+    const select = vi.fn().mockReturnValue({ maybeSingle });
+    const eq = vi.fn().mockReturnValue({ select });
+    const update = vi.fn().mockReturnValue({ eq });
+
+    supabaseMocks.from.mockReturnValue({ update });
+
+    await updateHealthRecord({
+      id: "record-1",
+      date: "2026-07-16",
+      time: "08:30",
+      details: { foods: [{ name: "커피" }] },
+    });
+
+    expect(update).toHaveBeenCalledWith({
+      recorded_at: new Date("2026-07-16T08:30:00").toISOString(),
+      details: { foods: [{ name: "커피" }] },
+    });
+    expect(eq).toHaveBeenCalledWith("id", "record-1");
+  });
+
+  test("deletes only the selected record", async () => {
+    const eq = vi.fn().mockResolvedValue({ error: null });
+    const deleteRecords = vi.fn().mockReturnValue({ eq });
+
+    supabaseMocks.from.mockReturnValue({ delete: deleteRecords });
+
+    await deleteHealthRecord("record-1");
+
+    expect(deleteRecords).toHaveBeenCalledOnce();
+    expect(eq).toHaveBeenCalledWith("id", "record-1");
   });
 
   test("stores a toilet record with selected details", async () => {

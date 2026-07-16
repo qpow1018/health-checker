@@ -9,10 +9,12 @@ import SleepPageClient from "./SleepPageClient";
 const back = vi.fn();
 const healthRecordMocks = vi.hoisted(() => ({
   createSleepRecord: vi.fn(),
+  updateHealthRecord: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/sleep",
+  useSearchParams: () => new URLSearchParams(),
   useRouter: () => ({
     back,
   }),
@@ -20,6 +22,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/api/healthRecords", () => ({
   createSleepRecord: healthRecordMocks.createSleepRecord,
+  updateHealthRecord: healthRecordMocks.updateHealthRecord,
 }));
 
 describe("SleepPageClient", () => {

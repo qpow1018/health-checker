@@ -9,10 +9,12 @@ import ToiletPageClient from "./ToiletPageClient";
 const back = vi.fn();
 const healthRecordMocks = vi.hoisted(() => ({
   createToiletRecord: vi.fn(),
+  updateHealthRecord: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/toilet",
+  useSearchParams: () => new URLSearchParams(),
   useRouter: () => ({
     back,
   }),
@@ -20,6 +22,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/api/healthRecords", () => ({
   createToiletRecord: healthRecordMocks.createToiletRecord,
+  updateHealthRecord: healthRecordMocks.updateHealthRecord,
 }));
 
 describe("ToiletPageClient", () => {

@@ -7,13 +7,17 @@ import {
   createFoodRecord,
   createSleepRecord,
   createToiletRecord,
+  deleteHealthRecord,
+  getHealthRecord,
   listHealthRecords,
+  updateHealthRecord,
 } from "@/api/healthRecords";
 import type {
   TReqCreateConditionRecord,
   TReqCreateFoodRecord,
   TReqCreateSleepRecord,
   TReqCreateToiletRecord,
+  TReqUpdateHealthRecord,
 } from "@/api/healthRecords/type";
 
 export const HEALTH_RECORDS_QUERY_KEY = ["health-records"] as const;
@@ -27,7 +31,16 @@ export function useHealthRecords(isEnabled = true) {
   });
 }
 
-function useCreateHealthRecordMutation<TVariables, TData>(
+export function useHealthRecord(id: string) {
+  return useQuery({
+    queryKey: [...HEALTH_RECORDS_QUERY_KEY, id],
+    queryFn: () => getHealthRecord(id),
+    enabled: Boolean(id),
+    staleTime: 30 * 1000,
+  });
+}
+
+function useHealthRecordMutation<TVariables, TData>(
   mutationFn: (variables: TVariables) => Promise<TData>,
 ) {
   const queryClient = useQueryClient();
@@ -41,26 +54,39 @@ function useCreateHealthRecordMutation<TVariables, TData>(
 }
 
 export function useCreateSleepRecord() {
-  return useCreateHealthRecordMutation<TReqCreateSleepRecord, Awaited<ReturnType<typeof createSleepRecord>>>(
+  return useHealthRecordMutation<TReqCreateSleepRecord, Awaited<ReturnType<typeof createSleepRecord>>>(
     createSleepRecord,
   );
 }
 
 export function useCreateToiletRecord() {
-  return useCreateHealthRecordMutation<TReqCreateToiletRecord, Awaited<ReturnType<typeof createToiletRecord>>>(
+  return useHealthRecordMutation<TReqCreateToiletRecord, Awaited<ReturnType<typeof createToiletRecord>>>(
     createToiletRecord,
   );
 }
 
 export function useCreateFoodRecord() {
-  return useCreateHealthRecordMutation<TReqCreateFoodRecord, Awaited<ReturnType<typeof createFoodRecord>>>(
+  return useHealthRecordMutation<TReqCreateFoodRecord, Awaited<ReturnType<typeof createFoodRecord>>>(
     createFoodRecord,
   );
 }
 
 export function useCreateConditionRecord() {
-  return useCreateHealthRecordMutation<
+  return useHealthRecordMutation<
     TReqCreateConditionRecord,
     Awaited<ReturnType<typeof createConditionRecord>>
   >(createConditionRecord);
+}
+
+export function useUpdateHealthRecord() {
+  return useHealthRecordMutation<
+    TReqUpdateHealthRecord,
+    Awaited<ReturnType<typeof updateHealthRecord>>
+  >(updateHealthRecord);
+}
+
+export function useDeleteHealthRecord() {
+  return useHealthRecordMutation<string, Awaited<ReturnType<typeof deleteHealthRecord>>>(
+    deleteHealthRecord,
+  );
 }
