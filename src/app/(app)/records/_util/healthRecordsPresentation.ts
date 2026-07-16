@@ -13,7 +13,61 @@ export function getRecordCategoryLabel(record: THealthRecordRow) {
     return "음식 기록";
   }
 
+  if (record.category === "condition") {
+    return "컨디션 기록";
+  }
+
   return record.category;
+}
+
+export function getRecordDescription(record: THealthRecordRow) {
+  if (!isRecord(record.details)) {
+    return undefined;
+  }
+
+  if (record.category === "condition" && typeof record.details.note === "string") {
+    return record.details.note.split("\n")[0].trim() || undefined;
+  }
+
+  if (record.category === "food" && Array.isArray(record.details.foods)) {
+    const foodNames = record.details.foods.flatMap((food) => {
+      if (!isRecord(food) || typeof food.name !== "string" || !food.name.trim()) {
+        return [];
+      }
+
+      const amount = typeof food.amount === "string" && food.amount.trim();
+      return [`${food.name.trim()}${amount ? ` ${amount}` : ""}`];
+    });
+
+    return foodNames.join(", ") || undefined;
+  }
+
+  return undefined;
+}
+
+export function groupRecordsByDate(records: THealthRecordRow[]) {
+  return records.reduce<TRecordDateGroup[]>((groups, record) => {
+    const date = new Date(record.recorded_at);
+    const dateKey = [date.getFullYear(), date.getMonth(), date.getDate()].join("-");
+    const currentGroup = groups.at(-1);
+
+    if (currentGroup?.dateKey === dateKey) {
+      currentGroup.records.push(record);
+      return groups;
+    }
+
+    groups.push({
+      dateKey,
+      dateLabel: new Intl.DateTimeFormat("ko-KR", {
+        month: "long",
+        day: "numeric",
+        weekday: "short",
+      }).format(date),
+      records: [record],
+    });
+
+    return groups;
+  }, []);
 }
 
 function getToiletTypeLabel(details: THealthRecordRow["details"]) {
@@ -36,16 +90,20 @@ function getToiletTypeLabel(details: THealthRecordRow["details"]) {
   return "화장실 기록";
 }
 
-export function formatRecordDateTime(recordedAt: string) {
+export function formatRecordTime(recordedAt: string) {
   const date = new Date(recordedAt);
 
   return new Intl.DateTimeFormat("ko-KR", {
-    month: "long",
-    day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   }).format(date);
 }
+
+type TRecordDateGroup = {
+  dateKey: string;
+  dateLabel: string;
+  records: THealthRecordRow[];
+};
 
 function getSleepEvent(details: THealthRecordRow["details"]) {
   if (!isRecord(details) || typeof details.event !== "string") {

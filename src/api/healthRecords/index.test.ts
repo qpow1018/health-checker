@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import {
+  createConditionRecord,
   createFoodRecord,
   createSleepRecord,
   createToiletRecord,
@@ -111,6 +112,33 @@ describe("healthRecords API", () => {
     await expect(
       createFoodRecord({ date: "2026-07-15", time: "08:30", foods: [{ name: " " }] }),
     ).rejects.toThrow("음식을 하나 이상 입력해 주세요.");
+  });
+
+  test("stores a condition note after trimming it", async () => {
+    const single = vi.fn().mockResolvedValue({ data: { id: "record-4" }, error: null });
+    const select = vi.fn().mockReturnValue({ single });
+    const insert = vi.fn().mockReturnValue({ select });
+
+    supabaseMocks.from.mockReturnValue({ insert });
+
+    await createConditionRecord({
+      date: "2026-07-16",
+      time: "14:20",
+      note: " 두통 ",
+    });
+
+    expect(insert).toHaveBeenCalledWith({
+      category: "condition",
+      recorded_at: new Date("2026-07-16T14:20:00").toISOString(),
+      details: { note: "두통" },
+      details_version: 1,
+    });
+  });
+
+  test("rejects a condition record without a note", async () => {
+    await expect(
+      createConditionRecord({ date: "2026-07-16", time: "14:20", note: " " }),
+    ).rejects.toThrow("불편했던 점을 입력해 주세요.");
   });
 
   test("rejects an invalid date before creating a record", async () => {

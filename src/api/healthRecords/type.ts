@@ -44,6 +44,10 @@ export type TFoodDetailsV1 = {
   foods: TFoodItemV1[];
 };
 
+export type TConditionDetailsV1 = {
+  note: string;
+};
+
 export type TReqCreateSleepRecord = {
   date: string;
   time: string;
@@ -60,6 +64,12 @@ export type TReqCreateFoodRecord = {
   date: string;
   time: string;
   foods: TFoodItemV1[];
+};
+
+export type TReqCreateConditionRecord = {
+  date: string;
+  time: string;
+  note: string;
 };
 
 export type TReqListHealthRecords = {

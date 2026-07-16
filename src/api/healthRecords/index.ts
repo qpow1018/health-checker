@@ -1,6 +1,8 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 import type {
+  TConditionDetailsV1,
+  TReqCreateConditionRecord,
   TFoodDetailsV1,
   TFoodItemV1,
   TReqCreateFoodRecord,
@@ -39,16 +41,31 @@ export async function createFoodRecord({ date, time, foods }: TReqCreateFoodReco
   return createHealthRecord({ category: "food", date, time, details });
 }
 
+export async function createConditionRecord({
+  date,
+  time,
+  note,
+}: TReqCreateConditionRecord) {
+  const normalizedNote = note.trim();
+
+  if (!normalizedNote) {
+    throw new Error("불편했던 점을 입력해 주세요.");
+  }
+
+  const details: TConditionDetailsV1 = { note: normalizedNote };
+  return createHealthRecord({ category: "condition", date, time, details });
+}
+
 async function createHealthRecord({
   category,
   date,
   time,
   details,
 }: {
-  category: "sleep" | "toilet" | "food";
+  category: "sleep" | "toilet" | "food" | "condition";
   date: string;
   time: string;
-  details: TSleepDetailsV1 | TToiletDetailsV1 | TFoodDetailsV1;
+  details: TSleepDetailsV1 | TToiletDetailsV1 | TFoodDetailsV1 | TConditionDetailsV1;
 }) {
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase

@@ -21,7 +21,7 @@ describe("RecordsPageClient", () => {
     render(<RecordsPageClient />);
 
     expect(screen.getByRole("main", { name: "기록 보기 화면" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "저장한 기록을 확인해요" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "기록 보기" })).toBeInTheDocument();
     expect(await screen.findByRole("region", { name: "빈 기록" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "기록하러 가기" })).toHaveAttribute(
       "href",
@@ -87,5 +87,55 @@ describe("RecordsPageClient", () => {
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
       "음식 기록",
     );
+  });
+
+  test("shows condition notes in recent records", async () => {
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-4",
+        user_id: "user-1",
+        category: "condition",
+        recorded_at: "2026-07-16T14:20:00.000Z",
+        details: { note: "두통\n오후부터 시작" },
+        details_version: 1,
+        created_at: "2026-07-16T14:20:00.000Z",
+        updated_at: "2026-07-16T14:20:00.000Z",
+      },
+    ]);
+    render(<RecordsPageClient />);
+
+    expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
+      "컨디션 기록",
+    );
+    expect(screen.getByText("두통")).toBeInTheDocument();
+  });
+
+  test("groups records by date and shows a food description", async () => {
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-5",
+        user_id: "user-1",
+        category: "food",
+        recorded_at: "2026-07-16T08:30:00.000Z",
+        details: { foods: [{ name: "커피", amount: "2잔" }] },
+        details_version: 1,
+        created_at: "2026-07-16T08:30:00.000Z",
+        updated_at: "2026-07-16T08:30:00.000Z",
+      },
+      {
+        id: "record-6",
+        user_id: "user-1",
+        category: "sleep",
+        recorded_at: "2026-07-15T14:30:00.000Z",
+        details: { event: "slept" },
+        details_version: 1,
+        created_at: "2026-07-15T14:30:00.000Z",
+        updated_at: "2026-07-15T14:30:00.000Z",
+      },
+    ]);
+    render(<RecordsPageClient />);
+
+    expect(await screen.findByText("커피 2잔")).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(2);
   });
 });

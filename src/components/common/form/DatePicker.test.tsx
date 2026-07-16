@@ -34,7 +34,7 @@ describe("DatePicker", () => {
 
     const dialog = screen.getByRole("dialog", { name: "날짜 선택" });
     await user.click(
-      within(dialog).getByRole("button", { name: "2026년 7월 16일 목요일" }),
+      within(dialog).getByRole("button", { name: /^(오늘, )?2026년 7월 16일 목요일$/ }),
     );
 
     await user.click(within(dialog).getByRole("button", { name: "적용하기" }));
@@ -57,7 +57,7 @@ describe("DatePicker", () => {
 
     const dialog = screen.getByRole("dialog", { name: "날짜 선택" });
     await user.click(
-      within(dialog).getByRole("button", { name: "2026년 7월 16일 목요일" }),
+      within(dialog).getByRole("button", { name: /^(오늘, )?2026년 7월 16일 목요일$/ }),
     );
     await user.click(within(dialog).getByRole("button", { name: "취소" }));
 

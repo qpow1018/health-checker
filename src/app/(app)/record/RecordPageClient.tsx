@@ -48,7 +48,7 @@ const RECORD_ACTIONS = [
   {
     title: "컨디션",
     Icon: MdSentimentSatisfiedAlt,
-    href: undefined,
+    href: "/record/condition",
   },
 ] as const;
 

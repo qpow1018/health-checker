@@ -21,11 +21,13 @@ describe("RecordPageClient", () => {
     await user.click(screen.getByRole("button", { name: "잠든 시간" }));
     await user.click(screen.getByRole("button", { name: "먹은 음식" }));
     await user.click(screen.getByRole("button", { name: "화장실" }));
+    await user.click(screen.getByRole("button", { name: "컨디션" }));
 
     expect(push).toHaveBeenCalledWith("/record/wake");
     expect(push).toHaveBeenCalledWith("/record/sleep");
     expect(push).toHaveBeenCalledWith("/record/food");
     expect(push).toHaveBeenCalledWith("/record/toilet");
+    expect(push).toHaveBeenCalledWith("/record/condition");
   });
 
   test("shows the new record UI sections and bottom tabs", () => {

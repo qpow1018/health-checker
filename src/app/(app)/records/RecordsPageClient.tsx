@@ -8,8 +8,10 @@ import type { THealthRecordRow } from "@/api/healthRecords/type";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 
 import {
-  formatRecordDateTime,
+  formatRecordTime,
   getRecordCategoryLabel,
+  getRecordDescription,
+  groupRecordsByDate,
 } from "./_util/healthRecordsPresentation";
 
 import styles from "./recordsPageClient.module.scss";
@@ -47,12 +49,13 @@ export function RecordsPageClient() {
     };
   }, []);
 
+  const recordGroups = groupRecordsByDate(records);
+
   return (
     <main className={styles["records-page-content"]} aria-label="기록 보기 화면">
       <div className={styles["app-canvas"]}>
-        <header className={styles.topbar}>
-          <p className={styles.eyebrow}>기록 보기</p>
-          <h1>저장한 기록을 확인해요</h1>
+        <header className={styles["page-header"]}>
+          <h1>기록 보기</h1>
         </header>
 
         {isLoading && <p className={styles["status-message"]}>기록을 불러오는 중입니다.</p>}
@@ -71,15 +74,31 @@ export function RecordsPageClient() {
 
         {!isLoading && !errorMessage && records.length > 0 && (
           <section className={styles["record-list"]} aria-label="최근 기록 목록">
-            {records.map((record) => (
-              <article className={styles["record-item"]} key={record.id}>
-                <span className={styles["record-category"]}>
-                  {getRecordCategoryLabel(record)}
-                </span>
-                <time className={styles["record-time"]} dateTime={record.recorded_at}>
-                  {formatRecordDateTime(record.recorded_at)}
-                </time>
-              </article>
+            {recordGroups.map((group) => (
+              <section className={styles["date-section"]} key={group.dateKey}>
+                <h2 className={styles["date-heading"]}>{group.dateLabel}</h2>
+                <div className={styles["date-records"]}>
+                  {group.records.map((record) => {
+                    const description = getRecordDescription(record);
+
+                    return (
+                      <article className={styles["record-item"]} key={record.id}>
+                        <div className={styles["record-content"]}>
+                          <span className={styles["record-category"]}>
+                            {getRecordCategoryLabel(record)}
+                          </span>
+                          {description && (
+                            <p className={styles["record-description"]}>{description}</p>
+                          )}
+                        </div>
+                        <time className={styles["record-time"]} dateTime={record.recorded_at}>
+                          {formatRecordTime(record.recorded_at)}
+                        </time>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
             ))}
           </section>
         )}
