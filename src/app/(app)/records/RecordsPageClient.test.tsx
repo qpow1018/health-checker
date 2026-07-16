@@ -38,6 +38,13 @@ describe("RecordsPageClient", () => {
     expect(healthRecordMocks.listHealthRecords).not.toHaveBeenCalled();
   });
 
+  test("shows a loading indicator while records are loading", () => {
+    healthRecordMocks.listHealthRecords.mockReturnValue(new Promise(() => {}));
+    render(<RecordsPageClient />);
+
+    expect(screen.getByRole("status", { name: "기록을 불러오는 중" })).toBeInTheDocument();
+  });
+
   test("shows recent sleep records", async () => {
     healthRecordMocks.listHealthRecords.mockResolvedValue([
       {

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { listHealthRecords } from "@/api/healthRecords";
 import type { THealthRecordRow } from "@/api/healthRecords/type";
+import BoxLoading from "@/components/common/loading/BoxLoading";
+
 import { PREVIEW_RECORDS } from "./_define/previewRecords";
 import { groupRecordsByDate } from "./_util/healthRecordsPresentation";
 
@@ -70,7 +72,9 @@ export function RecordsPageClient() {
       </header>
 
       {isLoading && (
-        <p className={styles["status-message"]}>기록을 불러오는 중입니다.</p>
+        <div role="status" aria-label="기록을 불러오는 중">
+          <BoxLoading />
+        </div>
       )}
 
       {errorMessage && (

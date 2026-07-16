@@ -12,43 +12,10 @@
     }
   }
 
-  .empty-state {
-    display: grid;
-    gap: 10px;
-    margin-top: 42px;
-    text-align: center;
-
-    h2,
-    p {
-      margin: 0;
-    }
-
-    h2 {
-      font-size: 20px;
-      line-height: 1.25;
-    }
-
-    p {
-      color: $text-secondary;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-  }
-
-  .status-message,
   .error-message {
     margin: 32px 0 0;
     padding: 12px;
     font-size: 14px;
-    line-height: 1.55;
-  }
-
-  .status-message {
-    background: $primary-soft;
-    color: $primary-strong;
-  }
-
-  .error-message {
     background: $danger-soft;
     color: $danger;
   }
@@ -57,13 +24,5 @@
     display: grid;
     gap: 8px;
     margin-top: 8px;
-  }
-
-  .record-link {
-    justify-self: center;
-    margin-top: 8px;
-    color: $primary-strong;
-    font-weight: 800;
-    text-decoration: none;
   }
 }
