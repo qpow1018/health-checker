@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { useDeleteHealthRecord, useHealthRecord } from "@/queries/healthRecordsQuery";
@@ -11,12 +11,14 @@ import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 import BoxLoading from "@/components/common/loading/BoxLoading";
 
 import { formatRecordTime, getRecordCategoryLabel } from "@/app/(app)/records/_util/healthRecordsPresentation";
+import { getRecordMonthKey, isRecordMonthKey } from "@/app/(app)/records/_util/recordsMonth";
 import { getRecordDetailItems, getRecordEditPath } from "./_util/recordDetailPresentation";
 
 import styles from "./recordDetailPageClient.module.scss";
 
 export default function RecordDetailPageClient({ recordId }: { recordId: string }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
   const { data: record, isLoading, isError } = useHealthRecord(recordId);
@@ -26,7 +28,8 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
     try {
       setDeleteErrorMessage("");
       await deleteHealthRecord(recordId);
-      router.replace("/records");
+      const monthKey = searchParams.get("month");
+      router.replace(isRecordMonthKey(monthKey) ? `/records?month=${monthKey}` : "/records");
     } catch {
       setIsDeleteModalOpen(false);
       setDeleteErrorMessage("기록을 삭제하지 못했습니다. 다시 시도해 주세요.");
@@ -54,6 +57,11 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
   const detailItems = getRecordDetailItems(record);
   const editPath = getRecordEditPath(record);
   const recordedAt = new Date(record.recorded_at);
+  const requestedMonthKey = searchParams.get("month");
+  const returnMonthKey = isRecordMonthKey(requestedMonthKey)
+    ? requestedMonthKey
+    : getRecordMonthKey(recordedAt);
+  const editHref = editPath ? `${editPath}&month=${returnMonthKey}` : undefined;
   const dateLabel = new Intl.DateTimeFormat("ko-KR", {
     year: "numeric",
     month: "long",
@@ -86,9 +94,9 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
         <Button
           color="gray"
           fill="outline"
-          isDisabled={!editPath}
+          isDisabled={!editHref}
           isFullWidth
-          onClick={() => editPath && router.push(editPath)}
+          onClick={() => editHref && router.push(editHref)}
           size="large"
         >
           수정

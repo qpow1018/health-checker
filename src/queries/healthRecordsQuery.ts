@@ -15,6 +15,7 @@ import {
 import type {
   TReqCreateConditionRecord,
   TReqCreateFoodRecord,
+  TReqListHealthRecords,
   TReqCreateSleepRecord,
   TReqCreateToiletRecord,
   TReqUpdateHealthRecord,
@@ -22,10 +23,10 @@ import type {
 
 export const HEALTH_RECORDS_QUERY_KEY = ["health-records"] as const;
 
-export function useHealthRecords(isEnabled = true) {
+export function useHealthRecords(range: TReqListHealthRecords, isEnabled = true) {
   return useQuery({
-    queryKey: HEALTH_RECORDS_QUERY_KEY,
-    queryFn: () => listHealthRecords(),
+    queryKey: [...HEALTH_RECORDS_QUERY_KEY, range.from, range.to],
+    queryFn: () => listHealthRecords(range),
     enabled: isEnabled,
     staleTime: 30 * 1000,
   });

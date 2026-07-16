@@ -80,7 +80,7 @@ export default function SleepPageClient() {
     try {
       if (editId) {
         await updateHealthRecord({ id: editId, date: sleptOn, time: sleptAt, details: { event: "slept" } });
-        router.replace(`/records/${editId}`);
+        router.back();
         return;
       }
 

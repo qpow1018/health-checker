@@ -127,7 +127,7 @@ export default function FoodPageClient() {
           time: recordedAt,
           details: { foods: foodValues.filter((food) => food.name.trim()).map((food) => ({ name: food.name.trim(), ...(food.amount.trim() && { amount: food.amount.trim() }) })) },
         });
-        router.replace(`/records/${editId}`);
+        router.back();
         return;
       }
 

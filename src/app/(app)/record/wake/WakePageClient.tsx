@@ -78,7 +78,7 @@ export default function WakePageClient() {
     try {
       if (editId) {
         await updateHealthRecord({ id: editId, date: wokeOn, time: wokeAt, details: { event: "woke" } });
-        router.replace(`/records/${editId}`);
+        router.back();
         return;
       }
 

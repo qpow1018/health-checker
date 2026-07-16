@@ -8,7 +8,6 @@ import FoodPageClient from "./FoodPageClient";
 
 const routerMocks = vi.hoisted(() => ({
   back: vi.fn(),
-  replace: vi.fn(),
   editId: "",
 }));
 const healthRecordMocks = vi.hoisted(() => ({
@@ -22,7 +21,6 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(routerMocks.editId ? `edit=${routerMocks.editId}` : ""),
   useRouter: () => ({
     back: routerMocks.back,
-    replace: routerMocks.replace,
   }),
 }));
 
@@ -140,7 +138,7 @@ describe("FoodPageClient", () => {
       time: "08:30",
       details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
     });
-    expect(routerMocks.replace).toHaveBeenCalledWith("/records/record-4");
+    expect(routerMocks.back).toHaveBeenCalled();
   });
 });
 

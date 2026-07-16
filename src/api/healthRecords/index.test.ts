@@ -43,18 +43,23 @@ describe("healthRecords API", () => {
     });
   });
 
-  test("lists recent records in reverse chronological order", async () => {
-    const limit = vi.fn().mockResolvedValue({ data: [], error: null });
-    const order = vi.fn().mockReturnValue({ limit });
-    const select = vi.fn().mockReturnValue({ order });
+  test("lists records within the selected month in reverse chronological order", async () => {
+    const order = vi.fn().mockResolvedValue({ data: [], error: null });
+    const lt = vi.fn().mockReturnValue({ order });
+    const gte = vi.fn().mockReturnValue({ lt });
+    const select = vi.fn().mockReturnValue({ gte });
 
     supabaseMocks.from.mockReturnValue({ select });
 
-    await listHealthRecords({ limit: 20 });
+    await listHealthRecords({
+      from: "2026-06-30T15:00:00.000Z",
+      to: "2026-07-31T15:00:00.000Z",
+    });
 
     expect(supabaseMocks.from).toHaveBeenCalledWith("health_records");
+    expect(gte).toHaveBeenCalledWith("recorded_at", "2026-06-30T15:00:00.000Z");
+    expect(lt).toHaveBeenCalledWith("recorded_at", "2026-07-31T15:00:00.000Z");
     expect(order).toHaveBeenCalledWith("recorded_at", { ascending: false });
-    expect(limit).toHaveBeenCalledWith(20);
   });
 
   test("updates the selected record without changing its category", async () => {

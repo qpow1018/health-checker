@@ -134,7 +134,7 @@ export default function ToiletPageClient() {
 
       if (editId) {
         await updateHealthRecord({ id: editId, date: recordedOn, time: recordedAt, details });
-        router.replace(`/records/${editId}`);
+        router.back();
         return;
       }
 

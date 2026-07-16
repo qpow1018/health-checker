@@ -1,12 +1,28 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import QueryProvider from "@/components/QueryProvider";
 
+import {
+  formatRecordMonth,
+  getAdjacentRecordMonth,
+  getRecordMonthKey,
+  getRecordMonthRange,
+} from "./_util/recordsMonth";
 import { RecordsPageClient } from "./RecordsPageClient";
 
 const healthRecordMocks = vi.hoisted(() => ({
   listHealthRecords: vi.fn(),
+}));
+const navigationMocks = vi.hoisted(() => ({
+  replace: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/records",
+  useRouter: () => ({ replace: navigationMocks.replace }),
+  useSearchParams: () => new URLSearchParams(window.location.search),
 }));
 
 vi.mock("@/api/healthRecords", () => ({
@@ -17,6 +33,9 @@ describe("RecordsPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     window.history.replaceState({}, "", "/records");
+    navigationMocks.replace.mockImplementation((href: string) => {
+      window.history.replaceState({}, "", href);
+    });
   });
 
   test("shows an empty state when there are no records", async () => {
@@ -29,6 +48,62 @@ describe("RecordsPageClient", () => {
     expect(screen.getByRole("link", { name: "기록하러 가기" })).toHaveAttribute(
       "href",
       "/record",
+    );
+  });
+
+  test("loads the selected month and prevents moving beyond the current month", async () => {
+    const user = userEvent.setup();
+    const currentMonthKey = getRecordMonthKey();
+    const previousMonthKey = getAdjacentRecordMonth(currentMonthKey, -1);
+    healthRecordMocks.listHealthRecords.mockResolvedValue([]);
+
+    const { rerender } = render(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    await waitFor(() => {
+      expect(healthRecordMocks.listHealthRecords).toHaveBeenCalledWith(
+        getRecordMonthRange(currentMonthKey),
+      );
+    });
+    expect(screen.getByText(formatRecordMonth(currentMonthKey))).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "다음 달" })).toBeDisabled();
+
+    await user.click(screen.getByRole("button", { name: "이전 달" }));
+    expect(navigationMocks.replace).toHaveBeenCalledWith(
+      `/records?month=${previousMonthKey}`,
+      { scroll: false },
+    );
+
+    rerender(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    expect(screen.getByText(formatRecordMonth(previousMonthKey))).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "다음 달" })).toBeEnabled();
+    await waitFor(() => {
+      expect(healthRecordMocks.listHealthRecords).toHaveBeenLastCalledWith(
+        getRecordMonthRange(previousMonthKey),
+      );
+    });
+  });
+
+  test("keeps the selected month in record detail links", async () => {
+    window.history.replaceState({}, "", "/records?month=2026-06");
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-1",
+        user_id: "user-1",
+        category: "sleep",
+        recorded_at: "2026-06-15T14:30:00.000Z",
+        details: { event: "slept" },
+        details_version: 1,
+        created_at: "2026-06-15T14:30:00.000Z",
+        updated_at: "2026-06-15T14:30:00.000Z",
+      },
+    ]);
+
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    expect(await screen.findByRole("link", { name: /잠든 시간/ })).toHaveAttribute(
+      "href",
+      "/records/record-1?month=2026-06",
     );
   });
 

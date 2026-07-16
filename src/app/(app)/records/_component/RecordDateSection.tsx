@@ -19,9 +19,10 @@ import styles from "./recordDateSection.module.scss";
 
 export default function RecordDateSection(props: {
   dateLabel: string;
+  monthKey: string;
   records: THealthRecordRow[];
 }) {
-  const { dateLabel, records } = props;
+  const { dateLabel, monthKey, records } = props;
 
   return (
     <section className={styles["date-section"]}>
@@ -32,7 +33,11 @@ export default function RecordDateSection(props: {
         const Icon = getRecordIcon(record.category);
 
         return (
-          <Link className={styles["record-item"]} href={`/records/${record.id}`} key={record.id}>
+          <Link
+            className={styles["record-item"]}
+            href={`/records/${record.id}?month=${monthKey}`}
+            key={record.id}
+          >
             <time
               className={styles["record-time"]}
               dateTime={record.recorded_at}

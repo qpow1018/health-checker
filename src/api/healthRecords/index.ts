@@ -101,13 +101,14 @@ function normalizeFoodItems(foods: TFoodItemV1[]) {
   }, []);
 }
 
-export async function listHealthRecords({ limit = 50 }: TReqListHealthRecords = {}) {
+export async function listHealthRecords({ from, to }: TReqListHealthRecords) {
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
     .from("health_records")
     .select("*")
-    .order("recorded_at", { ascending: false })
-    .limit(limit);
+    .gte("recorded_at", from)
+    .lt("recorded_at", to)
+    .order("recorded_at", { ascending: false });
 
   if (error) {
     throw error;

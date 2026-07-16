@@ -12,6 +12,40 @@
     }
   }
 
+  .month-filter {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    margin: 0 16px 16px;
+    border: 1px solid $border;
+    border-radius: $radius;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      color: $text-secondary;
+
+      &:disabled {
+        color: $text-muted;
+        opacity: 0.45;
+      }
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    strong {
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+  }
+
   .error-message {
     margin: 32px 0 0;
     padding: 12px;

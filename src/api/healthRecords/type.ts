@@ -73,7 +73,8 @@ export type TReqCreateConditionRecord = {
 };
 
 export type TReqListHealthRecords = {
-  limit?: number;
+  from: string;
+  to: string;
 };
 
 export type TReqUpdateHealthRecord = {

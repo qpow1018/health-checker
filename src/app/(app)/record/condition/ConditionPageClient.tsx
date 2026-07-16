@@ -87,7 +87,7 @@ export default function ConditionPageClient() {
 
       if (editId) {
         await updateHealthRecord({ id: editId, ...variables, details: { note: note.trim() } });
-        router.replace(`/records/${editId}`);
+        router.back();
         return;
       }
 
