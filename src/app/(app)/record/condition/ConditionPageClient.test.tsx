@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import QueryProvider from "@/components/QueryProvider";
+
 import ConditionPageClient from "./ConditionPageClient";
 
 const back = vi.fn();
@@ -26,7 +28,7 @@ describe("ConditionPageClient", () => {
   });
 
   test("shows the condition record form with the current time", () => {
-    render(<ConditionPageClient />);
+    render(<QueryProvider><ConditionPageClient /></QueryProvider>);
 
     expect(screen.getByRole("main", { name: "컨디션 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
@@ -38,7 +40,7 @@ describe("ConditionPageClient", () => {
   test("saves a condition note", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createConditionRecord.mockResolvedValue({ id: "record-5" });
-    render(<ConditionPageClient />);
+    render(<QueryProvider><ConditionPageClient /></QueryProvider>);
 
     await user.type(screen.getByLabelText("불편했던 점"), "두통");
     await user.click(screen.getByRole("button", { name: "저장" }));
@@ -54,7 +56,7 @@ describe("ConditionPageClient", () => {
   test("shows an error when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createConditionRecord.mockRejectedValue(new Error("save failed"));
-    render(<ConditionPageClient />);
+    render(<QueryProvider><ConditionPageClient /></QueryProvider>);
 
     await user.type(screen.getByLabelText("불편했던 점"), "두통");
     await user.click(screen.getByRole("button", { name: "저장" }));

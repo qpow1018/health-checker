@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createToiletRecord } from "@/api/healthRecords";
+import { useCreateToiletRecord } from "@/queries/healthRecordsQuery";
 import type {
   TToiletDetailsV1,
   TToiletStoolConsistency,
@@ -61,8 +61,8 @@ export default function ToiletPageClient() {
   const [wokeFromSleep, setWokeFromSleep] = useState<"" | "yes" | "no">("");
   const [stoolConsistency, setStoolConsistency] = useState<TToiletStoolConsistency | "">("");
   const [note, setNote] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { mutateAsync: createToiletRecord, isPending: isSaving } = useCreateToiletRecord();
   const canRecordStoolConsistency = type === "bowel" || type === "both";
 
   async function handleSubmit() {
@@ -70,7 +70,6 @@ export default function ToiletPageClient() {
       return;
     }
 
-    setIsSaving(true);
     setErrorMessage("");
 
     try {
@@ -88,8 +87,6 @@ export default function ToiletPageClient() {
       router.back();
     } catch {
       setErrorMessage("화장실 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
-    } finally {
-      setIsSaving(false);
     }
   }
 

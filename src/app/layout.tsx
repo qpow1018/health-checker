@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import "@/assets/scss/global.scss";
 
+import QueryProvider from "@/components/QueryProvider";
+
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
   weight: ["400", "500", "700", "800"],
@@ -25,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={notoSansKr.className}>{children}</body>
+      <body className={notoSansKr.className}>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

@@ -2,6 +2,8 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import QueryProvider from "@/components/QueryProvider";
+
 import ToiletPageClient from "./ToiletPageClient";
 
 const back = vi.fn();
@@ -26,7 +28,7 @@ describe("ToiletPageClient", () => {
   });
 
   test("shows the toilet record form", () => {
-    render(<ToiletPageClient />);
+    render(<QueryProvider><ToiletPageClient /></QueryProvider>);
 
     expect(screen.getByRole("main", { name: "화장실 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
@@ -38,7 +40,7 @@ describe("ToiletPageClient", () => {
 
   test("shows the stool consistency options for a bowel record", async () => {
     const user = userEvent.setup();
-    render(<ToiletPageClient />);
+    render(<QueryProvider><ToiletPageClient /></QueryProvider>);
 
     await user.click(within(screen.getByRole("group", { name: "종류" })).getByRole("button", { name: "대변" }));
 
@@ -48,7 +50,7 @@ describe("ToiletPageClient", () => {
   test("saves the selected toilet record", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createToiletRecord.mockResolvedValue({ id: "record-3" });
-    render(<ToiletPageClient />);
+    render(<QueryProvider><ToiletPageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.click(within(screen.getByRole("group", { name: "종류" })).getByRole("button", { name: "대변" }));
@@ -75,7 +77,7 @@ describe("ToiletPageClient", () => {
   test("shows an error when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createToiletRecord.mockRejectedValue(new Error("save failed"));
-    render(<ToiletPageClient />);
+    render(<QueryProvider><ToiletPageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.click(within(screen.getByRole("group", { name: "종류" })).getByRole("button", { name: "소변" }));

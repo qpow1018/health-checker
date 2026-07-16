@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createFoodRecord } from "@/api/healthRecords";
+import { useCreateFoodRecord } from "@/queries/healthRecordsQuery";
 import { getTodayDateString } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
@@ -33,8 +33,8 @@ export default function FoodPageClient() {
   const [recordedOn, setRecordedOn] = useState(getTodayDateString);
   const [recordedAt, setRecordedAt] = useState("");
   const [foods, setFoods] = useState<TFoodFormItem[]>(() => [createFoodFormItem()]);
-  const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { mutateAsync: createFoodRecord, isPending: isSaving } = useCreateFoodRecord();
   const hasFood = foods.some((food) => food.name.trim());
 
   function handleAddFood() {
@@ -56,7 +56,6 @@ export default function FoodPageClient() {
       return;
     }
 
-    setIsSaving(true);
     setErrorMessage("");
 
     try {
@@ -68,8 +67,6 @@ export default function FoodPageClient() {
       router.back();
     } catch {
       setErrorMessage("음식 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
-    } finally {
-      setIsSaving(false);
     }
   }
 

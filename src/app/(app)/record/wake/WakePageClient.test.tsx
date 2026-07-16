@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import QueryProvider from "@/components/QueryProvider";
+
 import WakePageClient from "./WakePageClient";
 
 const back = vi.fn();
@@ -26,7 +28,7 @@ describe("WakePageClient", () => {
   });
 
   test("shows the wake time form", () => {
-    render(<WakePageClient />);
+    render(<QueryProvider><WakePageClient /></QueryProvider>);
 
     expect(screen.getByRole("main", { name: "기상 시간 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
@@ -38,7 +40,7 @@ describe("WakePageClient", () => {
   test("saves the selected wake time", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createSleepRecord.mockResolvedValue({ id: "record-1" });
-    render(<WakePageClient />);
+    render(<QueryProvider><WakePageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.click(screen.getByRole("button", { name: "저장" }));
@@ -54,7 +56,7 @@ describe("WakePageClient", () => {
   test("shows an error when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createSleepRecord.mockRejectedValue(new Error("save failed"));
-    render(<WakePageClient />);
+    render(<QueryProvider><WakePageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.click(screen.getByRole("button", { name: "저장" }));
@@ -66,7 +68,7 @@ describe("WakePageClient", () => {
 
   test("moves back to the record page", async () => {
     const user = userEvent.setup();
-    render(<WakePageClient />);
+    render(<QueryProvider><WakePageClient /></QueryProvider>);
 
     await user.click(screen.getByRole("button", { name: "뒤로가기" }));
 

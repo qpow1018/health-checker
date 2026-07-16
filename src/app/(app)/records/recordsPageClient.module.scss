@@ -25,4 +25,20 @@
     gap: 8px;
     margin-top: 8px;
   }
+
+  .empty-state {
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+    margin: 32px 16px;
+
+    p {
+      color: $text-muted;
+    }
+
+    a {
+      color: $primary;
+      font-weight: 700;
+    }
+  }
 }

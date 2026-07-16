@@ -1,6 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+
+import QueryProvider from "@/components/QueryProvider";
+
 import { AuthGate, useAuthSession } from "./AuthGate";
 
 const routerMocks = vi.hoisted(() => ({
@@ -61,9 +64,11 @@ describe("AuthGate", () => {
     authApiMocks.checkAllowedUser.mockResolvedValue(true);
 
     render(
-      <AuthGate>
-        <ProtectedChild />
-      </AuthGate>,
+      <QueryProvider>
+        <AuthGate>
+          <ProtectedChild />
+        </AuthGate>
+      </QueryProvider>,
     );
 
     expect(await screen.findByRole("heading", { name: "보호된 화면" })).toBeInTheDocument();
@@ -75,9 +80,11 @@ describe("AuthGate", () => {
     authApiMocks.getCurrentSession.mockResolvedValue(null);
 
     render(
-      <AuthGate>
-        <ProtectedChild />
-      </AuthGate>,
+      <QueryProvider>
+        <AuthGate>
+          <ProtectedChild />
+        </AuthGate>
+      </QueryProvider>,
     );
 
     await waitFor(() => {
@@ -96,9 +103,11 @@ describe("AuthGate", () => {
     authApiMocks.checkAllowedUser.mockResolvedValue(true);
 
     render(
-      <AuthGate>
-        <ProtectedChild />
-      </AuthGate>,
+      <QueryProvider>
+        <AuthGate>
+          <ProtectedChild />
+        </AuthGate>
+      </QueryProvider>,
     );
 
     await user.click(await screen.findByRole("button", { name: "로그아웃" }));

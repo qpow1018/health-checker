@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import QueryProvider from "@/components/QueryProvider";
+
 import { RecordsPageClient } from "./RecordsPageClient";
 
 const healthRecordMocks = vi.hoisted(() => ({
@@ -19,7 +21,7 @@ describe("RecordsPageClient", () => {
 
   test("shows an empty state when there are no records", async () => {
     healthRecordMocks.listHealthRecords.mockResolvedValue([]);
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(screen.getByRole("main", { name: "기록 보기 화면" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "기록 보기" })).toBeInTheDocument();
@@ -32,7 +34,7 @@ describe("RecordsPageClient", () => {
 
   test("shows preview records without loading saved records", () => {
     window.history.replaceState({}, "", "/records?preview=1");
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(screen.getByText("커피 2잔, 토스트")).toBeInTheDocument();
     expect(healthRecordMocks.listHealthRecords).not.toHaveBeenCalled();
@@ -40,7 +42,7 @@ describe("RecordsPageClient", () => {
 
   test("shows a loading indicator while records are loading", () => {
     healthRecordMocks.listHealthRecords.mockReturnValue(new Promise(() => {}));
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(screen.getByRole("status", { name: "기록을 불러오는 중" })).toBeInTheDocument();
   });
@@ -58,7 +60,7 @@ describe("RecordsPageClient", () => {
         updated_at: "2026-07-15T14:30:00.000Z",
       },
     ]);
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
       "잠든 시간",
@@ -78,7 +80,7 @@ describe("RecordsPageClient", () => {
         updated_at: "2026-07-15T06:30:00.000Z",
       },
     ]);
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
       "대변 기록",
@@ -98,7 +100,7 @@ describe("RecordsPageClient", () => {
         updated_at: "2026-07-15T08:30:00.000Z",
       },
     ]);
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
       "음식 기록",
@@ -118,7 +120,7 @@ describe("RecordsPageClient", () => {
         updated_at: "2026-07-16T14:20:00.000Z",
       },
     ]);
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
       "컨디션 기록",
@@ -149,7 +151,7 @@ describe("RecordsPageClient", () => {
         updated_at: "2026-07-15T14:30:00.000Z",
       },
     ]);
-    render(<RecordsPageClient />);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByText("커피 2잔")).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(2);

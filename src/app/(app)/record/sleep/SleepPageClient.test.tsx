@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import QueryProvider from "@/components/QueryProvider";
+
 import SleepPageClient from "./SleepPageClient";
 
 const back = vi.fn();
@@ -26,7 +28,7 @@ describe("SleepPageClient", () => {
   });
 
   test("shows the slept time form", () => {
-    render(<SleepPageClient />);
+    render(<QueryProvider><SleepPageClient /></QueryProvider>);
 
     expect(
       screen.getByRole("main", { name: "잠든 시간 기록 화면" }),
@@ -39,7 +41,7 @@ describe("SleepPageClient", () => {
 
   test("enables saving after selecting a time", async () => {
     const user = userEvent.setup();
-    render(<SleepPageClient />);
+    render(<QueryProvider><SleepPageClient /></QueryProvider>);
 
     await user.click(screen.getByLabelText("시간"));
     await user.click(screen.getAllByRole("option", { name: "23" })[0]);
@@ -52,7 +54,7 @@ describe("SleepPageClient", () => {
   test("saves the selected sleep time", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createSleepRecord.mockResolvedValue({ id: "record-1" });
-    render(<SleepPageClient />);
+    render(<QueryProvider><SleepPageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.click(screen.getByRole("button", { name: "저장" }));
@@ -68,7 +70,7 @@ describe("SleepPageClient", () => {
   test("shows an error when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createSleepRecord.mockRejectedValue(new Error("save failed"));
-    render(<SleepPageClient />);
+    render(<QueryProvider><SleepPageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.click(screen.getByRole("button", { name: "저장" }));
@@ -80,7 +82,7 @@ describe("SleepPageClient", () => {
 
   test("moves back to the record page", async () => {
     const user = userEvent.setup();
-    render(<SleepPageClient />);
+    render(<QueryProvider><SleepPageClient /></QueryProvider>);
 
     await user.click(screen.getByRole("button", { name: "뒤로가기" }));
 

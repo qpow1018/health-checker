@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import {
   checkAllowedUser,
@@ -27,6 +28,7 @@ const AuthSessionContext = createContext<TAuthSessionContextValue | null>(null);
 export function AuthGate({ children }: TAuthGateProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [authState, setAuthState] = useState<TAuthState>("loading");
   const [session, setSession] = useState<Session | null>(null);
 
@@ -35,6 +37,7 @@ export function AuthGate({ children }: TAuthGateProps) {
 
     async function allowSession(nextSession: Session | null) {
       if (!nextSession) {
+        queryClient.clear();
         setSession(null);
         setAuthState("blocked");
         if (pathname !== "/login") {
@@ -56,6 +59,7 @@ export function AuthGate({ children }: TAuthGateProps) {
         }
 
         await signOutFromApi();
+        queryClient.clear();
         setSession(null);
         setAuthState("blocked");
         router.replace("/login");
@@ -88,7 +92,7 @@ export function AuthGate({ children }: TAuthGateProps) {
       ignore = true;
       listener.subscription.unsubscribe();
     };
-  }, [pathname, router]);
+  }, [pathname, queryClient, router]);
 
   const contextValue = useMemo<TAuthSessionContextValue | null>(() => {
     if (authState !== "allowed" || !session?.user.email) {
@@ -99,12 +103,13 @@ export function AuthGate({ children }: TAuthGateProps) {
       email: session.user.email,
       signOut: async () => {
         await signOutFromApi();
+        queryClient.clear();
         setSession(null);
         setAuthState("blocked");
         router.replace("/login");
       },
     };
-  }, [authState, router, session]);
+  }, [authState, queryClient, router, session]);
 
   if (authState === "loading" || authState === "checking-access") {
     return (

@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { listHealthRecords } from "@/api/healthRecords";
-import type { THealthRecordRow } from "@/api/healthRecords/type";
 import BoxLoading from "@/components/common/loading/BoxLoading";
+import { useHealthRecords } from "@/queries/healthRecordsQuery";
+import Link from "next/link";
 
 import { PREVIEW_RECORDS } from "./_define/previewRecords";
 import { groupRecordsByDate } from "./_util/healthRecordsPresentation";
@@ -15,50 +13,13 @@ import RecordDateSection from "./_component/RecordDateSection";
 import styles from "./recordsPageClient.module.scss";
 
 export function RecordsPageClient() {
-  const [records, setRecords] = useState<THealthRecordRow[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    let isActive = true;
-
-    const isPreviewMode =
-      process.env.NODE_ENV !== "production" &&
-      new URLSearchParams(window.location.search).get("preview") === "1";
-
-    if (isPreviewMode) {
-      setRecords(PREVIEW_RECORDS);
-      setIsLoading(false);
-
-      return () => {
-        isActive = false;
-      };
-    }
-
-    async function loadRecords() {
-      try {
-        const nextRecords = await listHealthRecords();
-
-        if (isActive) {
-          setRecords(nextRecords);
-        }
-      } catch {
-        if (isActive) {
-          setErrorMessage("기록을 불러오지 못했습니다. 다시 시도해 주세요.");
-        }
-      } finally {
-        if (isActive) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    void loadRecords();
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
+  const isPreviewMode =
+    process.env.NODE_ENV !== "production" &&
+    new URLSearchParams(window.location.search).get("preview") === "1";
+  const { data, error, isPending } = useHealthRecords(!isPreviewMode);
+  const records = isPreviewMode ? PREVIEW_RECORDS : (data ?? []);
+  const isLoading = !isPreviewMode && isPending;
+  const errorMessage = error ? "기록을 불러오지 못했습니다. 다시 시도해 주세요." : "";
 
   const recordGroups = groupRecordsByDate(records);
 
@@ -90,6 +51,13 @@ export function RecordsPageClient() {
               records={group.records}
             />
           ))}
+        </section>
+      )}
+
+      {!isLoading && !errorMessage && records.length === 0 && (
+        <section className={styles["empty-state"]} aria-label="빈 기록">
+          <p>아직 기록이 없어요.</p>
+          <Link href="/record">기록하러 가기</Link>
         </section>
       )}
 

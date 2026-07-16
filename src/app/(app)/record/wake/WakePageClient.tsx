@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createSleepRecord } from "@/api/healthRecords";
+import { useCreateSleepRecord } from "@/queries/healthRecordsQuery";
 import { getTodayDateString } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
@@ -21,15 +21,14 @@ export default function WakePageClient() {
 
   const [wokeOn, setWokeOn] = useState(getTodayDateString);
   const [wokeAt, setWokeAt] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { mutateAsync: createSleepRecord, isPending: isSaving } = useCreateSleepRecord();
 
   async function handleSubmit() {
     if (!wokeOn || !wokeAt) {
       return;
     }
 
-    setIsSaving(true);
     setErrorMessage("");
 
     try {
@@ -37,8 +36,6 @@ export default function WakePageClient() {
       router.back();
     } catch {
       setErrorMessage("기상 시간을 저장하지 못했습니다. 다시 시도해 주세요.");
-    } finally {
-      setIsSaving(false);
     }
   }
 

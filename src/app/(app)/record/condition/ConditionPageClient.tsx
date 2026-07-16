@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createConditionRecord } from "@/api/healthRecords";
+import { useCreateConditionRecord } from "@/queries/healthRecordsQuery";
 import { getCurrentTimeString, getTodayDateString } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
@@ -23,15 +23,14 @@ export default function ConditionPageClient() {
   const [recordedOn, setRecordedOn] = useState(getTodayDateString);
   const [recordedAt, setRecordedAt] = useState(getCurrentTimeString);
   const [note, setNote] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { mutateAsync: createConditionRecord, isPending: isSaving } = useCreateConditionRecord();
 
   async function handleSubmit() {
     if (!recordedOn || !recordedAt || !note.trim()) {
       return;
     }
 
-    setIsSaving(true);
     setErrorMessage("");
 
     try {
@@ -43,8 +42,6 @@ export default function ConditionPageClient() {
       router.back();
     } catch {
       setErrorMessage("컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
-    } finally {
-      setIsSaving(false);
     }
   }
 

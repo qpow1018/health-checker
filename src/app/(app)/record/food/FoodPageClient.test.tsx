@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import QueryProvider from "@/components/QueryProvider";
+
 import FoodPageClient from "./FoodPageClient";
 
 const back = vi.fn();
@@ -26,7 +28,7 @@ describe("FoodPageClient", () => {
   });
 
   test("shows the food record form", () => {
-    render(<FoodPageClient />);
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     expect(screen.getByRole("main", { name: "음식 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
@@ -38,7 +40,7 @@ describe("FoodPageClient", () => {
 
   test("adds and removes a food input", async () => {
     const user = userEvent.setup();
-    render(<FoodPageClient />);
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await user.click(screen.getByRole("button", { name: "음식 추가" }));
 
@@ -53,7 +55,7 @@ describe("FoodPageClient", () => {
   test("saves the entered food items", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createFoodRecord.mockResolvedValue({ id: "record-4" });
-    render(<FoodPageClient />);
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.type(screen.getByLabelText("음식 이름"), "커피");
@@ -76,7 +78,7 @@ describe("FoodPageClient", () => {
   test("shows an error when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createFoodRecord.mockRejectedValue(new Error("save failed"));
-    render(<FoodPageClient />);
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.type(screen.getByLabelText("음식 이름"), "커피");
