@@ -1,6 +1,6 @@
 .report-page {
   min-height: 100svh;
-  padding: max(20px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+  padding: max(20px, env(safe-area-inset-top)) 16px calc($bottom-nav-space + 28px);
 
   .surface {
     display: flex;
