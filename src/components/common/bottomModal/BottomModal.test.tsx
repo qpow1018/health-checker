@@ -120,28 +120,37 @@ describe("BottomModal", () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
-  test("keeps tab focus inside the dialog", async () => {
+  test("keeps tab focus across all focusable elements inside the dialog", async () => {
     const user = userEvent.setup();
 
     render(
       <BottomModal title="테스트 모달" isOpen={true} onClose={() => undefined}>
-        <button type="button">첫 번째 버튼</button>
-        <button type="button">두 번째 버튼</button>
+        <button disabled type="button">
+          비활성 버튼
+        </button>
+        <div aria-label="Tab 제외 목록" role="listbox" tabIndex={-1} />
+        <div aria-label="첫 번째 목록" role="listbox" tabIndex={0} />
+        <div aria-label="두 번째 목록" role="listbox" tabIndex={0} />
+        <button type="button">닫기</button>
       </BottomModal>,
     );
 
-    const firstButton = screen.getByRole("button", { name: "첫 번째 버튼" });
-    const secondButton = screen.getByRole("button", { name: "두 번째 버튼" });
+    const firstListbox = screen.getByRole("listbox", { name: "첫 번째 목록" });
+    const secondListbox = screen.getByRole("listbox", { name: "두 번째 목록" });
+    const closeButton = screen.getByRole("button", { name: "닫기" });
 
-    expect(firstButton).toHaveFocus();
-
-    await user.tab();
-    expect(secondButton).toHaveFocus();
+    expect(firstListbox).toHaveFocus();
 
     await user.tab();
-    expect(firstButton).toHaveFocus();
+    expect(secondListbox).toHaveFocus();
+
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab();
+    expect(firstListbox).toHaveFocus();
 
     await user.tab({ shift: true });
-    expect(secondButton).toHaveFocus();
+    expect(closeButton).toHaveFocus();
   });
 });

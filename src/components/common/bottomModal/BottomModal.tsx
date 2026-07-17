@@ -5,6 +5,15 @@ import useScrollLock from "@/hooks/useScrollLock";
 
 import styles from "./bottomModal.module.scss";
 
+const TABBABLE_ELEMENT_SELECTOR = [
+  'a[href]:not([tabindex="-1"]):not([hidden])',
+  'button:not(:disabled):not([tabindex="-1"]):not([hidden])',
+  'input:not(:disabled):not([type="hidden"]):not([tabindex="-1"]):not([hidden])',
+  'select:not(:disabled):not([tabindex="-1"]):not([hidden])',
+  'textarea:not(:disabled):not([tabindex="-1"]):not([hidden])',
+  '[tabindex]:not([tabindex="-1"]):not([disabled]):not([hidden])',
+].join(", ");
+
 type TBottomModalProps = {
   title?: string;
   ariaLabel?: string;
@@ -39,9 +48,9 @@ export default function BottomModal({
     const previouslyFocusedElement =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const dialog = dialogRef.current;
-    const firstEnabledButton = dialog?.querySelector<HTMLButtonElement>("button:not(:disabled)");
+    const firstTabbableElement = dialog?.querySelector<HTMLElement>(TABBABLE_ELEMENT_SELECTOR);
 
-    (initialFocusRef?.current ?? firstEnabledButton ?? dialog)?.focus();
+    (initialFocusRef?.current ?? firstTabbableElement ?? dialog)?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -54,27 +63,27 @@ export default function BottomModal({
         return;
       }
 
-      const enabledButtons = Array.from(
-        dialogRef.current.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"),
+      const tabbableElements = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(TABBABLE_ELEMENT_SELECTOR),
       );
 
       event.preventDefault();
 
-      if (enabledButtons.length === 0) {
+      if (tabbableElements.length === 0) {
         dialogRef.current.focus();
         return;
       }
 
-      const currentIndex = enabledButtons.indexOf(document.activeElement as HTMLButtonElement);
+      const currentIndex = tabbableElements.indexOf(document.activeElement as HTMLElement);
       const nextIndex = event.shiftKey
-        ? (currentIndex - 1 + enabledButtons.length) % enabledButtons.length
-        : (currentIndex + 1) % enabledButtons.length;
-      const nextButton =
+        ? (currentIndex - 1 + tabbableElements.length) % tabbableElements.length
+        : (currentIndex + 1) % tabbableElements.length;
+      const nextElement =
         currentIndex === -1
-          ? enabledButtons[event.shiftKey ? enabledButtons.length - 1 : 0]
-          : enabledButtons[nextIndex];
+          ? tabbableElements[event.shiftKey ? tabbableElements.length - 1 : 0]
+          : tabbableElements[nextIndex];
 
-      nextButton.focus();
+      nextElement.focus();
     }
 
     document.addEventListener("keydown", handleKeyDown);
