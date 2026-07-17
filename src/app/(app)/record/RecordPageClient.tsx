@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -66,10 +66,55 @@ const RECORD_ACTIONS = [
 
 export default function RecordPageClient() {
   const router = useRouter();
-  const [today] = useState(() => new Date());
+  const [today, setToday] = useState(() => new Date());
   const todayRange = getRecordDashboardDateRange(today);
   const monthKey = getRecordDashboardMonthKey(today);
   const { data, isError, isPending } = useHealthRecords(todayRange);
+
+  useEffect(() => {
+    let nextDayTimeoutId: number | undefined;
+
+    function scheduleNextDayUpdate() {
+      window.clearTimeout(nextDayTimeoutId);
+
+      const currentDate = new Date();
+      const nextDay = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate() + 1,
+      );
+
+      nextDayTimeoutId = window.setTimeout(
+        refreshToday,
+        nextDay.getTime() - currentDate.getTime(),
+      );
+    }
+
+    function refreshToday() {
+      const currentDate = new Date();
+
+      setToday((previousDate) =>
+        isSameLocalDate(previousDate, currentDate) ? previousDate : currentDate,
+      );
+      scheduleNextDayUpdate();
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        refreshToday();
+      }
+    }
+
+    scheduleNextDayUpdate();
+    window.addEventListener("focus", refreshToday);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.clearTimeout(nextDayTimeoutId);
+      window.removeEventListener("focus", refreshToday);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   function handleClickRecordAction(href?: string) {
     if (!href) {
@@ -124,5 +169,13 @@ export default function RecordPageClient() {
 
       <BottomNavigation />
     </main>
+  );
+}
+
+function isSameLocalDate(leftDate: Date, rightDate: Date) {
+  return (
+    leftDate.getFullYear() === rightDate.getFullYear() &&
+    leftDate.getMonth() === rightDate.getMonth() &&
+    leftDate.getDate() === rightDate.getDate()
   );
 }

@@ -1,6 +1,6 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import QueryProvider from "@/components/QueryProvider";
 
@@ -31,6 +31,10 @@ describe("RecordPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     healthRecordMocks.listHealthRecords.mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   test("moves to the available record pages from their actions", async () => {
@@ -109,6 +113,49 @@ describe("RecordPageClient", () => {
     expect(within(dashboard).getByRole("link", { name: /두통/ })).toHaveAttribute(
       "href",
       `/records/record-1?month=${monthKey}`,
+    );
+  });
+
+  test("refreshes the dashboard date and query range at local midnight", async () => {
+    vi.useFakeTimers();
+    const beforeMidnight = new Date(2026, 6, 31, 23, 59, 59);
+    const afterMidnight = new Date(2026, 7, 1, 0, 0, 0);
+    vi.setSystemTime(beforeMidnight);
+
+    render(<QueryProvider><RecordPageClient /></QueryProvider>);
+
+    expect(screen.getByText(formatRecordDashboardDate(beforeMidnight))).toBeInTheDocument();
+    expect(healthRecordMocks.listHealthRecords).toHaveBeenCalledWith(
+      getRecordDashboardDateRange(beforeMidnight),
+    );
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
+    });
+
+    expect(screen.getByText(formatRecordDashboardDate(afterMidnight))).toBeInTheDocument();
+    expect(healthRecordMocks.listHealthRecords).toHaveBeenLastCalledWith(
+      getRecordDashboardDateRange(afterMidnight),
+    );
+  });
+
+  test("refreshes the dashboard date when the window regains focus", async () => {
+    vi.useFakeTimers();
+    const previousDate = new Date(2026, 6, 31, 12, 0, 0);
+    const currentDate = new Date(2026, 7, 1, 12, 0, 0);
+    vi.setSystemTime(previousDate);
+
+    render(<QueryProvider><RecordPageClient /></QueryProvider>);
+    expect(screen.getByText(formatRecordDashboardDate(previousDate))).toBeInTheDocument();
+
+    await act(async () => {
+      vi.setSystemTime(currentDate);
+      window.dispatchEvent(new Event("focus"));
+    });
+
+    expect(screen.getByText(formatRecordDashboardDate(currentDate))).toBeInTheDocument();
+    expect(healthRecordMocks.listHealthRecords).toHaveBeenLastCalledWith(
+      getRecordDashboardDateRange(currentDate),
     );
   });
 });
