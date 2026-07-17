@@ -33,15 +33,18 @@ npm run build
 ## 기술 방향
 
 - 화면 본체는 Next.js, React, TypeScript로 만든다.
-- 실제 사용은 얇은 React Native WebView shell 안에서 한다.
+- 초기 실제 사용은 Vercel에 배포한 PWA를 Android 홈 화면에 설치하는 방식으로 한다.
+- React Native WebView shell은 생체인증, 앱 잠금, native push 알림 또는 스토어 배포가 필요해질 때 다시 검토한다.
 - 개발 환경에서는 Next.js 화면을 브라우저로 직접 열 수 있어야 한다.
 
-## WebView 경계
+## PWA와 WebView 경계
 
 - 건강 기록 UI와 데이터 흐름은 Next.js 앱이 담당한다.
+- PWA는 설치와 standalone 실행만 지원하며 건강 기록과 인증 응답을 오프라인 캐시하지 않는다.
 - React Native shell은 native 기능이 필요한 얇은 WebView shell로 유지한다.
 - WebView 통신은 생체인증, 앱 잠금, push 알림, 외부 링크 제어처럼 native 기능이 필요한 경우로 제한한다.
-- 브라우저 개발 모드와 WebView 운영 모드가 다르게 동작할 수 있는 로그인, redirect, safe area, keyboard 처리는 명시적으로 검증한다.
+- 브라우저와 설치된 PWA에서 다르게 동작할 수 있는 로그인, redirect, safe area, keyboard 처리는 명시적으로 검증한다.
+- 추후 WebView를 도입하면 브라우저, PWA, WebView의 동작 차이도 함께 검증한다.
 
 ## 문서 규칙
 

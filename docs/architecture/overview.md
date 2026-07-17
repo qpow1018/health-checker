@@ -4,7 +4,8 @@
 
 - Next.js
 - React
-- React Native WebView shell
+- Progressive Web App
+- 추후 선택 가능한 React Native WebView shell
 - TypeScript
 - Supabase Auth
 - Supabase Postgres
@@ -16,14 +17,16 @@
 
 ```mermaid
 flowchart TD
-  Shell["React Native WebView shell"]
+  PWA["Android 홈 화면 PWA"]
+  Shell["추후 React Native WebView shell"]
   Web["Next.js 모바일 웹 UI"]
   Auth["Supabase Auth"]
   DB["Supabase Postgres"]
   Edge["Supabase Edge Function"]
   OpenAI["OpenAI API"]
 
-  Shell --> Web
+  PWA --> Web
+  Shell -. 선택 사항 .-> Web
   Web --> Auth
   Web --> DB
   Web --> Edge
@@ -49,11 +52,11 @@ Next.js 앱에 포함하면 안 되는 것:
 - Supabase service role key.
 - 의학 참고 기준 생성 로직.
 
-운영 사용은 React Native WebView 안에서 하는 것을 기본으로 한다. 다만 개발 환경에서는 Next.js 앱을 브라우저에서 직접 열 수 있어야 한다.
+초기 운영은 Vercel에 HTTPS로 배포한 Next.js 앱을 Android 홈 화면에 PWA로 설치해 사용하는 것을 기본으로 한다. PWA는 설치와 standalone 실행만 지원하며, 건강 기록 및 인증 응답을 오프라인 캐시하지 않는다. 개발 환경에서는 Next.js 앱을 브라우저에서 직접 열 수 있어야 한다.
 
-## React Native shell의 책임
+## 추후 React Native shell의 책임
 
-React Native shell은 얇게 유지한다.
+생체인증, 앱 잠금, native push 알림 또는 스토어 배포가 필요해질 때 React Native shell 도입을 다시 판단한다. 도입하더라도 shell은 얇게 유지한다.
 
 담당하는 것:
 
@@ -116,7 +119,7 @@ OpenAI 자격 증명은 Edge Function에만 존재할 수 있다.
 - GitHub 저장소는 private으로 시작한다.
 - 기본 브랜치는 `main`이다.
 - 기능 작업은 `feature/...` 브랜치를 사용한다.
-- CI는 Next.js와 React Native shell의 lint, typecheck, test를 실행한다.
+- CI는 현재 Next.js의 lint, typecheck, test를 실행한다. React Native shell을 도입하면 shell 검증을 추가한다.
 - secret은 Git 밖에서 관리한다.
-- 실제 사용자는 모바일 앱을 통해 접근한다.
+- 실제 사용자는 Vercel에 배포된 PWA를 Android 홈 화면에 설치해 접근한다.
 - 개발자는 Next.js dev server를 브라우저에서 직접 열어 UI와 데이터 흐름을 빠르게 확인할 수 있다.

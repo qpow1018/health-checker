@@ -11,13 +11,24 @@ const notoSansKr = Noto_Sans_KR({
 
 export const metadata: Metadata = {
   title: "Health Checker",
-  description: "개인 화장실 패턴 기록 앱",
+  description: "개인 건강 기록 앱",
+  applicationName: "Health Checker",
+  icons: {
+    icon: [
+      {
+        url: "/icons/health-checker-192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#3b82c4",
 };
 
 export default function RootLayout({
