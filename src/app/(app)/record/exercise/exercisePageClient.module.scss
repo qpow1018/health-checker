@@ -1,0 +1,61 @@
+.exercise-page-client {
+  min-height: 100svh;
+  padding-bottom: $bottom-nav-space;
+
+  .exercise-page-content {
+    padding: 24px 16px;
+  }
+
+  .notice-message {
+    margin: 32px 16px;
+    color: $text-secondary;
+  }
+
+  .exercise-form,
+  .exercise-items {
+    display: grid;
+    gap: 8px;
+  }
+
+  .exercise-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(76px, 0.35fr) 36px;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .remove-exercise-button {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $border;
+    background: #ffffff;
+    color: $text-secondary;
+    cursor: pointer;
+
+    &:hover {
+      color: $danger;
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgb(106 155 195 / 34%);
+      outline-offset: 2px;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,37 @@
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: $z-bottom-nav;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, $app-max-width);
+  height: $headerHeight;
+  padding: 0 12px;
+  background-color: #ffffff;
+  transform: translateX(-50%);
+
+  .back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+}
+
+.app-header-spacer {
+  height: $headerHeight;
+}

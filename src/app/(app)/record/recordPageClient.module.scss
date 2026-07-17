@@ -1,0 +1,82 @@
+.record-page-client {
+  min-height: 100svh;
+  padding-bottom: $bottom-nav-space;
+
+  .topbar {
+    padding: 20px 20px 18px;
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .date {
+      margin-top: 6px;
+      color: $text-muted;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  }
+
+  .action-section {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 22px;
+    padding: 0 16px;
+
+    .record-action-button {
+      min-width: 0;
+      min-height: 96px;
+      padding: 12px 6px;
+      white-space: normal;
+
+      .action-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 0;
+        gap: 6px;
+        font-weight: 700;
+
+        .action-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: $primary;
+          color: #ffffff;
+
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
+
+        .action-label {
+          font-size: 13px;
+          line-height: 1.3;
+        }
+
+      }
+
+      &:disabled {
+        .action-icon {
+          background: $gray-400;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .record-page-client {
+    .action-section {
+      gap: 8px;
+      padding-right: 14px;
+      padding-left: 14px;
+    }
+  }
+}

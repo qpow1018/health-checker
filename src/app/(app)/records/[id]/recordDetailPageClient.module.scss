@@ -1,0 +1,78 @@
+.record-detail-page-client {
+  min-height: 100svh;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  background: #ffffff;
+
+  .record-detail-content {
+    display: grid;
+    gap: 20px;
+    padding: 24px 16px;
+  }
+
+  .record-summary {
+    display: grid;
+    gap: 4px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid $border;
+
+    time {
+      color: $text-secondary;
+      font-size: 14px;
+    }
+
+    strong {
+      font-size: 24px;
+    }
+  }
+
+  .detail-list {
+    display: grid;
+    gap: 20px;
+
+    .detail-item {
+      display: grid;
+      gap: 6px;
+
+      dt {
+        color: $text-muted;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      dd {
+        margin: 0;
+        color: $text;
+        font-size: 16px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+    }
+  }
+
+  .notice-message {
+    margin: 32px 16px;
+    color: $text-secondary;
+  }
+
+  .error-message {
+    margin: 0;
+    color: $danger;
+    font-size: 14px;
+  }
+
+  .fixed-actions {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: $z-bottom-nav;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: min(100%, $app-max-width);
+    margin: 0 auto;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid $border;
+    background: #ffffff;
+  }
+}

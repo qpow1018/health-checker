@@ -1,0 +1,18 @@
+.condition-page-client {
+  min-height: 100svh;
+  padding-bottom: $bottom-nav-space;
+
+  .condition-page-content {
+    padding: 24px 16px;
+  }
+
+  .notice-message {
+    margin: 32px 16px;
+    color: $text-secondary;
+  }
+
+  .condition-form {
+    display: grid;
+    gap: 8px;
+  }
+}

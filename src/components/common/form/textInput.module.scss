@@ -1,0 +1,36 @@
+.text-input {
+  min-width: 0;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $gray-100;
+  transition:
+    background $transition,
+    border-color $transition;
+
+  &:focus-within {
+    border-color: $primary-400;
+    background: #ffffff;
+  }
+
+  & input {
+    width: 100%;
+    min-height: 48px;
+    min-width: 0;
+    border: 0;
+    padding: 0 12px;
+    background: transparent;
+    color: $text;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+
+    &:focus {
+      outline: 0;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: $text-secondary;
+    }
+  }
+}

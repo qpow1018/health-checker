@@ -14,6 +14,7 @@ supabase/.temp/
 supabase/.branches/
 .superpowers/
 .worktrees/
+.superpowers/
 *.tsbuildinfo
 
 # Logs

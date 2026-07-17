@@ -1,0 +1,68 @@
+.wheel-picker {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #ffffff;
+
+  &:focus-visible {
+    outline: 0;
+
+    .wheel-picker-selection {
+      outline: 2px solid $primary;
+      outline-offset: -2px;
+    }
+  }
+
+  .wheel-picker-selection {
+    position: absolute;
+    top: calc(50% - 20px);
+    right: 0;
+    left: 0;
+    z-index: 1;
+    height: 40px;
+    border-top: 1px solid $border;
+    border-bottom: 1px solid $border;
+    background: rgba($primary-soft, 0.55);
+    pointer-events: none;
+  }
+
+  .wheel-picker-scroll {
+    height: 100%;
+    overflow-y: auto;
+    padding: 80px 0;
+    scrollbar-width: none;
+    scroll-snap-type: y mandatory;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 16%,
+      #000 84%,
+      transparent
+    );
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .wheel-picker-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    color: $text-muted;
+    cursor: pointer;
+    font-weight: 500;
+    scroll-snap-align: center;
+    transition: color $transition;
+
+    &:hover {
+      color: $primary-strong;
+    }
+
+    &[data-selected] {
+      color: $primary-strong;
+      font-weight: 700;
+    }
+  }
+}

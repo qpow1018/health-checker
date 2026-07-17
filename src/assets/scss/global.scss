@@ -1,0 +1,12 @@
+@use "./reset";
+
+body {
+  background: $app-background;
+  color: $text;
+  font-family: inherit;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  font-size: 16px;
+  line-height: 1.3;
+}

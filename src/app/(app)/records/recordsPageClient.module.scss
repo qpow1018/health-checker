@@ -1,0 +1,78 @@
+.records-page-content {
+  min-height: 100svh;
+  padding-bottom: $bottom-nav-space;
+  background: #ffffff;
+
+  .page-title-box {
+    padding: 12px 16px;
+
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+    }
+  }
+
+  .month-filter {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    margin: 0 16px 16px;
+    border: 1px solid $border;
+    border-radius: $radius;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      color: $text-secondary;
+
+      &:disabled {
+        color: $text-muted;
+        opacity: 0.45;
+      }
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    strong {
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+  }
+
+  .error-message {
+    margin: 32px 0 0;
+    padding: 12px;
+    font-size: 14px;
+    background: $danger-soft;
+    color: $danger;
+  }
+
+  .record-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .empty-state {
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+    margin: 32px 16px;
+
+    p {
+      color: $text-muted;
+    }
+
+    a {
+      color: $primary;
+      font-weight: 700;
+    }
+  }
+}

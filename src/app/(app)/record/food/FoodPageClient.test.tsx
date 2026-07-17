@@ -1,0 +1,150 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
+import QueryProvider from "@/components/QueryProvider";
+
+import FoodPageClient from "./FoodPageClient";
+
+const routerMocks = vi.hoisted(() => ({
+  back: vi.fn(),
+  editId: "",
+}));
+const healthRecordMocks = vi.hoisted(() => ({
+  createFoodRecord: vi.fn(),
+  getHealthRecord: vi.fn(),
+  updateHealthRecord: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/record/food",
+  useSearchParams: () => new URLSearchParams(routerMocks.editId ? `edit=${routerMocks.editId}` : ""),
+  useRouter: () => ({
+    back: routerMocks.back,
+  }),
+}));
+
+vi.mock("@/api/healthRecords", () => ({
+  createFoodRecord: healthRecordMocks.createFoodRecord,
+  getHealthRecord: healthRecordMocks.getHealthRecord,
+  updateHealthRecord: healthRecordMocks.updateHealthRecord,
+}));
+
+describe("FoodPageClient", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    routerMocks.editId = "";
+  });
+
+  test("shows the food record form", () => {
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    expect(screen.getByRole("main", { name: "음식 기록 화면" })).toBeInTheDocument();
+    expect(screen.getByLabelText("날짜")).toBeInTheDocument();
+    expect(screen.getByLabelText("시간")).toBeInTheDocument();
+    expect(screen.getByLabelText("음식 이름")).toBeInTheDocument();
+    expect(screen.getByLabelText("양")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "저장" })).toBeDisabled();
+  });
+
+  test("adds and removes a food input", async () => {
+    const user = userEvent.setup();
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    await user.click(screen.getByRole("button", { name: "음식 추가" }));
+
+    expect(screen.getAllByLabelText("음식 이름")).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: "음식 삭제" })).toHaveLength(2);
+
+    await user.click(screen.getAllByRole("button", { name: "음식 삭제" })[1]);
+
+    expect(screen.getAllByLabelText("음식 이름")).toHaveLength(1);
+  });
+
+  test("saves the entered food items", async () => {
+    const user = userEvent.setup();
+    healthRecordMocks.createFoodRecord.mockResolvedValue({ id: "record-4" });
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    await selectTime(user);
+    await user.type(screen.getByLabelText("음식 이름"), "커피");
+    await user.type(screen.getByLabelText("양"), "2잔");
+    await user.click(screen.getByRole("button", { name: "음식 추가" }));
+    await user.type(screen.getAllByLabelText("음식 이름")[1], "토스트");
+    await user.click(screen.getByRole("button", { name: "저장" }));
+
+    expect(healthRecordMocks.createFoodRecord).toHaveBeenCalledWith({
+      date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      time: "08:30",
+      foods: [
+        { name: "커피", amount: "2잔" },
+        { name: "토스트", amount: "" },
+      ],
+    });
+    expect(routerMocks.back).toHaveBeenCalled();
+  });
+
+  test("shows an error when saving fails", async () => {
+    const user = userEvent.setup();
+    healthRecordMocks.createFoodRecord.mockRejectedValue(new Error("save failed"));
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    await selectTime(user);
+    await user.type(screen.getByLabelText("음식 이름"), "커피");
+    await user.click(screen.getByRole("button", { name: "저장" }));
+
+    expect(
+      await screen.findByText("음식 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
+    ).toBeInTheDocument();
+  });
+
+  test("keeps the form hidden while an existing record is loading", () => {
+    routerMocks.editId = "record-4";
+    healthRecordMocks.getHealthRecord.mockReturnValue(new Promise(() => {}));
+
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    expect(screen.getByRole("main", { name: "음식 기록 수정 화면" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("음식 이름")).not.toBeInTheDocument();
+  });
+
+  test("loads an existing record and saves it through the edit flow", async () => {
+    const user = userEvent.setup();
+    routerMocks.editId = "record-4";
+    healthRecordMocks.getHealthRecord.mockResolvedValue({
+      id: "record-4",
+      user_id: "user-1",
+      category: "food",
+      recorded_at: "2026-07-14T23:30:00.000Z",
+      details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
+      details_version: 1,
+      created_at: "2026-07-14T23:30:00.000Z",
+      updated_at: "2026-07-14T23:30:00.000Z",
+    });
+    healthRecordMocks.updateHealthRecord.mockResolvedValue({ id: "record-4" });
+
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    expect(await screen.findByRole("main", { name: "음식 기록 수정 화면" })).toBeInTheDocument();
+    expect(await screen.findByDisplayValue("커피")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("토스트")).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "하단 탭" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "수정 완료" }));
+
+    expect(healthRecordMocks.updateHealthRecord).toHaveBeenCalledWith({
+      id: "record-4",
+      date: "2026-07-15",
+      time: "08:30",
+      details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
+    });
+    expect(routerMocks.back).toHaveBeenCalled();
+  });
+});
+
+async function selectTime(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByLabelText("시간"));
+  await user.click(screen.getAllByRole("option", { name: "08" })[0]);
+  await user.click(screen.getAllByRole("option", { name: "30" })[0]);
+  await user.click(screen.getByRole("button", { name: "적용하기" }));
+}
