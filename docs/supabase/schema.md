@@ -94,7 +94,15 @@ type TToiletDetailsV1 = {
 수정과 삭제 규칙:
 
 - 수정은 `recorded_at`, `details`만 허용하며 `category`는 변경하지 않는다.
+- `authenticated` 역할의 UPDATE 권한도 `recorded_at`, `details` 컬럼으로 제한한다.
 - 삭제는 `id` 한 건을 대상으로 한다.
+
+레거시 `bathroom_logs` 전환 규칙:
+
+- 이미 적용된 initial migration은 수정하지 않고 원래 정의를 유지한다.
+- `20260716235908_migrate_legacy_bathroom_logs.sql`에서 기존 행을 `category = 'toilet'`인 `health_records`로 이전한 뒤 레거시 테이블을 제거한다.
+- 기존 UUID, 사용자 소유권, 기록 시각, 생성·수정 시각을 유지한다.
+- 동일한 `hard`, `loose` 값은 `stoolConsistency`로 옮기고, 기존 `usual`과 통증·색 변화·출혈 가능성 값은 의미를 바꾸지 않도록 `note`에 남긴다.
 
 RLS 방향:
 
