@@ -11,6 +11,8 @@ node_modules/
 dist/
 build/
 supabase/.temp/
+supabase/.branches/
+.superpowers/
 .worktrees/
 *.tsbuildinfo
 
