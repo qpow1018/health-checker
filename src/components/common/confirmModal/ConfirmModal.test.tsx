@@ -109,7 +109,7 @@ describe("ConfirmModal", () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
-  test("disables the confirm button while confirming", () => {
+  test("disables both actions while confirming", () => {
     render(
       <ConfirmModal
         isOpen={true}
@@ -126,6 +126,7 @@ describe("ConfirmModal", () => {
       />,
     );
 
+    expect(screen.getByRole("button", { name: "닫기" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "복원" })).toBeDisabled();
   });
 
@@ -201,11 +202,12 @@ describe("ConfirmModal", () => {
     expect(opener).toHaveFocus();
   });
 
-  test("keeps focus inside and ignores Escape while actions are pending", async () => {
+  test("keeps focus inside and blocks dismissal while actions are pending", async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
+    const handleCancel = vi.fn();
 
-    render(
+    const { rerender } = render(
       <ConfirmModal
         isOpen={true}
         onClose={handleClose}
@@ -213,8 +215,31 @@ describe("ConfirmModal", () => {
         message="로그아웃할까요?"
         cancelButton={{
           label: "취소",
-          isDisabled: true,
+          onClick: handleCancel,
+        }}
+        confirmButton={{
+          label: "로그아웃",
+          color: "danger",
           onClick: () => undefined,
+        }}
+      />,
+    );
+
+    const dialog = screen.getByRole("dialog", { name: "로그아웃" });
+    const cancelButton = screen.getByRole("button", { name: "취소" });
+    const confirmButton = screen.getByRole("button", { name: "로그아웃" });
+
+    expect(cancelButton).toHaveFocus();
+
+    rerender(
+      <ConfirmModal
+        isOpen={true}
+        onClose={handleClose}
+        title="로그아웃"
+        message="로그아웃할까요?"
+        cancelButton={{
+          label: "취소",
+          onClick: handleCancel,
         }}
         confirmButton={{
           label: "로그아웃",
@@ -225,13 +250,46 @@ describe("ConfirmModal", () => {
       />,
     );
 
-    const dialog = screen.getByRole("dialog", { name: "로그아웃" });
     expect(dialog).toHaveFocus();
+    expect(cancelButton).toBeDisabled();
+    expect(confirmButton).toBeDisabled();
 
+    await user.click(screen.getByTestId("confirm-modal-overlay"));
     await user.keyboard("{Escape}");
+    await user.click(cancelButton);
+
     expect(handleClose).not.toHaveBeenCalled();
+    expect(handleCancel).not.toHaveBeenCalled();
 
     await user.tab();
     expect(dialog).toHaveFocus();
+
+    rerender(
+      <ConfirmModal
+        isOpen={true}
+        onClose={handleClose}
+        title="로그아웃"
+        message="로그아웃할까요?"
+        cancelButton={{
+          label: "취소",
+          onClick: handleCancel,
+        }}
+        confirmButton={{
+          label: "로그아웃",
+          color: "danger",
+          onClick: () => undefined,
+        }}
+      />,
+    );
+
+    expect(cancelButton).toBeEnabled();
+    expect(confirmButton).toBeEnabled();
+
+    await user.click(cancelButton);
+    await user.click(screen.getByTestId("confirm-modal-overlay"));
+    await user.keyboard("{Escape}");
+
+    expect(handleCancel).toHaveBeenCalledTimes(1);
+    expect(handleClose).toHaveBeenCalledTimes(2);
   });
 });

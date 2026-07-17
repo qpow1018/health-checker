@@ -32,19 +32,15 @@ export default function ConfirmModal(props: {
   } = props;
   const dialogRef = useRef<HTMLElement>(null);
   const onCloseRef = useRef(onClose);
-  const isLockedRef = useRef(false);
+  const isPending = Boolean(cancelButton.isLoading || confirmButton.isLoading);
+  const isPendingRef = useRef(isPending);
   const titleId = useId();
   const messageId = useId();
 
   useScrollLock(isOpen);
 
   onCloseRef.current = onClose;
-  isLockedRef.current = Boolean(
-    cancelButton.isDisabled ||
-      cancelButton.isLoading ||
-      confirmButton.isDisabled ||
-      confirmButton.isLoading,
-  );
+  isPendingRef.current = isPending;
 
   useEffect(() => {
     if (!isOpen) {
@@ -60,8 +56,9 @@ export default function ConfirmModal(props: {
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        if (!isLockedRef.current) {
-          event.preventDefault();
+        event.preventDefault();
+
+        if (!isPendingRef.current) {
           onCloseRef.current();
         }
         return;
@@ -102,6 +99,22 @@ export default function ConfirmModal(props: {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen || !isPending) {
+      return;
+    }
+
+    dialogRef.current?.focus();
+  }, [isOpen, isPending]);
+
+  function handleOverlayClick() {
+    if (isPending) {
+      return;
+    }
+
+    onClose();
+  }
+
   if (!isOpen) {
     return null;
   }
@@ -110,7 +123,7 @@ export default function ConfirmModal(props: {
     <div
       className={styles["confirm-modal-overlay"]}
       data-testid="confirm-modal-overlay"
-      onClick={onClose}
+      onClick={handleOverlayClick}
     >
       <section
         ref={dialogRef}
@@ -134,7 +147,7 @@ export default function ConfirmModal(props: {
             fill="outline"
             size="large"
             isFullWidth
-            isDisabled={cancelButton.isDisabled}
+            isDisabled={cancelButton.isDisabled || isPending}
             isLoading={cancelButton.isLoading}
             onClick={cancelButton.onClick}
           >
@@ -144,7 +157,7 @@ export default function ConfirmModal(props: {
             color={confirmButton.color}
             size="large"
             isFullWidth
-            isDisabled={confirmButton.isDisabled}
+            isDisabled={confirmButton.isDisabled || isPending}
             isLoading={confirmButton.isLoading}
             onClick={confirmButton.onClick}
           >
