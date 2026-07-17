@@ -189,9 +189,10 @@ export default function WheelPicker(props: {
               key={`${virtualOption.option.value}-${virtualOption.loopIndex}`}
               onClick={() => selectOption(optionIndex)}
               role="option"
-              style={style}
             >
-              {virtualOption.option.label}
+              <span className={styles["wheel-picker-option-label"]} style={style}>
+                {virtualOption.option.label}
+              </span>
             </div>
           );
         })}

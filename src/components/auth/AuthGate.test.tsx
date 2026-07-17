@@ -7,6 +7,7 @@ import QueryProvider from "@/components/QueryProvider";
 import { AuthGate, useAuthSession } from "./AuthGate";
 
 const routerMocks = vi.hoisted(() => ({
+  pathname: "/record",
   replace: vi.fn(),
 }));
 
@@ -18,7 +19,7 @@ const authApiMocks = vi.hoisted(() => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/record",
+  usePathname: () => routerMocks.pathname,
   useRouter: () => routerMocks,
 }));
 
@@ -51,6 +52,7 @@ function mockAuthListener() {
 describe("AuthGate", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    routerMocks.pathname = "/record";
     mockAuthListener();
     authApiMocks.signOut.mockResolvedValue(undefined);
   });
@@ -74,6 +76,42 @@ describe("AuthGate", () => {
     expect(await screen.findByRole("heading", { name: "보호된 화면" })).toBeInTheDocument();
     expect(screen.getByText("me@example.com")).toBeInTheDocument();
     expect(authApiMocks.checkAllowedUser).toHaveBeenCalledTimes(1);
+  });
+
+  test("keeps protected children visible while rechecking access after navigation", async () => {
+    authApiMocks.getCurrentSession.mockResolvedValue({
+      user: {
+        email: "me@example.com",
+      },
+    });
+    authApiMocks.checkAllowedUser
+      .mockResolvedValueOnce(true)
+      .mockImplementationOnce(() => new Promise<boolean>(() => undefined));
+
+    const { rerender } = render(
+      <QueryProvider>
+        <AuthGate>
+          <ProtectedChild />
+        </AuthGate>
+      </QueryProvider>,
+    );
+
+    expect(await screen.findByRole("heading", { name: "보호된 화면" })).toBeInTheDocument();
+
+    routerMocks.pathname = "/records";
+    rerender(
+      <QueryProvider>
+        <AuthGate>
+          <ProtectedChild />
+        </AuthGate>
+      </QueryProvider>,
+    );
+
+    await waitFor(() => {
+      expect(authApiMocks.checkAllowedUser).toHaveBeenCalledTimes(2);
+    });
+    expect(screen.getByRole("heading", { name: "보호된 화면" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "확인 중" })).not.toBeInTheDocument();
   });
 
   test("redirects to login when there is no restored session", async () => {

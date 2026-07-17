@@ -30,6 +30,24 @@ describe("WheelPicker", () => {
     expect(handleChange).toHaveBeenCalledWith("02");
   });
 
+  test("keeps visual transforms off the scroll snap options", () => {
+    render(
+      <WheelPicker
+        ariaLabel="시간 선택"
+        onChange={() => undefined}
+        options={OPTIONS}
+        value="01"
+      />,
+    );
+
+    const selectedOption = screen.getByRole("option", { name: "01" });
+    const optionLabel = selectedOption.firstElementChild;
+
+    expect(selectedOption.style.transform).toBe("");
+    expect(optionLabel).toBeInstanceOf(HTMLElement);
+    expect((optionLabel as HTMLElement).style.transform).toContain("perspective");
+  });
+
   test("changes the selected option with arrow keys", async () => {
     const user = userEvent.setup();
 
