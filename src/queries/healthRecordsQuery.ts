@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   createConditionRecord,
+  createExerciseRecord,
   createFoodRecord,
   createSleepRecord,
   createToiletRecord,
@@ -14,6 +15,7 @@ import {
 } from "@/api/healthRecords";
 import type {
   TReqCreateConditionRecord,
+  TReqCreateExerciseRecord,
   TReqCreateFoodRecord,
   TReqListHealthRecords,
   TReqCreateSleepRecord,
@@ -70,6 +72,13 @@ export function useCreateFoodRecord() {
   return useHealthRecordMutation<TReqCreateFoodRecord, Awaited<ReturnType<typeof createFoodRecord>>>(
     createFoodRecord,
   );
+}
+
+export function useCreateExerciseRecord() {
+  return useHealthRecordMutation<
+    TReqCreateExerciseRecord,
+    Awaited<ReturnType<typeof createExerciseRecord>>
+  >(createExerciseRecord);
 }
 
 export function useCreateConditionRecord() {

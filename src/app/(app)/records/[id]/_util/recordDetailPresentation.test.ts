@@ -44,4 +44,21 @@ describe("recordDetailPresentation", () => {
     ]);
     expect(getRecordEditPath(record)).toBe("/record/toilet?edit=record-1");
   });
+
+  test("shows every exercise item and opens its edit form", () => {
+    const record = createRecord({
+      category: "exercise",
+      details: {
+        exercises: [
+          { name: "산책", amount: "30분" },
+          { name: "팔굽혀펴기", amount: "20회" },
+        ],
+      },
+    });
+
+    expect(getRecordDetailItems(record)).toEqual([
+      { label: "운동", value: "산책 · 30분\n팔굽혀펴기 · 20회" },
+    ]);
+    expect(getRecordEditPath(record)).toBe("/record/exercise?edit=record-1");
+  });
 });

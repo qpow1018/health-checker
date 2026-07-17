@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import {
   createConditionRecord,
+  createExerciseRecord,
   createFoodRecord,
   createSleepRecord,
   createToiletRecord,
@@ -153,6 +154,46 @@ describe("healthRecords API", () => {
     await expect(
       createFoodRecord({ date: "2026-07-15", time: "08:30", foods: [{ name: " " }] }),
     ).rejects.toThrow("음식을 하나 이상 입력해 주세요.");
+  });
+
+  test("stores exercise items after trimming their input", async () => {
+    const single = vi.fn().mockResolvedValue({ data: { id: "record-5" }, error: null });
+    const select = vi.fn().mockReturnValue({ single });
+    const insert = vi.fn().mockReturnValue({ select });
+
+    supabaseMocks.from.mockReturnValue({ insert });
+
+    await createExerciseRecord({
+      date: "2026-07-16",
+      time: "19:30",
+      exercises: [
+        { name: " 산책 ", amount: " 30분 " },
+        { name: "팔굽혀펴기", amount: "20회" },
+        { name: " " },
+      ],
+    });
+
+    expect(insert).toHaveBeenCalledWith({
+      category: "exercise",
+      recorded_at: new Date("2026-07-16T19:30:00").toISOString(),
+      details: {
+        exercises: [
+          { name: "산책", amount: "30분" },
+          { name: "팔굽혀펴기", amount: "20회" },
+        ],
+      },
+      details_version: 1,
+    });
+  });
+
+  test("rejects an exercise record without an exercise name", async () => {
+    await expect(
+      createExerciseRecord({
+        date: "2026-07-16",
+        time: "19:30",
+        exercises: [{ name: " " }],
+      }),
+    ).rejects.toThrow("운동을 하나 이상 입력해 주세요.");
   });
 
   test("stores a condition note after trimming it", async () => {

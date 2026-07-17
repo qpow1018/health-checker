@@ -9,6 +9,7 @@ import {
 
 import {
   MdBedtime,
+  MdDirectionsRun,
   MdOutlineCalendarToday,
   MdOutlineWc,
   MdRestaurant,
@@ -75,6 +76,10 @@ function getRecordIcon(category: string) {
 
   if (category === "food") {
     return MdRestaurant;
+  }
+
+  if (category === "exercise") {
+    return MdDirectionsRun;
   }
 
   if (category === "condition") {

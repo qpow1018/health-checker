@@ -45,12 +45,14 @@ describe("RecordPageClient", () => {
     await user.click(screen.getByRole("button", { name: "잠든 시간" }));
     await user.click(screen.getByRole("button", { name: "먹은 음식" }));
     await user.click(screen.getByRole("button", { name: "화장실" }));
+    await user.click(screen.getByRole("button", { name: "운동" }));
     await user.click(screen.getByRole("button", { name: "컨디션" }));
 
     expect(push).toHaveBeenCalledWith("/record/wake");
     expect(push).toHaveBeenCalledWith("/record/sleep");
     expect(push).toHaveBeenCalledWith("/record/food");
     expect(push).toHaveBeenCalledWith("/record/toilet");
+    expect(push).toHaveBeenCalledWith("/record/exercise");
     expect(push).toHaveBeenCalledWith("/record/condition");
   });
 
@@ -78,7 +80,7 @@ describe("RecordPageClient", () => {
     expect(screen.getByRole("button", { name: "잠든 시간" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "먹은 음식" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "화장실" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /운동 준비 중/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "운동" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "컨디션" })).toBeInTheDocument();
 
     expect(screen.getByRole("navigation", { name: "하단 탭" })).toBeInTheDocument();

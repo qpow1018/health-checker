@@ -13,6 +13,10 @@ export function getRecordCategoryLabel(record: THealthRecordRow) {
     return "음식 기록";
   }
 
+  if (record.category === "exercise") {
+    return "운동 기록";
+  }
+
   if (record.category === "condition") {
     return "컨디션 기록";
   }
@@ -40,6 +44,19 @@ export function getRecordDescription(record: THealthRecordRow) {
     });
 
     return foodNames.join(", ") || undefined;
+  }
+
+  if (record.category === "exercise" && Array.isArray(record.details.exercises)) {
+    const exerciseNames = record.details.exercises.flatMap((exercise) => {
+      if (!isRecord(exercise) || typeof exercise.name !== "string" || !exercise.name.trim()) {
+        return [];
+      }
+
+      const amount = typeof exercise.amount === "string" && exercise.amount.trim();
+      return [`${exercise.name.trim()}${amount ? ` ${amount}` : ""}`];
+    });
+
+    return exerciseNames.join(", ") || undefined;
   }
 
   return undefined;

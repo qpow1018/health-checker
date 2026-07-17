@@ -30,37 +30,31 @@ const RECORD_ACTIONS = [
     title: "기상 시간",
     Icon: MdWbSunny,
     href: "/record/wake",
-    status: undefined,
   },
   {
     title: "잠든 시간",
     Icon: MdBedtime,
     href: "/record/sleep",
-    status: undefined,
   },
   {
     title: "먹은 음식",
     Icon: MdRestaurant,
     href: "/record/food",
-    status: undefined,
   },
   {
     title: "화장실",
     Icon: MdOutlineWc,
     href: "/record/toilet",
-    status: undefined,
   },
   {
     title: "운동",
     Icon: MdDirectionsRun,
-    href: undefined,
-    status: "준비 중",
+    href: "/record/exercise",
   },
   {
     title: "컨디션",
     Icon: MdSentimentSatisfiedAlt,
     href: "/record/condition",
-    status: undefined,
   },
 ] as const;
 
@@ -116,12 +110,7 @@ export default function RecordPageClient() {
     };
   }, []);
 
-  function handleClickRecordAction(href?: string) {
-    if (!href) {
-      // TODO: 각 기록 입력 화면이 준비되면 선택한 항목 화면으로 이동한다.
-      return;
-    }
-
+  function handleClickRecordAction(href: string) {
     router.push(href);
   }
 
@@ -148,7 +137,6 @@ export default function RecordPageClient() {
             type="button"
             color="primary"
             fill="soft"
-            isDisabled={!action.href}
             size="large"
             isFullWidth
             key={action.title}
@@ -159,9 +147,6 @@ export default function RecordPageClient() {
                 <action.Icon aria-hidden="true" />
               </span>
               <span className={styles["action-label"]}>{action.title}</span>
-              {action.status && (
-                <span className={styles["action-status"]}>{action.status}</span>
-              )}
             </span>
           </Button>
         ))}

@@ -44,6 +44,15 @@ export type TFoodDetailsV1 = {
   foods: TFoodItemV1[];
 };
 
+export type TExerciseItemV1 = {
+  name: string;
+  amount?: string;
+};
+
+export type TExerciseDetailsV1 = {
+  exercises: TExerciseItemV1[];
+};
+
 export type TConditionDetailsV1 = {
   note: string;
 };
@@ -66,6 +75,12 @@ export type TReqCreateFoodRecord = {
   foods: TFoodItemV1[];
 };
 
+export type TReqCreateExerciseRecord = {
+  date: string;
+  time: string;
+  exercises: TExerciseItemV1[];
+};
+
 export type TReqCreateConditionRecord = {
   date: string;
   time: string;
@@ -81,5 +96,10 @@ export type TReqUpdateHealthRecord = {
   id: string;
   date: string;
   time: string;
-  details: TSleepDetailsV1 | TToiletDetailsV1 | TFoodDetailsV1 | TConditionDetailsV1;
+  details:
+    | TSleepDetailsV1
+    | TToiletDetailsV1
+    | TFoodDetailsV1
+    | TExerciseDetailsV1
+    | TConditionDetailsV1;
 };

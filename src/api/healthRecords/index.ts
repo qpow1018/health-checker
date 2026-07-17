@@ -3,6 +3,9 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type {
   TConditionDetailsV1,
   TReqCreateConditionRecord,
+  TExerciseDetailsV1,
+  TExerciseItemV1,
+  TReqCreateExerciseRecord,
   TFoodDetailsV1,
   TFoodItemV1,
   TReqCreateFoodRecord,
@@ -42,6 +45,21 @@ export async function createFoodRecord({ date, time, foods }: TReqCreateFoodReco
   return createHealthRecord({ category: "food", date, time, details });
 }
 
+export async function createExerciseRecord({
+  date,
+  time,
+  exercises,
+}: TReqCreateExerciseRecord) {
+  const normalizedExercises = normalizeExerciseItems(exercises);
+
+  if (normalizedExercises.length === 0) {
+    throw new Error("운동을 하나 이상 입력해 주세요.");
+  }
+
+  const details: TExerciseDetailsV1 = { exercises: normalizedExercises };
+  return createHealthRecord({ category: "exercise", date, time, details });
+}
+
 export async function createConditionRecord({
   date,
   time,
@@ -63,10 +81,15 @@ async function createHealthRecord({
   time,
   details,
 }: {
-  category: "sleep" | "toilet" | "food" | "condition";
+  category: "sleep" | "toilet" | "food" | "exercise" | "condition";
   date: string;
   time: string;
-  details: TSleepDetailsV1 | TToiletDetailsV1 | TFoodDetailsV1 | TConditionDetailsV1;
+  details:
+    | TSleepDetailsV1
+    | TToiletDetailsV1
+    | TFoodDetailsV1
+    | TExerciseDetailsV1
+    | TConditionDetailsV1;
 }) {
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
@@ -91,6 +114,20 @@ function normalizeFoodItems(foods: TFoodItemV1[]) {
   return foods.reduce<TFoodItemV1[]>((items, food) => {
     const name = food.name.trim();
     const amount = food.amount?.trim();
+
+    if (!name) {
+      return items;
+    }
+
+    items.push({ name, ...(amount && { amount }) });
+    return items;
+  }, []);
+}
+
+function normalizeExerciseItems(exercises: TExerciseItemV1[]) {
+  return exercises.reduce<TExerciseItemV1[]>((items, exercise) => {
+    const name = exercise.name.trim();
+    const amount = exercise.amount?.trim();
 
     if (!name) {
       return items;

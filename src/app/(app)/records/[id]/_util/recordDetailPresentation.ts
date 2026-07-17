@@ -24,6 +24,19 @@ export function getRecordDetailItems(record: THealthRecordRow) {
     return foods.length > 0 ? [{ label: "음식", value: foods.join("\n") }] : [];
   }
 
+  if (record.category === "exercise" && Array.isArray(record.details.exercises)) {
+    const exercises = record.details.exercises.flatMap((exercise) => {
+      if (!isRecord(exercise) || typeof exercise.name !== "string" || !exercise.name.trim()) {
+        return [];
+      }
+
+      const amount = typeof exercise.amount === "string" && exercise.amount.trim();
+      return [`${exercise.name.trim()}${amount ? ` · ${amount}` : ""}`];
+    });
+
+    return exercises.length > 0 ? [{ label: "운동", value: exercises.join("\n") }] : [];
+  }
+
   if (record.category === "condition" && typeof record.details.note === "string") {
     return [{ label: "불편했던 점", value: record.details.note }];
   }
@@ -53,7 +66,12 @@ export function getRecordEditPath(record: THealthRecordRow) {
     return `/record/${event}?edit=${record.id}`;
   }
 
-  if (record.category === "toilet" || record.category === "food" || record.category === "condition") {
+  if (
+    record.category === "toilet" ||
+    record.category === "food" ||
+    record.category === "exercise" ||
+    record.category === "condition"
+  ) {
     return `/record/${record.category}?edit=${record.id}`;
   }
 

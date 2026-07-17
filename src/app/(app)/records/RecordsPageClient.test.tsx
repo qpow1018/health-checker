@@ -182,6 +182,32 @@ describe("RecordsPageClient", () => {
     );
   });
 
+  test("shows exercise records", async () => {
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-5",
+        user_id: "user-1",
+        category: "exercise",
+        recorded_at: "2026-07-16T10:30:00.000Z",
+        details: {
+          exercises: [
+            { name: "산책", amount: "30분" },
+            { name: "팔굽혀펴기", amount: "20회" },
+          ],
+        },
+        details_version: 1,
+        created_at: "2026-07-16T10:30:00.000Z",
+        updated_at: "2026-07-16T10:30:00.000Z",
+      },
+    ]);
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
+      "운동 기록",
+    );
+    expect(screen.getByText("산책 30분, 팔굽혀펴기 20회")).toBeInTheDocument();
+  });
+
   test("shows condition notes in recent records", async () => {
     healthRecordMocks.listHealthRecords.mockResolvedValue([
       {
