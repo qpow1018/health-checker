@@ -46,7 +46,9 @@ export function AuthGate({ children }: TAuthGateProps) {
         return;
       }
 
-      setAuthState("checking-access");
+      setAuthState((currentAuthState) =>
+        currentAuthState === "allowed" ? currentAuthState : "checking-access",
+      );
 
       try {
         const isAllowed = await checkAllowedUser();
