@@ -49,40 +49,38 @@ export function SettingsPageClient() {
 
   return (
     <main className={styles["settings-page-content"]} aria-label="설정 화면">
-      <div className={styles["app-canvas"]}>
-        <header className={styles.topbar}>
-          <p className={styles.eyebrow}>설정</p>
-          <h1>계정과 앱 설정</h1>
-        </header>
+      <header className={styles["page-title-box"]}>
+        <h1>설정</h1>
+      </header>
 
-        <div className={styles.sections}>
-          <section className={styles.card} aria-labelledby="account-section-title">
-            <h2 id="account-section-title">계정</h2>
-            <dl className={styles["account-details"]}>
-              <div>
-                <dt>로그인 계정</dt>
-                <dd>{email}</dd>
-              </div>
-            </dl>
-          </section>
+      <div className={styles["settings-content"]}>
+        <section
+          className={styles["account-section"]}
+          aria-labelledby="account-section-title"
+        >
+          <h2 id="account-section-title">계정</h2>
+          <dl className={styles["account-details"]}>
+            <div>
+              <dt>로그인 계정</dt>
+              <dd>{email}</dd>
+            </div>
+          </dl>
+        </section>
 
-          <section className={styles.card} aria-labelledby="logout-section-title">
-            <h2 id="logout-section-title">로그아웃</h2>
-            <p className={styles.description}>이 기기에서 현재 계정의 사용을 종료합니다.</p>
-            <Button
-              color="danger"
-              fill="outline"
-              size="large"
-              isFullWidth
-              onClick={handleOpenLogoutModal}
-            >
-              로그아웃
-            </Button>
-          </section>
+        <div className={styles["logout-action"]}>
+          <Button
+            color="danger"
+            fill="outline"
+            size="large"
+            isFullWidth
+            onClick={handleOpenLogoutModal}
+          >
+            로그아웃
+          </Button>
         </div>
-
-        <BottomNavigation />
       </div>
+
+      <BottomNavigation />
 
       {signOutError ? (
         <p className={styles["error-message"]} role="status">

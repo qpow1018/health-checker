@@ -1,89 +1,68 @@
 .settings-page-content {
+  display: flex;
   min-height: 100svh;
+  flex-direction: column;
+  padding-bottom: $bottom-nav-space;
+  background: #ffffff;
   color: $text;
 
-  .app-canvas {
-    position: relative;
-    display: flex;
-    min-height: 100svh;
-    flex-direction: column;
-    padding: max(18px, env(safe-area-inset-top)) 18px
-      calc($bottom-nav-space + 22px);
-    background: $gray-100;
-  }
-
-  .topbar {
-    padding-top: 8px;
+  .page-title-box {
+    padding: 12px 16px;
 
     h1 {
-      margin: 0;
-      font-size: 24px;
-      line-height: 1.22;
+      font-size: 22px;
+      font-weight: 800;
     }
   }
 
-  .eyebrow {
-    margin: 0 0 8px;
-    color: $primary;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.4;
+  .settings-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 8px 16px 24px;
   }
 
-  .sections {
-    display: grid;
-    gap: 16px;
-    margin-top: 26px;
-  }
-
-  .card {
-    display: grid;
-    gap: 16px;
-    min-width: 0;
-    border: 1px solid $border;
-    border-radius: $radius;
-    padding: 18px;
-    background: #ffffff;
-    box-shadow: 0 16px 40px rgba(24, 34, 42, 0.08);
-
+  .account-section {
     h2 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.35;
+      color: $text-secondary;
+      font-size: 13px;
+      font-weight: 700;
     }
   }
 
   .account-details {
-    margin: 0;
+    margin: 10px 0 0;
+    border-top: 1px solid $border;
+    border-bottom: 1px solid $border;
 
     div {
-      display: grid;
-      gap: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       min-width: 0;
+      padding: 16px 0;
     }
 
     dt {
-      color: $text-secondary;
-      font-size: 13px;
+      flex: none;
+      font-size: 14px;
       font-weight: 700;
-      line-height: 1.4;
     }
 
     dd {
       min-width: 0;
       margin: 0;
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1.5;
+      color: $text-secondary;
+      font-size: 14px;
+      text-align: right;
       overflow-wrap: anywhere;
     }
   }
 
-  .description {
-    margin: 0;
-    color: $text-secondary;
-    font-size: 14px;
-    line-height: 1.55;
+  .logout-action {
+    margin-top: auto;
+    padding-top: 40px;
   }
 
   .error-message {

@@ -42,6 +42,9 @@ describe("SettingsPageClient", () => {
     render(<SettingsPageClient />);
 
     expect(screen.getByRole("main", { name: "설정 화면" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "설정", level: 1 })).toBeInTheDocument();
+    expect(screen.queryByText("계정과 앱 설정")).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "계정", level: 2 })).toBeInTheDocument();
     expect(screen.getByText("owner@example.com")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "설정" })).toHaveAttribute("aria-current", "page");
 
