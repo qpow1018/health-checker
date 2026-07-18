@@ -8,7 +8,6 @@ import Button from "@/components/common/button/Button";
 import { useHealthRecords } from "@/queries/healthRecordsQuery";
 
 import {
-  MdBedtime,
   MdDirectionsRun,
   MdOutlineWc,
   MdRestaurant,
@@ -30,11 +29,6 @@ const RECORD_ACTIONS = [
     title: "기상 시간",
     Icon: MdWbSunny,
     href: "/record/wake",
-  },
-  {
-    title: "잠든 시간",
-    Icon: MdBedtime,
-    href: "/record/sleep",
   },
   {
     title: "먹은 음식",

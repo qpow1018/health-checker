@@ -57,10 +57,9 @@ export type TConditionDetailsV1 = {
   note: string;
 };
 
-export type TReqCreateSleepRecord = {
+export type TReqCreateWakeRecord = {
   date: string;
   time: string;
-  event: TSleepEvent;
 };
 
 export type TReqCreateToiletRecord = {

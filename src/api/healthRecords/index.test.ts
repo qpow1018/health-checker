@@ -4,7 +4,7 @@ import {
   createConditionRecord,
   createExerciseRecord,
   createFoodRecord,
-  createSleepRecord,
+  createWakeRecord,
   createToiletRecord,
   deleteHealthRecord,
   listHealthRecords,
@@ -26,20 +26,20 @@ describe("healthRecords API", () => {
     vi.clearAllMocks();
   });
 
-  test("stores a sleep event using the selected local date and time", async () => {
+  test("stores a wake event using the selected local date and time", async () => {
     const single = vi.fn().mockResolvedValue({ data: { id: "record-1" }, error: null });
     const select = vi.fn().mockReturnValue({ single });
     const insert = vi.fn().mockReturnValue({ select });
 
     supabaseMocks.from.mockReturnValue({ insert });
 
-    await createSleepRecord({ date: "2026-07-15", time: "23:30", event: "slept" });
+    await createWakeRecord({ date: "2026-07-15", time: "08:30" });
 
     expect(supabaseMocks.from).toHaveBeenCalledWith("health_records");
     expect(insert).toHaveBeenCalledWith({
       category: "sleep",
-      recorded_at: new Date("2026-07-15T23:30:00").toISOString(),
-      details: { event: "slept" },
+      recorded_at: new Date("2026-07-15T08:30:00").toISOString(),
+      details: { event: "woke" },
       details_version: 1,
     });
   });
@@ -225,7 +225,7 @@ describe("healthRecords API", () => {
 
   test("rejects an invalid date before creating a record", async () => {
     await expect(
-      createSleepRecord({ date: "2026-02-31", time: "23:30", event: "slept" }),
+      createWakeRecord({ date: "2026-02-31", time: "08:30" }),
     ).rejects.toThrow("날짜와 시간을 올바르게 입력해 주세요.");
   });
 });

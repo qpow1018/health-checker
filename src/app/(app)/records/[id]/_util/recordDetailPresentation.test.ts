@@ -61,4 +61,21 @@ describe("recordDetailPresentation", () => {
     ]);
     expect(getRecordEditPath(record)).toBe("/record/exercise?edit=record-1");
   });
+
+  test("edits wake records but keeps legacy slept records read-only", () => {
+    const wakeRecord = createRecord({
+      category: "sleep",
+      details: { event: "woke" },
+    });
+    const sleptRecord = createRecord({
+      category: "sleep",
+      details: { event: "slept" },
+    });
+
+    expect(getRecordEditPath(wakeRecord)).toBe("/record/wake?edit=record-1");
+    expect(getRecordDetailItems(sleptRecord)).toEqual([
+      { label: "기록", value: "잠든 시간" },
+    ]);
+    expect(getRecordEditPath(sleptRecord)).toBeUndefined();
+  });
 });

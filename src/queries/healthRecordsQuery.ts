@@ -6,7 +6,7 @@ import {
   createConditionRecord,
   createExerciseRecord,
   createFoodRecord,
-  createSleepRecord,
+  createWakeRecord,
   createToiletRecord,
   deleteHealthRecord,
   getHealthRecord,
@@ -18,7 +18,7 @@ import type {
   TReqCreateExerciseRecord,
   TReqCreateFoodRecord,
   TReqListHealthRecords,
-  TReqCreateSleepRecord,
+  TReqCreateWakeRecord,
   TReqCreateToiletRecord,
   TReqUpdateHealthRecord,
 } from "@/api/healthRecords/type";
@@ -56,9 +56,9 @@ function useHealthRecordMutation<TVariables, TData>(
   });
 }
 
-export function useCreateSleepRecord() {
-  return useHealthRecordMutation<TReqCreateSleepRecord, Awaited<ReturnType<typeof createSleepRecord>>>(
-    createSleepRecord,
+export function useCreateWakeRecord() {
+  return useHealthRecordMutation<TReqCreateWakeRecord, Awaited<ReturnType<typeof createWakeRecord>>>(
+    createWakeRecord,
   );
 }
 

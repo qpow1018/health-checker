@@ -62,8 +62,11 @@ export function getRecordDetailItems(record: THealthRecordRow) {
 
 export function getRecordEditPath(record: THealthRecordRow) {
   if (record.category === "sleep") {
-    const event = isRecord(record.details) && record.details.event === "woke" ? "wake" : "sleep";
-    return `/record/${event}?edit=${record.id}`;
+    if (isRecord(record.details) && record.details.event === "woke") {
+      return `/record/wake?edit=${record.id}`;
+    }
+
+    return undefined;
   }
 
   if (
