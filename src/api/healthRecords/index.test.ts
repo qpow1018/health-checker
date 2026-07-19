@@ -109,6 +109,8 @@ describe("healthRecords API", () => {
       time: "06:30",
       details: {
         type: "bowel",
+        urgency: "ordinary",
+        wokeFromSleep: false,
         stoolConsistency: "loose",
         note: "복통 있음",
       },
@@ -119,6 +121,8 @@ describe("healthRecords API", () => {
       recorded_at: new Date("2026-07-15T06:30:00").toISOString(),
       details: {
         type: "bowel",
+        urgency: "ordinary",
+        wokeFromSleep: false,
         stoolConsistency: "loose",
         note: "복통 있음",
       },

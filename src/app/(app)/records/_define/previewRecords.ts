@@ -36,7 +36,12 @@ export const PREVIEW_RECORDS: THealthRecordRow[] = [
     user_id: "preview-user",
     category: "toilet",
     recorded_at: "2026-07-15T10:40:00.000Z",
-    details: { type: "bowel", stoolConsistency: "loose" },
+    details: {
+      type: "bowel",
+      urgency: "ordinary",
+      wokeFromSleep: false,
+      stoolConsistency: "loose",
+    },
     details_version: 1,
     created_at: "2026-07-15T10:40:00.000Z",
     updated_at: "2026-07-15T10:40:00.000Z",

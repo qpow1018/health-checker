@@ -39,7 +39,7 @@ describe("recordDetailPresentation", () => {
     expect(getRecordDetailItems(record)).toEqual([
       { label: "종류", value: "대변 기록" },
       { label: "급한 정도", value: "급함" },
-      { label: "잠에서 깬 뒤인지", value: "아니오" },
+      { label: "자다가 깸", value: "아니오" },
       { label: "특이사항", value: "복통" },
     ]);
     expect(getRecordEditPath(record)).toBe("/record/toilet?edit=record-1");

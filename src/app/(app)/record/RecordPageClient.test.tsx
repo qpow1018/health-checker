@@ -95,7 +95,13 @@ describe("RecordPageClient", () => {
       createRecord("record-1", "condition", today, { note: "두통" }, 14),
       createRecord("record-2", "food", today, { foods: [{ name: "커피", amount: "2잔" }] }, 12),
       createRecord("record-3", "sleep", today, { event: "woke" }, 7),
-      createRecord("record-4", "toilet", today, { type: "urine" }, 6),
+      createRecord(
+        "record-4",
+        "toilet",
+        today,
+        { type: "urine", urgency: "ordinary", wokeFromSleep: false },
+        6,
+      ),
     ]);
 
     render(<QueryProvider><RecordPageClient /></QueryProvider>);

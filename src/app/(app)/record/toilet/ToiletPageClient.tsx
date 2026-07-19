@@ -32,16 +32,13 @@ const TOILET_TYPE_OPTIONS = [
 ] as const;
 
 const URGENCY_OPTIONS = [
-  { value: "", label: "기록 안 함" },
-  { value: "relaxed", label: "여유" },
   { value: "ordinary", label: "보통" },
   { value: "urgent", label: "급함" },
 ] as const;
 
 const WOKE_FROM_SLEEP_OPTIONS = [
-  { value: "", label: "기록 안 함" },
-  { value: "yes", label: "예" },
   { value: "no", label: "아니오" },
+  { value: "yes", label: "예" },
 ] as const;
 
 const STOOL_CONSISTENCY_OPTIONS = [
@@ -61,9 +58,9 @@ export default function ToiletPageClient() {
   const [defaultRecordDateTime] = useState(getCurrentRecordDateTime);
   const [recordedOn, setRecordedOn] = useState(defaultRecordDateTime.date);
   const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
-  const [type, setType] = useState<TToiletType | "">("");
-  const [urgency, setUrgency] = useState<TToiletUrgency | "">("");
-  const [wokeFromSleep, setWokeFromSleep] = useState<"" | "yes" | "no">("");
+  const [type, setType] = useState<TToiletType>("urine");
+  const [urgency, setUrgency] = useState<TToiletUrgency>("ordinary");
+  const [wokeFromSleep, setWokeFromSleep] = useState<"yes" | "no">("no");
   const [stoolConsistency, setStoolConsistency] = useState<TToiletStoolConsistency | "">("");
   const [note, setNote] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -79,10 +76,10 @@ export default function ToiletPageClient() {
     const date = new Date(record.recorded_at);
     setRecordedOn(formatDateString(date));
     setRecordedAt(formatTimeString(date));
-    setType(isToiletType(record.details.type) ? record.details.type : "");
-    setUrgency(isUrgency(record.details.urgency) ? record.details.urgency : "");
+    setType(isToiletType(record.details.type) ? record.details.type : "urine");
+    setUrgency(isUrgency(record.details.urgency) ? record.details.urgency : "ordinary");
     setWokeFromSleep(
-      typeof record.details.wokeFromSleep === "boolean" ? (record.details.wokeFromSleep ? "yes" : "no") : "",
+      typeof record.details.wokeFromSleep === "boolean" ? (record.details.wokeFromSleep ? "yes" : "no") : "no",
     );
     setStoolConsistency(isStoolConsistency(record.details.stoolConsistency) ? record.details.stoolConsistency : "");
     setNote(typeof record.details.note === "string" ? record.details.note : "");
@@ -117,7 +114,7 @@ export default function ToiletPageClient() {
   }
 
   async function handleSubmit() {
-    if (!recordedOn || !recordedAt || !type) {
+    if (!recordedOn || !recordedAt) {
       return;
     }
 
@@ -175,18 +172,18 @@ export default function ToiletPageClient() {
               value={type}
             />
           </FormRow>
-          <FormRow label="급한 정도 (선택)">
+          <FormRow label="급한 정도">
             <ButtonGroup
               label="급한 정도"
-              onChange={(value) => setUrgency(value as TToiletUrgency | "")}
+              onChange={(value) => setUrgency(value as TToiletUrgency)}
               options={URGENCY_OPTIONS}
               value={urgency}
             />
           </FormRow>
-          <FormRow label="잠에서 깬 뒤인지 (선택)">
+          <FormRow label="화장실 때문에 자다가 깼나요?">
             <ButtonGroup
-              label="잠에서 깬 뒤인지"
-              onChange={(value) => setWokeFromSleep(value as "" | "yes" | "no")}
+              label="화장실 때문에 자다가 깼나요?"
+              onChange={(value) => setWokeFromSleep(value as "yes" | "no")}
               options={WOKE_FROM_SLEEP_OPTIONS}
               value={wokeFromSleep}
             />
@@ -212,7 +209,7 @@ export default function ToiletPageClient() {
 
           <Button
             color="primary"
-            isDisabled={!recordedOn || !recordedAt || !type}
+            isDisabled={!recordedOn || !recordedAt}
             isFullWidth
             isLoading={isSaving || isUpdating}
             size="large"
@@ -242,7 +239,7 @@ function isToiletType(value: unknown): value is TToiletType {
 }
 
 function isUrgency(value: unknown): value is TToiletUrgency {
-  return value === "relaxed" || value === "ordinary" || value === "urgent";
+  return value === "ordinary" || value === "urgent";
 }
 
 function isStoolConsistency(value: unknown): value is TToiletStoolConsistency {
@@ -251,15 +248,15 @@ function isStoolConsistency(value: unknown): value is TToiletStoolConsistency {
 
 function createToiletDetails(props: {
   type: TToiletType;
-  urgency: TToiletUrgency | "";
-  wokeFromSleep: "" | "yes" | "no";
+  urgency: TToiletUrgency;
+  wokeFromSleep: "yes" | "no";
   stoolConsistency: TToiletStoolConsistency | "";
   note: string;
 }): TToiletDetailsV1 {
   const { type, urgency, wokeFromSleep, stoolConsistency, note } = props;
   const commonDetails = {
-    ...(urgency && { urgency }),
-    ...(wokeFromSleep && { wokeFromSleep: wokeFromSleep === "yes" }),
+    urgency,
+    wokeFromSleep: wokeFromSleep === "yes",
     ...(note.trim() && { note: note.trim() }),
   };
 

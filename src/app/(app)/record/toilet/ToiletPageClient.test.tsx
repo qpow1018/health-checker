@@ -36,9 +36,45 @@ describe("ToiletPageClient", () => {
     expect(screen.getByRole("main", { name: "화장실 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
     expect(screen.getByLabelText("시간")).toBeInTheDocument();
-    expect(screen.getByRole("group", { name: "종류" })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("group", { name: "종류" })).getByRole("button", {
+        name: "소변",
+        pressed: true,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("group", { name: "급한 정도" })).getByRole("button", {
+        name: "보통",
+        pressed: true,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "여유" })).not.toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole("group", { name: "화장실 때문에 자다가 깼나요?" }),
+      ).getByRole("button", { name: "아니오", pressed: true }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("group", { name: "대변 상태" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "저장" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "저장" })).toBeEnabled();
+  });
+
+  test("saves the default toilet details", async () => {
+    const user = userEvent.setup();
+    healthRecordMocks.createToiletRecord.mockResolvedValue({ id: "record-3" });
+    render(<QueryProvider><ToiletPageClient /></QueryProvider>);
+
+    await user.click(screen.getByRole("button", { name: "저장" }));
+
+    expect(healthRecordMocks.createToiletRecord).toHaveBeenCalledWith({
+      date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      time: expect.stringMatching(/^\d{2}:\d{2}$/),
+      details: {
+        type: "urine",
+        urgency: "ordinary",
+        wokeFromSleep: false,
+      },
+    });
+    expect(back).toHaveBeenCalled();
   });
 
   test("shows the stool consistency options for a bowel record", async () => {
@@ -58,7 +94,11 @@ describe("ToiletPageClient", () => {
     await selectTime(user);
     await user.click(within(screen.getByRole("group", { name: "종류" })).getByRole("button", { name: "대변" }));
     await user.click(within(screen.getByRole("group", { name: "급한 정도" })).getByRole("button", { name: "급함" }));
-    await user.click(within(screen.getByRole("group", { name: "잠에서 깬 뒤인지" })).getByRole("button", { name: "예" }));
+    await user.click(
+      within(
+        screen.getByRole("group", { name: "화장실 때문에 자다가 깼나요?" }),
+      ).getByRole("button", { name: "예" }),
+    );
     await user.click(within(screen.getByRole("group", { name: "대변 상태" })).getByRole("button", { name: "묽음" }));
     await user.type(screen.getByLabelText("특이사항 (선택)"), "복통 있음");
     await user.click(screen.getByRole("button", { name: "저장" }));
@@ -83,7 +123,6 @@ describe("ToiletPageClient", () => {
     render(<QueryProvider><ToiletPageClient /></QueryProvider>);
 
     await selectTime(user);
-    await user.click(within(screen.getByRole("group", { name: "종류" })).getByRole("button", { name: "소변" }));
     await user.click(screen.getByRole("button", { name: "저장" }));
 
     expect(

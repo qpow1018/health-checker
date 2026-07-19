@@ -48,7 +48,7 @@ export function getRecordDetailItems(record: THealthRecordRow) {
     const stoolConsistency = getStoolConsistencyLabel(record.details.stoolConsistency);
 
     if (urgency) items.push({ label: "급한 정도", value: urgency });
-    if (wokeFromSleep) items.push({ label: "잠에서 깬 뒤인지", value: wokeFromSleep });
+    if (wokeFromSleep) items.push({ label: "자다가 깸", value: wokeFromSleep });
     if (stoolConsistency) items.push({ label: "대변 상태", value: stoolConsistency });
     if (typeof record.details.note === "string" && record.details.note.trim()) {
       items.push({ label: "특이사항", value: record.details.note.trim() });
@@ -82,7 +82,6 @@ export function getRecordEditPath(record: THealthRecordRow) {
 }
 
 function getUrgencyLabel(value: unknown) {
-  if (value === "relaxed") return "여유";
   if (value === "ordinary") return "보통";
   if (value === "urgent") return "급함";
   return undefined;
