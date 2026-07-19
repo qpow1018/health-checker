@@ -42,7 +42,6 @@ const WOKE_FROM_SLEEP_OPTIONS = [
 ] as const;
 
 const STOOL_CONSISTENCY_OPTIONS = [
-  { value: "", label: "기록 안 함" },
   { value: "hard", label: "단단함" },
   { value: "formed", label: "형태 있음" },
   { value: "loose", label: "묽음" },
@@ -61,7 +60,7 @@ export default function ToiletPageClient() {
   const [type, setType] = useState<TToiletType>("urine");
   const [urgency, setUrgency] = useState<TToiletUrgency>("ordinary");
   const [wokeFromSleep, setWokeFromSleep] = useState<"yes" | "no">("no");
-  const [stoolConsistency, setStoolConsistency] = useState<TToiletStoolConsistency | "">("");
+  const [stoolConsistency, setStoolConsistency] = useState<TToiletStoolConsistency>("loose");
   const [note, setNote] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
@@ -81,7 +80,7 @@ export default function ToiletPageClient() {
     setWokeFromSleep(
       typeof record.details.wokeFromSleep === "boolean" ? (record.details.wokeFromSleep ? "yes" : "no") : "no",
     );
-    setStoolConsistency(isStoolConsistency(record.details.stoolConsistency) ? record.details.stoolConsistency : "");
+    setStoolConsistency(isStoolConsistency(record.details.stoolConsistency) ? record.details.stoolConsistency : "loose");
     setNote(typeof record.details.note === "string" ? record.details.note : "");
     setIsEditFormReady(true);
   }, [isEditing, record]);
@@ -189,10 +188,10 @@ export default function ToiletPageClient() {
             />
           </FormRow>
           {canRecordStoolConsistency && (
-            <FormRow label="대변 상태 (선택)">
+            <FormRow label="대변 상태">
               <ButtonGroup
                 label="대변 상태"
-                onChange={(value) => setStoolConsistency(value as TToiletStoolConsistency | "")}
+                onChange={(value) => setStoolConsistency(value as TToiletStoolConsistency)}
                 options={STOOL_CONSISTENCY_OPTIONS}
                 value={stoolConsistency}
               />
@@ -250,7 +249,7 @@ function createToiletDetails(props: {
   type: TToiletType;
   urgency: TToiletUrgency;
   wokeFromSleep: "yes" | "no";
-  stoolConsistency: TToiletStoolConsistency | "";
+  stoolConsistency: TToiletStoolConsistency;
   note: string;
 }): TToiletDetailsV1 {
   const { type, urgency, wokeFromSleep, stoolConsistency, note } = props;
@@ -267,6 +266,6 @@ function createToiletDetails(props: {
   return {
     type,
     ...commonDetails,
-    ...(stoolConsistency && { stoolConsistency }),
+    stoolConsistency,
   };
 }

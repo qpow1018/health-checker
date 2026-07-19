@@ -33,13 +33,20 @@ describe("recordDetailPresentation", () => {
   test("shows optional toilet details only when recorded", () => {
     const record = createRecord({
       category: "toilet",
-      details: { type: "bowel", urgency: "urgent", wokeFromSleep: false, note: "복통" },
+      details: {
+        type: "bowel",
+        urgency: "urgent",
+        wokeFromSleep: false,
+        stoolConsistency: "loose",
+        note: "복통",
+      },
     });
 
     expect(getRecordDetailItems(record)).toEqual([
       { label: "종류", value: "대변 기록" },
       { label: "급한 정도", value: "급함" },
       { label: "자다가 깸", value: "아니오" },
+      { label: "대변 상태", value: "묽음" },
       { label: "특이사항", value: "복통" },
     ]);
     expect(getRecordEditPath(record)).toBe("/record/toilet?edit=record-1");
