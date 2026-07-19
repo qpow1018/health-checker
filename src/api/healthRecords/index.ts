@@ -9,7 +9,7 @@ import type {
   TFoodDetailsV1,
   TFoodItemV1,
   TReqCreateFoodRecord,
-  TReqCreateSleepRecord,
+  TReqCreateWakeRecord,
   TReqCreateToiletRecord,
   TReqListHealthRecords,
   TReqUpdateHealthRecord,
@@ -17,12 +17,11 @@ import type {
   TToiletDetailsV1,
 } from "./type";
 
-export async function createSleepRecord({
+export async function createWakeRecord({
   date,
   time,
-  event,
-}: TReqCreateSleepRecord) {
-  const details: TSleepDetailsV1 = { event };
+}: TReqCreateWakeRecord) {
+  const details: TSleepDetailsV1 = { event: "woke" };
   return createHealthRecord({ category: "sleep", date, time, details });
 }
 

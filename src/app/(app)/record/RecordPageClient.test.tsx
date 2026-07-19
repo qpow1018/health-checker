@@ -42,14 +42,12 @@ describe("RecordPageClient", () => {
     render(<QueryProvider><RecordPageClient /></QueryProvider>);
 
     await user.click(screen.getByRole("button", { name: "기상 시간" }));
-    await user.click(screen.getByRole("button", { name: "잠든 시간" }));
     await user.click(screen.getByRole("button", { name: "먹은 음식" }));
     await user.click(screen.getByRole("button", { name: "화장실" }));
     await user.click(screen.getByRole("button", { name: "운동" }));
     await user.click(screen.getByRole("button", { name: "컨디션" }));
 
     expect(push).toHaveBeenCalledWith("/record/wake");
-    expect(push).toHaveBeenCalledWith("/record/sleep");
     expect(push).toHaveBeenCalledWith("/record/food");
     expect(push).toHaveBeenCalledWith("/record/toilet");
     expect(push).toHaveBeenCalledWith("/record/exercise");
@@ -77,7 +75,7 @@ describe("RecordPageClient", () => {
     const actionSection = screen.getByRole("region", { name: "기록 버튼" });
     expect(actionSection).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "기상 시간" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "잠든 시간" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "잠든 시간" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "먹은 음식" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "화장실" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "운동" })).toBeInTheDocument();
@@ -97,7 +95,13 @@ describe("RecordPageClient", () => {
       createRecord("record-1", "condition", today, { note: "두통" }, 14),
       createRecord("record-2", "food", today, { foods: [{ name: "커피", amount: "2잔" }] }, 12),
       createRecord("record-3", "sleep", today, { event: "woke" }, 7),
-      createRecord("record-4", "toilet", today, { type: "urine" }, 6),
+      createRecord(
+        "record-4",
+        "toilet",
+        today,
+        { type: "urine", urgency: "ordinary", wokeFromSleep: false },
+        6,
+      ),
     ]);
 
     render(<QueryProvider><RecordPageClient /></QueryProvider>);

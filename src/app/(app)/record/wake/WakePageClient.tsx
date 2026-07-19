@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { useCreateSleepRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
+import { useCreateWakeRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
@@ -28,7 +28,7 @@ export default function WakePageClient() {
   const [wokeAt, setWokeAt] = useState(defaultRecordDateTime.time);
   const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
-  const { mutateAsync: createSleepRecord, isPending: isSaving } = useCreateSleepRecord();
+  const { mutateAsync: createWakeRecord, isPending: isSaving } = useCreateWakeRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
   const { data: record, isLoading: isLoadingRecord, isError: isRecordError } = useHealthRecord(editId ?? "");
 
@@ -82,7 +82,7 @@ export default function WakePageClient() {
         return;
       }
 
-      await createSleepRecord({ date: wokeOn, time: wokeAt, event: "woke" });
+      await createWakeRecord({ date: wokeOn, time: wokeAt });
       router.back();
     } catch {
       setErrorMessage(isEditing ? "기상 시간을 수정하지 못했습니다. 다시 시도해 주세요." : "기상 시간을 저장하지 못했습니다. 다시 시도해 주세요.");

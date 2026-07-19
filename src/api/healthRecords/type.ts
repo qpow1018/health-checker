@@ -10,13 +10,13 @@ export type TSleepDetailsV1 = {
 
 export type TToiletType = "urine" | "bowel" | "both";
 
-export type TToiletUrgency = "relaxed" | "ordinary" | "urgent";
+export type TToiletUrgency = "ordinary" | "urgent";
 
 export type TToiletStoolConsistency = "hard" | "formed" | "loose" | "watery";
 
 type TToiletDetailsBase = {
-  urgency?: TToiletUrgency;
-  wokeFromSleep?: boolean;
+  urgency: TToiletUrgency;
+  wokeFromSleep: boolean;
 };
 
 export type TToiletDetailsV1 =
@@ -57,10 +57,9 @@ export type TConditionDetailsV1 = {
   note: string;
 };
 
-export type TReqCreateSleepRecord = {
+export type TReqCreateWakeRecord = {
   date: string;
   time: string;
-  event: TSleepEvent;
 };
 
 export type TReqCreateToiletRecord = {

@@ -194,7 +194,6 @@ export function ComponentTestClient() {
             <ButtonGroup
               label="긴급도"
               options={[
-                { value: "relaxed", label: "여유" },
                 { value: "ordinary", label: "보통" },
                 { value: "urgent", label: "급함" },
               ]}
@@ -202,10 +201,10 @@ export function ComponentTestClient() {
               onChange={setUrgency}
             />
             <ButtonGroup
-              label="자다가 깼음"
+              label="화장실 때문에 자다가 깼나요?"
               options={[
-                { value: "yes", label: "예" },
                 { value: "no", label: "아니오" },
+                { value: "yes", label: "예" },
               ]}
               value={wokeFromSleep}
               onChange={setWokeFromSleep}

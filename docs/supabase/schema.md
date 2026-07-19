@@ -46,6 +46,10 @@ type TSleepDetailsV1 = {
 };
 ```
 
+- 신규 기록 UI와 API는 입력하기 쉬운 `woke`만 생성한다.
+- `slept`는 기존 데이터 조회 호환성을 위해 허용하지만 신규 입력 화면은 제공하지 않는다.
+- 잠을 설쳤거나 충분히 자지 못했다고 느낀 상태는 수면 시각을 추정하지 않고 컨디션 기록에 남긴다.
+
 음식 v1 상세값:
 
 ```ts
@@ -95,18 +99,19 @@ type TConditionDetailsV1 = {
 ```ts
 type TToiletDetailsV1 = {
   type: "urine" | "bowel" | "both";
-  urgency?: "relaxed" | "ordinary" | "urgent";
-  wokeFromSleep?: boolean;
+  urgency: "ordinary" | "urgent";
+  wokeFromSleep: boolean;
   stoolConsistency?: "hard" | "formed" | "loose" | "watery";
   note?: string;
 };
 ```
 
-- `type`은 소변, 대변, 또는 둘 다인 한 번의 이용을 구분한다.
-- `urgency`는 급한 정도를, `wokeFromSleep`은 잠에서 깬 뒤의 이용 여부를 기록한다.
+- `type`은 소변, 대변, 또는 둘 다인 한 번의 이용을 구분하며 신규 입력은 `urine`을 기본값으로 사용한다.
+- `urgency`는 `ordinary` 또는 `urgent`를 필수로 저장하며 신규 입력은 `ordinary`를 기본값으로 사용한다.
+- `wokeFromSleep`은 화장실 때문에 자다가 깼는지를 필수로 저장하며 신규 입력은 `false`를 기본값으로 사용한다.
 - `stoolConsistency`는 `type`이 `bowel` 또는 `both`일 때만 사용한다. 값은 `hard`(단단함), `formed`(형태 있음), `loose`(묽음), `watery`(물처럼 묽음)다.
 - `note`는 통증, 평소와 다른 색 변화처럼 드문 특이사항을 짧게 남기는 선택 입력이다.
-- 상세 항목은 입력하지 않으면 키를 생략한다. `false`는 사용자가 명시적으로 "아니오"를 선택한 값이며, 미입력과 다르다.
+- `stoolConsistency`와 `note`는 입력하지 않으면 키를 생략한다.
 - v1에서는 정의되지 않은 키와 허용되지 않은 값 조합을 DB check constraint로 거부한다.
 
 수정과 삭제 규칙:

@@ -8,7 +8,7 @@ import WakePageClient from "./WakePageClient";
 
 const back = vi.fn();
 const healthRecordMocks = vi.hoisted(() => ({
-  createSleepRecord: vi.fn(),
+  createWakeRecord: vi.fn(),
   updateHealthRecord: vi.fn(),
 }));
 
@@ -21,7 +21,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("@/api/healthRecords", () => ({
-  createSleepRecord: healthRecordMocks.createSleepRecord,
+  createWakeRecord: healthRecordMocks.createWakeRecord,
   updateHealthRecord: healthRecordMocks.updateHealthRecord,
 }));
 
@@ -42,23 +42,22 @@ describe("WakePageClient", () => {
 
   test("saves the selected wake time", async () => {
     const user = userEvent.setup();
-    healthRecordMocks.createSleepRecord.mockResolvedValue({ id: "record-1" });
+    healthRecordMocks.createWakeRecord.mockResolvedValue({ id: "record-1" });
     render(<QueryProvider><WakePageClient /></QueryProvider>);
 
     await selectTime(user);
     await user.click(screen.getByRole("button", { name: "저장" }));
 
-    expect(healthRecordMocks.createSleepRecord).toHaveBeenCalledWith({
+    expect(healthRecordMocks.createWakeRecord).toHaveBeenCalledWith({
       date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
       time: "06:30",
-      event: "woke",
     });
     expect(back).toHaveBeenCalled();
   });
 
   test("shows an error when saving fails", async () => {
     const user = userEvent.setup();
-    healthRecordMocks.createSleepRecord.mockRejectedValue(new Error("save failed"));
+    healthRecordMocks.createWakeRecord.mockRejectedValue(new Error("save failed"));
     render(<QueryProvider><WakePageClient /></QueryProvider>);
 
     await selectTime(user);
