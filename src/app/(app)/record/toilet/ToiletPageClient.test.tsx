@@ -83,7 +83,40 @@ describe("ToiletPageClient", () => {
 
     await user.click(within(screen.getByRole("group", { name: "종류" })).getByRole("button", { name: "대변" }));
 
-    expect(screen.getByRole("group", { name: "대변 상태" })).toBeInTheDocument();
+    const stoolConsistencyGroup = screen.getByRole("group", { name: "대변 상태" });
+    expect(
+      within(stoolConsistencyGroup).getByRole("button", {
+        name: "묽음",
+        pressed: true,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(stoolConsistencyGroup).queryByRole("button", { name: "기록 안 함" }),
+    ).not.toBeInTheDocument();
+  });
+
+  test("saves loose as the default stool consistency", async () => {
+    const user = userEvent.setup();
+    healthRecordMocks.createToiletRecord.mockResolvedValue({ id: "record-3" });
+    render(<QueryProvider><ToiletPageClient /></QueryProvider>);
+
+    await user.click(
+      within(screen.getByRole("group", { name: "종류" })).getByRole("button", {
+        name: "대변",
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "저장" }));
+
+    expect(healthRecordMocks.createToiletRecord).toHaveBeenCalledWith({
+      date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      time: expect.stringMatching(/^\d{2}:\d{2}$/),
+      details: {
+        type: "bowel",
+        urgency: "ordinary",
+        wokeFromSleep: false,
+        stoolConsistency: "loose",
+      },
+    });
   });
 
   test("saves the selected toilet record", async () => {
@@ -99,7 +132,11 @@ describe("ToiletPageClient", () => {
         screen.getByRole("group", { name: "화장실 때문에 자다가 깼나요?" }),
       ).getByRole("button", { name: "예" }),
     );
-    await user.click(within(screen.getByRole("group", { name: "대변 상태" })).getByRole("button", { name: "묽음" }));
+    await user.click(
+      within(screen.getByRole("group", { name: "대변 상태" })).getByRole("button", {
+        name: "물처럼 묽음",
+      }),
+    );
     await user.type(screen.getByLabelText("특이사항 (선택)"), "복통 있음");
     await user.click(screen.getByRole("button", { name: "저장" }));
 
@@ -110,7 +147,7 @@ describe("ToiletPageClient", () => {
         type: "bowel",
         urgency: "urgent",
         wokeFromSleep: true,
-        stoolConsistency: "loose",
+        stoolConsistency: "watery",
         note: "복통 있음",
       },
     });

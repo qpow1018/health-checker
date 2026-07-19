@@ -26,12 +26,12 @@ export type TToiletDetailsV1 =
     })
   | (TToiletDetailsBase & {
       type: "bowel";
-      stoolConsistency?: TToiletStoolConsistency;
+      stoolConsistency: TToiletStoolConsistency;
       note?: string;
     })
   | (TToiletDetailsBase & {
       type: "both";
-      stoolConsistency?: TToiletStoolConsistency;
+      stoolConsistency: TToiletStoolConsistency;
       note?: string;
     });
 
