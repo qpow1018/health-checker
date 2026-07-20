@@ -110,15 +110,16 @@ type TToiletDetailsV1 =
       type: "urine";
     })
   | (TToiletDetailsBase & {
-      type: "bowel" | "both";
+      type: "bowel";
       stoolConsistency: "hard" | "formed" | "loose" | "watery";
     });
 ```
 
-- `type`은 소변, 대변, 또는 둘 다인 한 번의 이용을 구분하며 신규 입력은 `urine`을 기본값으로 사용한다.
+- `type`은 소변 또는 대변인 한 번의 이용을 구분하며 신규 입력은 `urine`을 기본값으로 사용한다.
+- 소변과 대변을 함께 본 경우에는 대변으로 기록하며, 소변 동반 여부는 별도로 수집하지 않는다.
 - `urgency`는 `ordinary` 또는 `urgent`를 필수로 저장하며 신규 입력은 `ordinary`를 기본값으로 사용한다.
 - `wokeFromSleep`은 화장실 때문에 자다가 깼는지를 필수로 저장하며 신규 입력은 `false`를 기본값으로 사용한다.
-- `stoolConsistency`는 `type`이 `bowel` 또는 `both`일 때 필수로 저장하고 신규 입력은 `loose`를 기본값으로 사용한다. 값은 `hard`(단단함), `formed`(형태 있음), `loose`(묽음), `watery`(물처럼 묽음)다.
+- `stoolConsistency`는 `type`이 `bowel`일 때 필수로 저장하고 신규 입력은 `loose`를 기본값으로 사용한다. 값은 `hard`(단단함), `formed`(형태 있음), `loose`(묽음), `watery`(물처럼 묽음)다.
 - `note`는 통증, 평소와 다른 색 변화처럼 드문 특이사항을 짧게 남기는 선택 입력이다.
 - `note`는 입력하지 않으면 키를 생략한다.
 - v1에서는 정의되지 않은 키와 허용되지 않은 값 조합을 DB check constraint로 거부한다.

@@ -45,6 +45,7 @@ describe("RecordDetailPageClient", () => {
     const user = userEvent.setup();
     render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
 
+    expect(await screen.findByRole("heading", { name: "기록 상세" })).toBeInTheDocument();
     await user.click(await screen.findByRole("button", { name: "수정" }));
 
     expect(navigationMocks.push).toHaveBeenCalledWith(

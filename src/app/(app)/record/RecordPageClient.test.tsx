@@ -111,7 +111,7 @@ describe("RecordPageClient", () => {
     expect(within(dashboard).getByText("두통")).toBeInTheDocument();
     expect(within(dashboard).getByText("커피 2잔")).toBeInTheDocument();
     expect(within(dashboard).getByText("기상 시간")).toBeInTheDocument();
-    expect(within(dashboard).queryByText("소변 기록")).not.toBeInTheDocument();
+    expect(within(dashboard).queryByText("화장실")).not.toBeInTheDocument();
     expect(within(dashboard).getByRole("link", { name: "전체 보기" })).toHaveAttribute(
       "href",
       `/records?month=${monthKey}`,

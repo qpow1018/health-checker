@@ -44,7 +44,7 @@ describe("recordDetailPresentation", () => {
     });
 
     expect(getRecordDetailItems(record)).toEqual([
-      { label: "종류", value: "대변 기록" },
+      { label: "종류", value: "대변" },
       { label: "급한 정도", value: "급함" },
       { label: "자다가 깸", value: "아니오" },
       { label: "대변 상태", value: "묽음" },
@@ -80,9 +80,12 @@ describe("recordDetailPresentation", () => {
       details: { event: "slept" },
     });
 
+    expect(getRecordDetailItems(wakeRecord)).toEqual([
+      { label: "기록 종류", value: "기상" },
+    ]);
     expect(getRecordEditPath(wakeRecord)).toBe("/record/wake?edit=record-1");
     expect(getRecordDetailItems(sleptRecord)).toEqual([
-      { label: "기록", value: "잠든 시간" },
+      { label: "기록 종류", value: "취침" },
     ]);
     expect(getRecordEditPath(sleptRecord)).toBeUndefined();
   });

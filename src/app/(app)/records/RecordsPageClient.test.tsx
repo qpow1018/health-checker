@@ -92,7 +92,7 @@ describe("RecordsPageClient", () => {
         user_id: "user-1",
         category: "sleep",
         recorded_at: "2026-06-15T14:30:00.000Z",
-        details: { event: "slept" },
+        details: { event: "woke" },
         details_version: 1,
         created_at: "2026-06-15T14:30:00.000Z",
         updated_at: "2026-06-15T14:30:00.000Z",
@@ -101,7 +101,7 @@ describe("RecordsPageClient", () => {
 
     render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
-    expect(await screen.findByRole("link", { name: /잠든 시간/ })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: /기상 시간/ })).toHaveAttribute(
       "href",
       "/records/record-1?month=2026-06",
     );
@@ -122,14 +122,14 @@ describe("RecordsPageClient", () => {
     expect(screen.getByRole("status", { name: "기록을 불러오는 중" })).toBeInTheDocument();
   });
 
-  test("shows recent sleep records", async () => {
+  test("shows recent wake records", async () => {
     healthRecordMocks.listHealthRecords.mockResolvedValue([
       {
         id: "record-1",
         user_id: "user-1",
         category: "sleep",
         recorded_at: "2026-07-15T14:30:00.000Z",
-        details: { event: "slept" },
+        details: { event: "woke" },
         details_version: 1,
         created_at: "2026-07-15T14:30:00.000Z",
         updated_at: "2026-07-15T14:30:00.000Z",
@@ -138,7 +138,7 @@ describe("RecordsPageClient", () => {
     render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
-      "잠든 시간",
+      "기상 시간",
     );
   });
 
@@ -162,9 +162,9 @@ describe("RecordsPageClient", () => {
     ]);
     render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
-    expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
-      "대변 기록",
-    );
+    const recordList = await screen.findByRole("region", { name: "최근 기록 목록" });
+    expect(recordList).toHaveTextContent("화장실");
+    expect(recordList).toHaveTextContent("대변");
   });
 
   test("shows food records", async () => {
@@ -183,7 +183,7 @@ describe("RecordsPageClient", () => {
     render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
-      "먹은 것 기록",
+      "먹은 것",
     );
     expect(screen.getByText("카페 · 커피 2잔")).toBeInTheDocument();
   });
@@ -209,7 +209,7 @@ describe("RecordsPageClient", () => {
     render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
-      "운동 기록",
+      "운동",
     );
     expect(screen.getByText("산책 30분, 팔굽혀펴기 20회")).toBeInTheDocument();
   });
@@ -230,7 +230,7 @@ describe("RecordsPageClient", () => {
     render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(await screen.findByRole("region", { name: "최근 기록 목록" })).toHaveTextContent(
-      "컨디션 기록",
+      "컨디션",
     );
     expect(screen.getByText("두통")).toBeInTheDocument();
   });
@@ -252,7 +252,7 @@ describe("RecordsPageClient", () => {
         user_id: "user-1",
         category: "sleep",
         recorded_at: "2026-07-15T14:30:00.000Z",
-        details: { event: "slept" },
+        details: { event: "woke" },
         details_version: 1,
         created_at: "2026-07-15T14:30:00.000Z",
         updated_at: "2026-07-15T14:30:00.000Z",

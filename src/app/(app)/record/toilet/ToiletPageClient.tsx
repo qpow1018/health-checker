@@ -28,7 +28,6 @@ import styles from "./toiletPageClient.module.scss";
 const TOILET_TYPE_OPTIONS = [
   { value: "urine", label: "소변" },
   { value: "bowel", label: "대변" },
-  { value: "both", label: "둘 다" },
 ] as const;
 
 const URGENCY_OPTIONS = [
@@ -67,7 +66,7 @@ export default function ToiletPageClient() {
   const { mutateAsync: createToiletRecord, isPending: isSaving } = useCreateToiletRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
   const { data: record, isLoading: isLoadingRecord, isError: isRecordError } = useHealthRecord(editId ?? "");
-  const canRecordStoolConsistency = type === "bowel" || type === "both";
+  const canRecordStoolConsistency = type === "bowel";
 
   useEffect(() => {
     if (!isEditing || !record || record.category !== "toilet" || !isRecord(record.details)) return;
@@ -234,7 +233,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isToiletType(value: unknown): value is TToiletType {
-  return value === "urine" || value === "bowel" || value === "both";
+  return value === "urine" || value === "bowel";
 }
 
 function isUrgency(value: unknown): value is TToiletUrgency {

@@ -2,23 +2,23 @@ import type { THealthRecordRow } from "@/api/healthRecords/type";
 
 export function getRecordCategoryLabel(record: THealthRecordRow) {
   if (record.category === "sleep") {
-    return getSleepEvent(record.details) === "woke" ? "기상 시간" : "잠든 시간";
+    return "기상 시간";
   }
 
   if (record.category === "toilet") {
-    return getToiletTypeLabel(record.details);
+    return "화장실";
   }
 
   if (record.category === "food") {
-    return "먹은 것 기록";
+    return "먹은 것";
   }
 
   if (record.category === "exercise") {
-    return "운동 기록";
+    return "운동";
   }
 
   if (record.category === "condition") {
-    return "컨디션 기록";
+    return "컨디션";
   }
 
   return record.category;
@@ -27,6 +27,10 @@ export function getRecordCategoryLabel(record: THealthRecordRow) {
 export function getRecordDescription(record: THealthRecordRow) {
   if (!isRecord(record.details)) {
     return undefined;
+  }
+
+  if (record.category === "toilet") {
+    return getToiletTypeDescription(record.details.type);
   }
 
   if (record.category === "condition" && typeof record.details.note === "string") {
@@ -97,32 +101,16 @@ export function formatRecordTime(recordedAt: string) {
   }).format(date);
 }
 
-function getToiletTypeLabel(details: THealthRecordRow["details"]) {
-  if (!isRecord(details)) {
-    return "화장실 기록";
+function getToiletTypeDescription(value: unknown) {
+  if (value === "urine") {
+    return "소변";
   }
 
-  if (details.type === "urine") {
-    return "소변 기록";
+  if (value === "bowel") {
+    return "대변";
   }
 
-  if (details.type === "bowel") {
-    return "대변 기록";
-  }
-
-  if (details.type === "both") {
-    return "소변·대변 기록";
-  }
-
-  return "화장실 기록";
-}
-
-function getSleepEvent(details: THealthRecordRow["details"]) {
-  if (!isRecord(details) || typeof details.event !== "string") {
-    return undefined;
-  }
-
-  return details.event;
+  return undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

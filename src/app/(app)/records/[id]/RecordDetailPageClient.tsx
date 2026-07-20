@@ -11,7 +11,7 @@ import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 import BoxLoading from "@/components/common/loading/BoxLoading";
 
 import { getRecordMonthKey, isRecordMonthKey } from "@/app/(app)/records/_util/recordsMonth";
-import { formatRecordTime, getRecordCategoryLabel } from "@/utils/healthRecordsPresentation";
+import { formatRecordTime } from "@/utils/healthRecordsPresentation";
 import { getRecordDetailItems, getRecordEditPath } from "./_util/recordDetailPresentation";
 
 import styles from "./recordDetailPageClient.module.scss";
@@ -71,7 +71,7 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
 
   return (
     <main className={styles["record-detail-page-client"]} aria-label="기록 상세 화면">
-      <AppHeader title={getRecordCategoryLabel(record)} />
+      <AppHeader title="기록 상세" />
 
       <div className={styles["record-detail-content"]}>
         <section className={styles["record-summary"]} aria-label="기록 일시">

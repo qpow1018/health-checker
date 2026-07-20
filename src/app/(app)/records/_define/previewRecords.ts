@@ -61,7 +61,7 @@ export const PREVIEW_RECORDS: THealthRecordRow[] = [
     user_id: "preview-user",
     category: "sleep",
     recorded_at: "2026-07-14T15:20:00.000Z",
-    details: { event: "slept" },
+    details: { event: "woke" },
     details_version: 1,
     created_at: "2026-07-14T15:20:00.000Z",
     updated_at: "2026-07-14T15:20:00.000Z",
