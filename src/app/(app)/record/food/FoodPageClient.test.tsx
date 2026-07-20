@@ -69,7 +69,7 @@ describe("FoodPageClient", () => {
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await user.click(screen.getByLabelText("이전 기록 불러오기 (선택)"));
-    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이 · 튀김 3개" }));
+    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이, 튀김 3개" }));
 
     expect(screen.getByDisplayValue("아딸")).toBeInTheDocument();
     expect(screen.getByDisplayValue("떡볶이")).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe("FoodPageClient", () => {
 
     await user.type(screen.getByLabelText("먹은 것 이름"), "커피");
     await user.click(screen.getByLabelText("이전 기록 불러오기 (선택)"));
-    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이 · 튀김" }));
+    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이, 튀김" }));
 
     expect(screen.getByDisplayValue("커피")).toBeInTheDocument();
     const dialog = screen.getByRole("dialog", { name: "추천 불러오기" });

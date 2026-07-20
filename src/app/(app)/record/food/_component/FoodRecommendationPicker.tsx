@@ -1,7 +1,6 @@
 import { useEffect, useState, type FocusEvent } from "react";
 
 import { useFoodRecommendations } from "@/queries/foodRecommendationsQuery";
-import { getFoodRecommendationLabel } from "@/utils/foodRecommendations";
 
 import type { TFoodRecommendation } from "@/api/foodRecommendations/type";
 
@@ -76,7 +75,7 @@ export default function FoodRecommendationPicker(props: {
               {recommendations.map((recommendation) => (
                 <li key={recommendation.id}>
                   <button onClick={() => handleSelect(recommendation)} type="button">
-                    {getFoodRecommendationLabel(recommendation)}
+                    {getFoodRecommendationOptionLabel(recommendation)}
                   </button>
                 </li>
               ))}
@@ -86,4 +85,12 @@ export default function FoodRecommendationPicker(props: {
       ) : null}
     </div>
   );
+}
+
+function getFoodRecommendationOptionLabel(recommendation: TFoodRecommendation) {
+  const foodsLabel = recommendation.foods
+    .map((food) => [food.name, food.amount].filter(Boolean).join(" "))
+    .join(", ");
+
+  return [recommendation.source, foodsLabel].filter(Boolean).join(" · ");
 }

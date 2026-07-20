@@ -8,35 +8,51 @@
   }
 
   .description,
-  .notice-message,
-  .error-message {
+  .notice-message {
     margin: 0;
     color: $text-secondary;
     font-size: 14px;
-    line-height: 1.6;
   }
 
   .recommendation-list {
     margin: 20px 0 0;
-    border-top: 1px solid $border;
+    overflow: hidden;
+    border: 1px solid $border;
+    border-radius: $radius;
     padding: 0;
     list-style: none;
 
     li {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 16px;
       border-bottom: 1px solid $border;
-      padding: 14px 0;
-    }
+      padding: 14px 12px 14px 16px;
 
-    span {
-      min-width: 0;
-      font-size: 14px;
-      line-height: 1.55;
-      overflow-wrap: anywhere;
+      &:last-child {
+        border-bottom: 0;
+      }
     }
+  }
+
+  .recommendation-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .recommendation-foods {
+    font-size: 14px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  .recommendation-source {
+    color: $text-secondary;
+    font-size: 12px;
+    overflow-wrap: anywhere;
   }
 
   .notice-message {
@@ -44,8 +60,4 @@
     text-align: center;
   }
 
-  .error-message {
-    margin-top: 16px;
-    color: $danger;
-  }
 }
