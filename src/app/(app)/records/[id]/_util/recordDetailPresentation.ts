@@ -1,14 +1,12 @@
 import type { THealthRecordRow } from "@/api/healthRecords/type";
 
-import { getRecordCategoryLabel } from "@/utils/healthRecordsPresentation";
-
 export function getRecordDetailItems(record: THealthRecordRow) {
   if (!isRecord(record.details)) {
     return [];
   }
 
   if (record.category === "sleep") {
-    return [{ label: "기록", value: getRecordCategoryLabel(record) }];
+    return [{ label: "기록 종류", value: getSleepEventValue(record.details.event) }];
   }
 
   if (record.category === "food" && Array.isArray(record.details.foods)) {
@@ -49,7 +47,7 @@ export function getRecordDetailItems(record: THealthRecordRow) {
   }
 
   if (record.category === "toilet") {
-    const items = [{ label: "종류", value: getRecordCategoryLabel(record) }];
+    const items = [{ label: "종류", value: getToiletTypeValue(record.details.type) }];
     const urgency = getUrgencyLabel(record.details.urgency);
     const wokeFromSleep = getBooleanLabel(record.details.wokeFromSleep);
     const stoolConsistency = getStoolConsistencyLabel(record.details.stoolConsistency);
@@ -86,6 +84,19 @@ export function getRecordEditPath(record: THealthRecordRow) {
   }
 
   return undefined;
+}
+
+function getSleepEventValue(value: unknown) {
+  if (value === "woke") return "기상";
+  if (value === "slept") return "취침";
+  return "수면";
+}
+
+function getToiletTypeValue(value: unknown) {
+  if (value === "urine") return "소변";
+  if (value === "bowel") return "대변";
+  if (value === "both") return "소변·대변";
+  return "화장실";
 }
 
 function getUrgencyLabel(value: unknown) {
