@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCreateFoodRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
+import toast from "@/utils/toast";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -170,6 +171,7 @@ export default function FoodPageClient() {
             foods: foodValues.filter((food) => food.name.trim()).map((food) => ({ name: food.name.trim(), ...(food.amount.trim() && { amount: food.amount.trim() }) })),
           },
         });
+        toast.success("기록을 수정했습니다.");
         router.back();
         return;
       }
@@ -180,6 +182,7 @@ export default function FoodPageClient() {
         source,
         foods: foodValues,
       });
+      toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
       setErrorMessage(isEditing ? "먹은 것 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요.");

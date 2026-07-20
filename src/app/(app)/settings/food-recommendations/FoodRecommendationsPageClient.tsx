@@ -53,6 +53,7 @@ export default function FoodRecommendationsPageClient() {
     try {
       await deleteRecommendation(selectedRecommendation.id);
       setSelectedRecommendation(null);
+      toast.success("음식 추천을 삭제했습니다.");
     } catch {
       toast.error("음식 추천을 삭제하지 못했습니다. 다시 시도해 주세요.");
     }

@@ -11,6 +11,7 @@ import type {
   TToiletUrgency,
 } from "@/api/healthRecords/type";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
+import toast from "@/utils/toast";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -129,6 +130,7 @@ export default function ToiletPageClient() {
 
       if (editId) {
         await updateHealthRecord({ id: editId, date: recordedOn, time: recordedAt, details });
+        toast.success("기록을 수정했습니다.");
         router.back();
         return;
       }
@@ -138,6 +140,7 @@ export default function ToiletPageClient() {
         time: recordedAt,
         details,
       });
+      toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
       setErrorMessage(isEditing ? "화장실 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "화장실 기록을 저장하지 못했습니다. 다시 시도해 주세요.");

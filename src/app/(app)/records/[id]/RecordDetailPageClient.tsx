@@ -13,6 +13,7 @@ import BoxLoading from "@/components/common/loading/BoxLoading";
 import { getRecordMonthKey, isRecordMonthKey } from "@/app/(app)/records/_util/recordsMonth";
 import { isRecordCategoryFilter } from "@/app/(app)/records/_util/recordCategoryFilter";
 import { formatRecordTime } from "@/utils/healthRecordsPresentation";
+import toast from "@/utils/toast";
 import { getRecordDetailItems, getRecordEditPath } from "./_util/recordDetailPresentation";
 
 import styles from "./recordDetailPageClient.module.scss";
@@ -42,6 +43,7 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
       }
 
       const query = returnSearchParams.toString();
+      toast.success("기록을 삭제했습니다.");
       router.replace(query ? `/records?${query}` : "/records");
     } catch {
       setIsDeleteModalOpen(false);

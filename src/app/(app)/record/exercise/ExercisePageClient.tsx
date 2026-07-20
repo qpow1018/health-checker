@@ -9,6 +9,7 @@ import {
   useUpdateHealthRecord,
 } from "@/queries/healthRecordsQuery";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
+import toast from "@/utils/toast";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -176,6 +177,7 @@ export default function ExercisePageClient() {
               })),
           },
         });
+        toast.success("기록을 수정했습니다.");
         router.back();
         return;
       }
@@ -185,6 +187,7 @@ export default function ExercisePageClient() {
         time: recordedAt,
         exercises: exerciseValues,
       });
+      toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
       setErrorMessage(

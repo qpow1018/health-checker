@@ -11,6 +11,9 @@ const healthRecordMocks = vi.hoisted(() => ({
   createWakeRecord: vi.fn(),
   updateHealthRecord: vi.fn(),
 }));
+const toastMocks = vi.hoisted(() => ({
+  success: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/wake",
@@ -23,6 +26,12 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/api/healthRecords", () => ({
   createWakeRecord: healthRecordMocks.createWakeRecord,
   updateHealthRecord: healthRecordMocks.updateHealthRecord,
+}));
+
+vi.mock("@/utils/toast", () => ({
+  default: {
+    success: toastMocks.success,
+  },
 }));
 
 describe("WakePageClient", () => {
@@ -52,6 +61,7 @@ describe("WakePageClient", () => {
       date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
       time: "06:30",
     });
+    expect(toastMocks.success).toHaveBeenCalledWith("기록을 저장했습니다.");
     expect(back).toHaveBeenCalled();
   });
 

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCreateWakeRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
+import toast from "@/utils/toast";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -78,11 +79,13 @@ export default function WakePageClient() {
     try {
       if (editId) {
         await updateHealthRecord({ id: editId, date: wokeOn, time: wokeAt, details: { event: "woke" } });
+        toast.success("기록을 수정했습니다.");
         router.back();
         return;
       }
 
       await createWakeRecord({ date: wokeOn, time: wokeAt });
+      toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
       setErrorMessage(isEditing ? "기상 시간을 수정하지 못했습니다. 다시 시도해 주세요." : "기상 시간을 저장하지 못했습니다. 다시 시도해 주세요.");

@@ -15,6 +15,9 @@ const healthRecordMocks = vi.hoisted(() => ({
   getHealthRecord: vi.fn(),
   updateHealthRecord: vi.fn(),
 }));
+const toastMocks = vi.hoisted(() => ({
+  success: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/exercise",
@@ -29,6 +32,12 @@ vi.mock("@/api/healthRecords", () => ({
   createExerciseRecord: healthRecordMocks.createExerciseRecord,
   getHealthRecord: healthRecordMocks.getHealthRecord,
   updateHealthRecord: healthRecordMocks.updateHealthRecord,
+}));
+
+vi.mock("@/utils/toast", () => ({
+  default: {
+    success: toastMocks.success,
+  },
 }));
 
 describe("ExercisePageClient", () => {
@@ -95,6 +104,7 @@ describe("ExercisePageClient", () => {
         { name: "팔굽혀펴기", amount: "20회" },
       ],
     });
+    expect(toastMocks.success).toHaveBeenCalledWith("기록을 저장했습니다.");
     expect(routerMocks.back).toHaveBeenCalled();
   });
 
@@ -178,6 +188,7 @@ describe("ExercisePageClient", () => {
         ],
       },
     });
+    expect(toastMocks.success).toHaveBeenCalledWith("기록을 수정했습니다.");
     expect(routerMocks.back).toHaveBeenCalled();
   });
 });

@@ -16,6 +16,9 @@ const healthRecordMocks = vi.hoisted(() => ({
   deleteHealthRecord: vi.fn(),
   getHealthRecord: vi.fn(),
 }));
+const toastMocks = vi.hoisted(() => ({
+  success: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => navigationMocks,
@@ -25,6 +28,12 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/api/healthRecords", () => ({
   deleteHealthRecord: healthRecordMocks.deleteHealthRecord,
   getHealthRecord: healthRecordMocks.getHealthRecord,
+}));
+
+vi.mock("@/utils/toast", () => ({
+  default: {
+    success: toastMocks.success,
+  },
 }));
 
 describe("RecordDetailPageClient", () => {
@@ -69,6 +78,7 @@ describe("RecordDetailPageClient", () => {
     );
 
     expect(healthRecordMocks.deleteHealthRecord).toHaveBeenCalledWith("record-4");
+    expect(toastMocks.success).toHaveBeenCalledWith("기록을 삭제했습니다.");
     expect(navigationMocks.replace).toHaveBeenCalledWith("/records?month=2026-06");
   });
 

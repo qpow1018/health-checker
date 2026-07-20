@@ -15,6 +15,7 @@ const foodRecommendationMocks = vi.hoisted(() => ({
 }));
 const toastMocks = vi.hoisted(() => ({
   error: vi.fn(),
+  success: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -33,6 +34,7 @@ vi.mock("@/components/common/loading/BoxLoading", () => ({
 vi.mock("@/utils/toast", () => ({
   default: {
     error: toastMocks.error,
+    success: toastMocks.success,
   },
 }));
 
@@ -87,6 +89,7 @@ describe("FoodRecommendationsPageClient", () => {
     expect(foodRecommendationMocks.deleteFoodRecommendation).toHaveBeenCalledWith(
       "recommendation-1",
     );
+    expect(toastMocks.success).toHaveBeenCalledWith("음식 추천을 삭제했습니다.");
   });
 
   test("keeps loading visible and shows a toast when recommendations fail to load", async () => {

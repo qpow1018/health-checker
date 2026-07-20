@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { useCreateConditionRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
+import toast from "@/utils/toast";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
@@ -87,11 +88,13 @@ export default function ConditionPageClient() {
 
       if (editId) {
         await updateHealthRecord({ id: editId, ...variables, details: { note: note.trim() } });
+        toast.success("기록을 수정했습니다.");
         router.back();
         return;
       }
 
       await createConditionRecord(variables);
+      toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
       setErrorMessage(isEditing ? "컨디션 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요.");

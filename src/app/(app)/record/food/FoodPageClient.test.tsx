@@ -18,6 +18,9 @@ const healthRecordMocks = vi.hoisted(() => ({
 const foodRecommendationMocks = vi.hoisted(() => ({
   listFoodRecommendations: vi.fn(),
 }));
+const toastMocks = vi.hoisted(() => ({
+  success: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/food",
@@ -35,6 +38,12 @@ vi.mock("@/api/healthRecords", () => ({
 
 vi.mock("@/api/foodRecommendations", () => ({
   listFoodRecommendations: foodRecommendationMocks.listFoodRecommendations,
+}));
+
+vi.mock("@/utils/toast", () => ({
+  default: {
+    success: toastMocks.success,
+  },
 }));
 
 describe("FoodPageClient", () => {
@@ -154,6 +163,7 @@ describe("FoodPageClient", () => {
         { name: "토스트", amount: "" },
       ],
     });
+    expect(toastMocks.success).toHaveBeenCalledWith("기록을 저장했습니다.");
     expect(routerMocks.back).toHaveBeenCalled();
   });
 
@@ -212,6 +222,7 @@ describe("FoodPageClient", () => {
       time: "08:30",
       details: { source: "카페", foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
     });
+    expect(toastMocks.success).toHaveBeenCalledWith("기록을 수정했습니다.");
     expect(routerMocks.back).toHaveBeenCalled();
   });
 });
