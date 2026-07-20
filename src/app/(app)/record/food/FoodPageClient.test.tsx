@@ -61,7 +61,7 @@ describe("FoodPageClient", () => {
     expect(screen.getByRole("main", { name: "먹은 것 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
     expect(screen.getByLabelText("시간")).toBeInTheDocument();
-    expect(screen.getByLabelText("이전 기록 불러오기 (선택)")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "기록 찾기" })).toBeInTheDocument();
     expect(screen.getByLabelText("가게·브랜드 (선택)")).toBeInTheDocument();
     expect(screen.getByLabelText("먹은 것 이름")).toBeInTheDocument();
     expect(screen.getByLabelText("양")).toBeInTheDocument();
@@ -79,8 +79,12 @@ describe("FoodPageClient", () => {
     ]);
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
-    await user.click(screen.getByLabelText("이전 기록 불러오기 (선택)"));
-    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이, 튀김 3개" }));
+    await user.click(screen.getByRole("button", { name: "기록 찾기" }));
+
+    expect(screen.getByRole("dialog", { name: "이전 기록 불러오기" })).toBeInTheDocument();
+    expect(screen.getByRole("searchbox", { name: "가게 또는 음식 검색" })).toBeInTheDocument();
+
+    await user.click(await screen.findByRole("button", { name: "떡볶이, 튀김 3개 아딸" }));
 
     expect(screen.getByDisplayValue("아딸")).toBeInTheDocument();
     expect(screen.getByDisplayValue("떡볶이")).toBeInTheDocument();
@@ -93,13 +97,35 @@ describe("FoodPageClient", () => {
     const user = userEvent.setup();
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
-    await user.type(screen.getByLabelText("이전 기록 불러오기 (선택)"), "아딸 튀");
+    await user.click(screen.getByRole("button", { name: "기록 찾기" }));
+    await user.type(screen.getByRole("searchbox", { name: "가게 또는 음식 검색" }), "아딸 튀");
 
     await waitFor(() => {
       expect(foodRecommendationMocks.listFoodRecommendations).toHaveBeenCalledWith({
         search: "아딸 튀",
       });
     });
+    expect(await screen.findByText("찾는 기록이 없어요")).toBeInTheDocument();
+    expect(
+      screen.getByText("가게나 음식 이름을 바꿔서 검색해 보세요."),
+    ).toBeInTheDocument();
+  });
+
+  test("keeps loading visible and shows a toast when recommendations fail to load", async () => {
+    const user = userEvent.setup();
+    foodRecommendationMocks.listFoodRecommendations.mockRejectedValueOnce(
+      new Error("network"),
+    );
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    await user.click(screen.getByRole("button", { name: "기록 찾기" }));
+
+    await waitFor(() => {
+      expect(toastMocks.error).toHaveBeenCalledWith(
+        "음식 추천을 불러오지 못했습니다. 다시 시도해 주세요.",
+      );
+    });
+    expect(screen.queryByText("추천을 불러오지 못했습니다.")).not.toBeInTheDocument();
   });
 
   test("confirms before replacing an existing food input with a recommendation", async () => {
@@ -114,8 +140,8 @@ describe("FoodPageClient", () => {
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await user.type(screen.getByLabelText("먹은 것 이름"), "커피");
-    await user.click(screen.getByLabelText("이전 기록 불러오기 (선택)"));
-    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이, 튀김" }));
+    await user.click(screen.getByRole("button", { name: "기록 찾기" }));
+    await user.click(await screen.findByRole("button", { name: "떡볶이, 튀김 아딸" }));
 
     expect(screen.getByDisplayValue("커피")).toBeInTheDocument();
     const dialog = screen.getByRole("dialog", { name: "추천 불러오기" });

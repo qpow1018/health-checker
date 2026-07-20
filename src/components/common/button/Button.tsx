@@ -16,6 +16,8 @@ export default function Button(props: {
   isFullWidth?: boolean;
   isLoading?: boolean;
   isDisabled?: boolean;
+  "aria-expanded"?: boolean;
+  "aria-haspopup"?: "dialog";
   onClick?: MouseEventHandler<HTMLButtonElement>;
   children?: ReactNode;
 }) {
@@ -48,6 +50,8 @@ export default function Button(props: {
   return (
     <button
       aria-busy={isLoading ? true : undefined}
+      aria-expanded={props["aria-expanded"]}
+      aria-haspopup={props["aria-haspopup"]}
       className={buttonClassName}
       data-color={color}
       data-fill={resolvedFill}

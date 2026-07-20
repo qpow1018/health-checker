@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { useCreateFoodRecord, useHealthRecord, useUpdateHealthRecord } from "@/queries/healthRecordsQuery";
+import {
+  useCreateFoodRecord,
+  useHealthRecord,
+  useUpdateHealthRecord,
+} from "@/queries/healthRecordsQuery";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 import toast from "@/utils/toast";
 
@@ -42,13 +46,21 @@ export default function FoodPageClient() {
   const [recordedOn, setRecordedOn] = useState(defaultRecordDateTime.date);
   const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
   const [source, setSource] = useState("");
-  const [foods, setFoods] = useState<TFoodFormItem[]>(() => [createFoodFormItem()]);
+  const [foods, setFoods] = useState<TFoodFormItem[]>(() => [
+    createFoodFormItem(),
+  ]);
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const [pendingRecommendation, setPendingRecommendation] =
     useState<TFoodRecommendation | null>(null);
-  const { mutateAsync: createFoodRecord, isPending: isSaving } = useCreateFoodRecord();
-  const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
-  const { data: record, isLoading: isLoadingRecord, isError: isRecordError } = useHealthRecord(editId ?? "");
+  const { mutateAsync: createFoodRecord, isPending: isSaving } =
+    useCreateFoodRecord();
+  const { mutateAsync: updateHealthRecord, isPending: isUpdating } =
+    useUpdateHealthRecord();
+  const {
+    data: record,
+    isLoading: isLoadingRecord,
+    isError: isRecordError,
+  } = useHealthRecord(editId ?? "");
   const hasFood = foods.some((food) => food.name.trim());
 
   useEffect(() => {
@@ -66,19 +78,30 @@ export default function FoodPageClient() {
     const recordFoods = record.details.foods.flatMap((food) => {
       if (!isRecord(food) || typeof food.name !== "string") return [];
 
-      return [{ id: nextFoodItemId += 1, name: food.name, amount: typeof food.amount === "string" ? food.amount : "" }];
+      return [
+        {
+          id: (nextFoodItemId += 1),
+          name: food.name,
+          amount: typeof food.amount === "string" ? food.amount : "",
+        },
+      ];
     });
 
     setRecordedOn(formatDateString(date));
     setRecordedAt(formatTimeString(date));
-    setSource(typeof record.details.source === "string" ? record.details.source : "");
+    setSource(
+      typeof record.details.source === "string" ? record.details.source : "",
+    );
     setFoods(recordFoods.length > 0 ? recordFoods : [createFoodFormItem()]);
     setIsEditFormReady(true);
   }, [isEditing, record]);
 
   if (isEditing && isLoadingRecord) {
     return (
-      <main className={styles["food-page-client"]} aria-label="먹은 것 기록 수정 화면">
+      <main
+        className={styles["food-page-client"]}
+        aria-label="먹은 것 기록 수정 화면"
+      >
         <AppHeader title="먹은 것 기록 수정" />
         <BoxLoading />
       </main>
@@ -87,16 +110,24 @@ export default function FoodPageClient() {
 
   if (isEditing && (isRecordError || !record || record.category !== "food")) {
     return (
-      <main className={styles["food-page-client"]} aria-label="먹은 것 기록 수정 화면">
+      <main
+        className={styles["food-page-client"]}
+        aria-label="먹은 것 기록 수정 화면"
+      >
         <AppHeader title="먹은 것 기록 수정" />
-        <p className={styles["notice-message"]}>수정할 기록을 찾을 수 없습니다.</p>
+        <p className={styles["notice-message"]}>
+          수정할 기록을 찾을 수 없습니다.
+        </p>
       </main>
     );
   }
 
   if (isEditing && !isEditFormReady) {
     return (
-      <main className={styles["food-page-client"]} aria-label="먹은 것 기록 수정 화면">
+      <main
+        className={styles["food-page-client"]}
+        aria-label="먹은 것 기록 수정 화면"
+      >
         <AppHeader title="먹은 것 기록 수정" />
         <BoxLoading />
       </main>
@@ -109,7 +140,9 @@ export default function FoodPageClient() {
 
   function handleChangeFood(id: number, key: "name" | "amount", value: string) {
     setFoods((currentFoods) =>
-      currentFoods.map((food) => (food.id === id ? { ...food, [key]: value } : food)),
+      currentFoods.map((food) =>
+        food.id === id ? { ...food, [key]: value } : food,
+      ),
     );
   }
 
@@ -118,8 +151,9 @@ export default function FoodPageClient() {
   }
 
   function handleSelectRecommendation(recommendation: TFoodRecommendation) {
-    const hasCurrentInput = Boolean(source.trim())
-      || foods.some((food) => food.name.trim() || food.amount.trim());
+    const hasCurrentInput =
+      Boolean(source.trim()) ||
+      foods.some((food) => food.name.trim() || food.amount.trim());
 
     if (hasCurrentInput) {
       setPendingRecommendation(recommendation);
@@ -164,7 +198,12 @@ export default function FoodPageClient() {
           time: recordedAt,
           details: {
             ...(normalizedSource && { source: normalizedSource }),
-            foods: foodValues.filter((food) => food.name.trim()).map((food) => ({ name: food.name.trim(), ...(food.amount.trim() && { amount: food.amount.trim() }) })),
+            foods: foodValues
+              .filter((food) => food.name.trim())
+              .map((food) => ({
+                name: food.name.trim(),
+                ...(food.amount.trim() && { amount: food.amount.trim() }),
+              })),
           },
         });
         toast.success("기록을 수정했습니다.");
@@ -181,12 +220,19 @@ export default function FoodPageClient() {
       toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
-      toast.error(isEditing ? "먹은 것 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      toast.error(
+        isEditing
+          ? "먹은 것 기록을 수정하지 못했습니다. 다시 시도해 주세요."
+          : "먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요.",
+      );
     }
   }
 
   return (
-    <main className={styles["food-page-client"]} aria-label={isEditing ? "먹은 것 기록 수정 화면" : "먹은 것 기록 화면"}>
+    <main
+      className={styles["food-page-client"]}
+      aria-label={isEditing ? "먹은 것 기록 수정 화면" : "먹은 것 기록 화면"}
+    >
       <AppHeader title={isEditing ? "먹은 것 기록 수정" : "먹은 것 기록"} />
 
       <div className={styles["food-page-content"]}>
@@ -198,17 +244,30 @@ export default function FoodPageClient() {
           }}
         >
           <FormRow label="날짜" htmlFor="food-recorded-on">
-            <DatePicker id="food-recorded-on" onChange={setRecordedOn} value={recordedOn} />
+            <DatePicker
+              id="food-recorded-on"
+              onChange={setRecordedOn}
+              value={recordedOn}
+            />
           </FormRow>
+
           <FormRow label="시간" htmlFor="food-recorded-at">
-            <TimePicker id="food-recorded-at" onChange={setRecordedAt} value={recordedAt} />
+            <TimePicker
+              id="food-recorded-at"
+              onChange={setRecordedAt}
+              value={recordedAt}
+            />
           </FormRow>
-          <FormRow label="이전 기록 불러오기 (선택)" htmlFor="food-recommendation-search">
+
+          <FormRow
+            label="이전 기록 불러오기"
+          >
             <FoodRecommendationPicker
               id="food-recommendation-search"
               onSelect={handleSelectRecommendation}
             />
           </FormRow>
+
           <FormRow label="가게·브랜드 (선택)" htmlFor="food-source">
             <TextInput
               id="food-source"
@@ -217,25 +276,36 @@ export default function FoodPageClient() {
               value={source}
             />
           </FormRow>
+
           <FormRow label="먹은 것">
             <div className={styles["food-items"]}>
               {foods.map((food) => (
                 <div className={styles["food-item"]} key={food.id}>
-                  <label className={styles["sr-only"]} htmlFor={`food-name-${food.id}`}>
+                  <label
+                    className={styles["sr-only"]}
+                    htmlFor={`food-name-${food.id}`}
+                  >
                     먹은 것 이름
                   </label>
                   <TextInput
                     id={`food-name-${food.id}`}
-                    onChange={(value) => handleChangeFood(food.id, "name", value)}
+                    onChange={(value) =>
+                      handleChangeFood(food.id, "name", value)
+                    }
                     placeholder="음식, 음료, 영양제"
                     value={food.name}
                   />
-                  <label className={styles["sr-only"]} htmlFor={`food-amount-${food.id}`}>
+                  <label
+                    className={styles["sr-only"]}
+                    htmlFor={`food-amount-${food.id}`}
+                  >
                     양
                   </label>
                   <TextInput
                     id={`food-amount-${food.id}`}
-                    onChange={(value) => handleChangeFood(food.id, "amount", value)}
+                    onChange={(value) =>
+                      handleChangeFood(food.id, "amount", value)
+                    }
                     placeholder="양"
                     value={food.amount}
                   />
@@ -252,7 +322,13 @@ export default function FoodPageClient() {
                   )}
                 </div>
               ))}
-              <Button color="gray" fill="outline" onClick={handleAddFood} size="medium" type="button">
+              <Button
+                color="gray"
+                fill="outline"
+                onClick={handleAddFood}
+                size="medium"
+                type="button"
+              >
                 먹은 것 추가
               </Button>
             </div>
@@ -292,7 +368,10 @@ export default function FoodPageClient() {
   );
 }
 
-function createFoodFormItem(food?: { name: string; amount?: string }): TFoodFormItem {
+function createFoodFormItem(food?: {
+  name: string;
+  amount?: string;
+}): TFoodFormItem {
   nextFoodItemId += 1;
 
   return {
