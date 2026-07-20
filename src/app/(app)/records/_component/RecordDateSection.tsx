@@ -7,15 +7,6 @@ import {
   getRecordDescription,
 } from "@/utils/healthRecordsPresentation";
 
-import {
-  MdBedtime,
-  MdDirectionsRun,
-  MdOutlineCalendarToday,
-  MdOutlineWc,
-  MdRestaurant,
-  MdSentimentSatisfiedAlt,
-} from "react-icons/md";
-
 import styles from "./recordDateSection.module.scss";
 
 export default function RecordDateSection(props: {
@@ -31,7 +22,6 @@ export default function RecordDateSection(props: {
 
       {records.map((record) => {
         const description = getRecordDescription(record);
-        const Icon = getRecordIcon(record.category);
 
         return (
           <Link
@@ -54,37 +44,9 @@ export default function RecordDateSection(props: {
                 <p className={styles["record-description"]}>{description}</p>
               )}
             </div>
-
-            <span className={styles["record-icon"]} aria-hidden="true">
-              <Icon />
-            </span>
           </Link>
         );
       })}
     </section>
   );
-}
-
-function getRecordIcon(category: string) {
-  if (category === "sleep") {
-    return MdBedtime;
-  }
-
-  if (category === "toilet") {
-    return MdOutlineWc;
-  }
-
-  if (category === "food") {
-    return MdRestaurant;
-  }
-
-  if (category === "exercise") {
-    return MdDirectionsRun;
-  }
-
-  if (category === "condition") {
-    return MdSentimentSatisfiedAlt;
-  }
-
-  return MdOutlineCalendarToday;
 }
