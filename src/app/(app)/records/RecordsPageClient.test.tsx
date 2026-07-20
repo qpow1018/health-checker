@@ -84,8 +84,8 @@ describe("RecordsPageClient", () => {
     });
   });
 
-  test("keeps the selected month in record detail links", async () => {
-    window.history.replaceState({}, "", "/records?month=2026-06");
+  test("keeps the selected month and category in record detail links", async () => {
+    window.history.replaceState({}, "", "/records?month=2026-06&category=sleep");
     healthRecordMocks.listHealthRecords.mockResolvedValue([
       {
         id: "record-1",
@@ -103,7 +103,86 @@ describe("RecordsPageClient", () => {
 
     expect(await screen.findByRole("link", { name: /기상 시간/ })).toHaveAttribute(
       "href",
-      "/records/record-1?month=2026-06",
+      "/records/record-1?month=2026-06&category=sleep",
+    );
+  });
+
+  test("filters records by category and stores the selection in the URL", async () => {
+    const user = userEvent.setup();
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-food",
+        user_id: "user-1",
+        category: "food",
+        recorded_at: "2026-07-16T08:30:00.000Z",
+        details: { foods: [{ name: "커피", amount: "2잔" }] },
+        details_version: 1,
+        created_at: "2026-07-16T08:30:00.000Z",
+        updated_at: "2026-07-16T08:30:00.000Z",
+      },
+      {
+        id: "record-exercise",
+        user_id: "user-1",
+        category: "exercise",
+        recorded_at: "2026-07-15T10:30:00.000Z",
+        details: { exercises: [{ name: "산책", amount: "30분" }] },
+        details_version: 1,
+        created_at: "2026-07-15T10:30:00.000Z",
+        updated_at: "2026-07-15T10:30:00.000Z",
+      },
+    ]);
+
+    const { rerender } = render(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    expect(await screen.findByText("커피 2잔")).toBeInTheDocument();
+    expect(screen.getByText("산책 30분")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "운동" }));
+    expect(navigationMocks.replace).toHaveBeenCalledWith(
+      "/records?category=exercise",
+      { scroll: false },
+    );
+
+    rerender(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    expect(screen.getByRole("button", { name: "운동" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByText("산책 30분")).toBeInTheDocument();
+    expect(screen.queryByText("커피 2잔")).not.toBeInTheDocument();
+  });
+
+  test("shows a filter-specific empty state and clears the filter", async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(
+      {},
+      "",
+      "/records?month=2026-06&category=exercise",
+    );
+    healthRecordMocks.listHealthRecords.mockResolvedValue([
+      {
+        id: "record-food",
+        user_id: "user-1",
+        category: "food",
+        recorded_at: "2026-06-15T08:30:00.000Z",
+        details: { foods: [{ name: "커피" }] },
+        details_version: 1,
+        created_at: "2026-06-15T08:30:00.000Z",
+        updated_at: "2026-06-15T08:30:00.000Z",
+      },
+    ]);
+
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    expect(
+      await screen.findByRole("region", { name: "빈 필터 결과" }),
+    ).toHaveTextContent("선택한 종류의 기록이 없어요.");
+
+    await user.click(screen.getByRole("button", { name: "전체 기록 보기" }));
+    expect(navigationMocks.replace).toHaveBeenCalledWith(
+      "/records?month=2026-06",
+      { scroll: false },
     );
   });
 

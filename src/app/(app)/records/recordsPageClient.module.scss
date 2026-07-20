@@ -16,7 +16,7 @@
     display: grid;
     grid-template-columns: 44px 1fr 44px;
     align-items: center;
-    margin: 0 16px 16px;
+    margin: 0 16px 8px;
     border: 1px solid $border;
     border-radius: $radius;
 
@@ -46,6 +46,42 @@
     }
   }
 
+  .category-filter {
+    display: flex;
+    gap: 8px;
+    margin: 0 16px 16px;
+    padding-bottom: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    button {
+      flex: 0 0 auto;
+      min-height: 36px;
+      padding: 0 14px;
+      border: 1px solid $border;
+      border-radius: 999px;
+      color: $text-secondary;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+
+      &:focus-visible {
+        outline: 3px solid rgba($primary, 0.34);
+        outline-offset: 2px;
+      }
+
+      &[aria-pressed="true"] {
+        border-color: $primary-300;
+        background: $primary-soft;
+        color: $primary-strong;
+      }
+    }
+  }
+
   .error-message {
     margin: 32px 0 0;
     padding: 12px;
@@ -71,7 +107,8 @@
       color: $text-muted;
     }
 
-    a {
+    a,
+    button {
       color: $primary;
       font-weight: 700;
     }

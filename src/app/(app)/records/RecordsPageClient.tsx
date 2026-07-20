@@ -6,7 +6,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
+import { RECORD_CATEGORY_FILTERS } from "./_define/recordCategoryFilters";
 import { PREVIEW_RECORDS } from "./_define/previewRecords";
+import type { TRecordCategoryFilter } from "./_type/recordCategoryFilter";
+import { isRecordCategoryFilter } from "./_util/recordCategoryFilter";
 import { groupRecordsByDate } from "./_util/recordsGrouping";
 import {
   formatRecordMonth,
@@ -29,6 +32,10 @@ export function RecordsPageClient() {
     searchParams.get("preview") === "1";
   const currentMonthKey = getRecordMonthKey();
   const requestedMonthKey = searchParams.get("month");
+  const requestedCategory = searchParams.get("category");
+  const selectedCategory = isRecordCategoryFilter(requestedCategory)
+    ? requestedCategory
+    : "all";
   const defaultMonthKey = isPreviewMode
     ? getRecordMonthKey(new Date(PREVIEW_RECORDS[0].recorded_at))
     : currentMonthKey;
@@ -46,8 +53,12 @@ export function RecordsPageClient() {
   const isLoading = !isPreviewMode && isPending;
   const errorMessage = error ? "기록을 불러오지 못했습니다. 다시 시도해 주세요." : "";
   const isCurrentMonth = selectedMonthKey === currentMonthKey;
+  const filteredRecords =
+    selectedCategory === "all"
+      ? records
+      : records.filter((record) => record.category === selectedCategory);
 
-  const recordGroups = groupRecordsByDate(records);
+  const recordGroups = groupRecordsByDate(filteredRecords);
 
   function handlePreviousMonth() {
     replaceSelectedMonth(getAdjacentRecordMonth(selectedMonthKey, -1));
@@ -65,6 +76,19 @@ export function RecordsPageClient() {
     const nextSearchParams = new URLSearchParams(searchParams.toString());
     nextSearchParams.set("month", monthKey);
     router.replace(`/records?${nextSearchParams.toString()}`, { scroll: false });
+  }
+
+  function handleCategoryChange(category: TRecordCategoryFilter) {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (category === "all") {
+      nextSearchParams.delete("category");
+    } else {
+      nextSearchParams.set("category", category);
+    }
+
+    const query = nextSearchParams.toString();
+    router.replace(query ? `/records?${query}` : "/records", { scroll: false });
   }
 
   return (
@@ -95,6 +119,23 @@ export function RecordsPageClient() {
         </button>
       </div>
 
+      <div
+        className={styles["category-filter"]}
+        role="group"
+        aria-label="기록 종류 선택"
+      >
+        {RECORD_CATEGORY_FILTERS.map((filter) => (
+          <button
+            aria-pressed={selectedCategory === filter.value}
+            key={filter.value}
+            onClick={() => handleCategoryChange(filter.value)}
+            type="button"
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+
       {isLoading && (
         <div role="status" aria-label="기록을 불러오는 중">
           <BoxLoading />
@@ -105,7 +146,7 @@ export function RecordsPageClient() {
         <p className={styles["error-message"]}>{errorMessage}</p>
       )}
 
-      {!isLoading && !errorMessage && records.length > 0 && (
+      {!isLoading && !errorMessage && filteredRecords.length > 0 && (
         <section className={styles["record-list"]} aria-label="최근 기록 목록">
           {recordGroups.map((group) => (
             <RecordDateSection
@@ -113,6 +154,7 @@ export function RecordsPageClient() {
               key={group.dateKey}
               monthKey={selectedMonthKey}
               records={group.records}
+              selectedCategory={selectedCategory}
             />
           ))}
         </section>
@@ -124,6 +166,18 @@ export function RecordsPageClient() {
           <Link href="/record">기록하러 가기</Link>
         </section>
       )}
+
+      {!isLoading &&
+        !errorMessage &&
+        records.length > 0 &&
+        filteredRecords.length === 0 && (
+          <section className={styles["empty-state"]} aria-label="빈 필터 결과">
+            <p>선택한 종류의 기록이 없어요.</p>
+            <button type="button" onClick={() => handleCategoryChange("all")}>
+              전체 기록 보기
+            </button>
+          </section>
+        )}
 
       <BottomNavigation />
     </main>
