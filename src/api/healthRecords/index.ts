@@ -33,14 +33,18 @@ export async function createToiletRecord({
   return createHealthRecord({ category: "toilet", date, time, details });
 }
 
-export async function createFoodRecord({ date, time, foods }: TReqCreateFoodRecord) {
+export async function createFoodRecord({ date, time, source, foods }: TReqCreateFoodRecord) {
+  const normalizedSource = source?.trim();
   const normalizedFoods = normalizeFoodItems(foods);
 
   if (normalizedFoods.length === 0) {
-    throw new Error("음식을 하나 이상 입력해 주세요.");
+    throw new Error("먹은 것을 하나 이상 입력해 주세요.");
   }
 
-  const details: TFoodDetailsV1 = { foods: normalizedFoods };
+  const details: TFoodDetailsV1 = {
+    ...(normalizedSource && { source: normalizedSource }),
+    foods: normalizedFoods,
+  };
   return createHealthRecord({ category: "food", date, time, details });
 }
 

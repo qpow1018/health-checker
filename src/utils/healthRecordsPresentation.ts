@@ -10,7 +10,7 @@ export function getRecordCategoryLabel(record: THealthRecordRow) {
   }
 
   if (record.category === "food") {
-    return "음식 기록";
+    return "먹은 것 기록";
   }
 
   if (record.category === "exercise") {
@@ -34,6 +34,7 @@ export function getRecordDescription(record: THealthRecordRow) {
   }
 
   if (record.category === "food" && Array.isArray(record.details.foods)) {
+    const source = typeof record.details.source === "string" && record.details.source.trim();
     const foodNames = record.details.foods.flatMap((food) => {
       if (!isRecord(food) || typeof food.name !== "string" || !food.name.trim()) {
         return [];
@@ -43,7 +44,7 @@ export function getRecordDescription(record: THealthRecordRow) {
       return [`${food.name.trim()}${amount ? ` ${amount}` : ""}`];
     });
 
-    return foodNames.join(", ") || undefined;
+    return [source, foodNames.join(", ")].filter(Boolean).join(" · ") || undefined;
   }
 
   if (record.category === "exercise" && Array.isArray(record.details.exercises)) {

@@ -31,7 +31,7 @@ const RECORD_ACTIONS = [
     href: "/record/wake",
   },
   {
-    title: "먹은 음식",
+    title: "먹은 것",
     Icon: MdRestaurant,
     href: "/record/food",
   },

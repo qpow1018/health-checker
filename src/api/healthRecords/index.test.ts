@@ -140,6 +140,7 @@ describe("healthRecords API", () => {
     await createFoodRecord({
       date: "2026-07-15",
       time: "08:30",
+      source: " 카페 ",
       foods: [
         { name: " 커피 ", amount: " 2잔 " },
         { name: "" },
@@ -149,7 +150,7 @@ describe("healthRecords API", () => {
     expect(insert).toHaveBeenCalledWith({
       category: "food",
       recorded_at: new Date("2026-07-15T08:30:00").toISOString(),
-      details: { foods: [{ name: "커피", amount: "2잔" }] },
+      details: { source: "카페", foods: [{ name: "커피", amount: "2잔" }] },
       details_version: 1,
     });
   });
@@ -157,7 +158,26 @@ describe("healthRecords API", () => {
   test("rejects a food record without a food name", async () => {
     await expect(
       createFoodRecord({ date: "2026-07-15", time: "08:30", foods: [{ name: " " }] }),
-    ).rejects.toThrow("음식을 하나 이상 입력해 주세요.");
+    ).rejects.toThrow("먹은 것을 하나 이상 입력해 주세요.");
+  });
+
+  test("omits an empty food source", async () => {
+    const single = vi.fn().mockResolvedValue({ data: { id: "record-3" }, error: null });
+    const select = vi.fn().mockReturnValue({ single });
+    const insert = vi.fn().mockReturnValue({ select });
+
+    supabaseMocks.from.mockReturnValue({ insert });
+
+    await createFoodRecord({
+      date: "2026-07-15",
+      time: "08:30",
+      source: " ",
+      foods: [{ name: "커피" }],
+    });
+
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({
+      details: { foods: [{ name: "커피" }] },
+    }));
   });
 
   test("stores exercise items after trimming their input", async () => {

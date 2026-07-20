@@ -21,11 +21,12 @@ function createRecord(overrides: Partial<THealthRecordRow>): THealthRecordRow {
 describe("recordDetailPresentation", () => {
   test("shows every recorded food item and opens its edit form", () => {
     const record = createRecord({
-      details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
+      details: { source: "카페", foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
     });
 
     expect(getRecordDetailItems(record)).toEqual([
-      { label: "음식", value: "커피 · 2잔\n토스트" },
+      { label: "가게·브랜드", value: "카페" },
+      { label: "먹은 것", value: "커피 · 2잔\n토스트" },
     ]);
     expect(getRecordEditPath(record)).toBe("/record/food?edit=record-1");
   });
