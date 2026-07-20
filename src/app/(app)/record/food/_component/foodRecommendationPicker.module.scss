@@ -1,0 +1,77 @@
+.food-recommendation-picker {
+  position: relative;
+
+  > input {
+    width: 100%;
+    border: 1px solid $border;
+    border-radius: $radius;
+    padding: 12px;
+    background: #ffffff;
+    color: $text;
+    font: inherit;
+    outline: none;
+
+    &::placeholder {
+      color: $text-muted;
+    }
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgb(106 155 195 / 18%);
+    }
+  }
+
+  .recommendation-panel {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 6px);
+    right: 0;
+    left: 0;
+    overflow: hidden;
+    border: 1px solid $border;
+    border-radius: $radius;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgb(22 33 44 / 12%);
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    li + li {
+      border-top: 1px solid $border;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      padding: 12px;
+      background: #ffffff;
+      color: $text;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: left;
+      cursor: pointer;
+
+      &:hover,
+      &:focus-visible {
+        background: $primary-soft;
+      }
+
+      &:focus-visible {
+        outline: 2px solid $primary;
+        outline-offset: -2px;
+      }
+    }
+  }
+
+  .recommendation-notice {
+    margin: 0;
+    padding: 12px;
+    color: $text-secondary;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}

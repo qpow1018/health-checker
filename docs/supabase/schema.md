@@ -143,6 +143,39 @@ RLS 방향:
 - 모든 정책은 `is_allowed_user()`와 `(select auth.uid()) = user_id`를 함께 확인한다.
 - update 정책은 `USING`과 `WITH CHECK` 모두에서 소유자 조건을 확인한다.
 
+## `food_recommendations`
+
+먹은 것 기록에서 다시 불러올 수 있는 사용자별 음식 조합을 저장한다. 원본 `health_records`와 생명주기를 분리하며, 추천 삭제는 기존 기록을 변경하지 않는다.
+
+v1 컬럼:
+
+- `id uuid primary key default gen_random_uuid()`
+- `user_id uuid not null default auth.uid() references auth.users(id) on delete cascade`
+- `source text null`
+- `foods jsonb not null`
+- `normalized_key text generated always ... stored`
+- `search_text text generated always ... stored`
+- `last_used_at timestamptz not null default now()`
+- `created_at timestamptz not null default now()`
+- `updated_at timestamptz not null default now()`
+
+저장과 검색 규칙:
+
+- 중복 기준은 사용자, 정규화한 `source`, 정규화한 음식명 구성이다.
+- 음식명 순서와 `amount`는 중복 기준에서 제외한다.
+- 같은 조합을 다시 저장하면 최근 `source`, 음식 순서, `amount`, `last_used_at`으로 갱신한다.
+- 새 음식 기록과 음식 기록 수정은 DB 트리거로 추천을 원자적으로 upsert한다.
+- 원본 기록 수정·삭제는 이미 학습된 이전 추천을 제거하지 않는다.
+- 기존 음식 기록은 migration에서 사용자별로 중복 제거해 백필한다.
+- 기록 화면은 빈 검색어에서도 최근 사용 순으로 최대 5개를 보여준다.
+- 검색어는 `source`와 음식명을 합친 `search_text`에 부분 일치시키며, 여러 단어는 모두 포함되어야 한다.
+- 전체 추천 확인과 삭제는 설정의 음식 추천 목록에서 처리한다.
+
+RLS 방향:
+
+- 허용된 사용자는 자신의 추천만 조회·생성·수정·삭제할 수 있다.
+- 모든 정책은 `is_allowed_user()`와 `(select auth.uid()) = user_id`를 함께 확인한다.
+
 ## `allowed_users`
 
 앱 사용이 허용된 이메일을 관리한다.

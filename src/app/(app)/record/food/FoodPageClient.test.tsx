@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -15,6 +15,9 @@ const healthRecordMocks = vi.hoisted(() => ({
   getHealthRecord: vi.fn(),
   updateHealthRecord: vi.fn(),
 }));
+const foodRecommendationMocks = vi.hoisted(() => ({
+  listFoodRecommendations: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record/food",
@@ -30,10 +33,15 @@ vi.mock("@/api/healthRecords", () => ({
   updateHealthRecord: healthRecordMocks.updateHealthRecord,
 }));
 
+vi.mock("@/api/foodRecommendations", () => ({
+  listFoodRecommendations: foodRecommendationMocks.listFoodRecommendations,
+}));
+
 describe("FoodPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     routerMocks.editId = "";
+    foodRecommendationMocks.listFoodRecommendations.mockResolvedValue([]);
   });
 
   test("shows the food record form", () => {
@@ -42,10 +50,72 @@ describe("FoodPageClient", () => {
     expect(screen.getByRole("main", { name: "먹은 것 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
     expect(screen.getByLabelText("시간")).toBeInTheDocument();
+    expect(screen.getByLabelText("이전 기록 불러오기 (선택)")).toBeInTheDocument();
     expect(screen.getByLabelText("가게·브랜드 (선택)")).toBeInTheDocument();
     expect(screen.getByLabelText("먹은 것 이름")).toBeInTheDocument();
     expect(screen.getByLabelText("양")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "저장" })).toBeDisabled();
+  });
+
+  test("shows recent recommendations without a search and applies one to an empty form", async () => {
+    const user = userEvent.setup();
+    foodRecommendationMocks.listFoodRecommendations.mockResolvedValue([
+      {
+        id: "recommendation-1",
+        source: "아딸",
+        foods: [{ name: "떡볶이" }, { name: "튀김", amount: "3개" }],
+      },
+    ]);
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    await user.click(screen.getByLabelText("이전 기록 불러오기 (선택)"));
+    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이 · 튀김 3개" }));
+
+    expect(screen.getByDisplayValue("아딸")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("떡볶이")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("튀김")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("3개")).toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: "추천 불러오기" })).not.toBeInTheDocument();
+  });
+
+  test("searches recommendations after the input settles", async () => {
+    const user = userEvent.setup();
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    await user.type(screen.getByLabelText("이전 기록 불러오기 (선택)"), "아딸 튀");
+
+    await waitFor(() => {
+      expect(foodRecommendationMocks.listFoodRecommendations).toHaveBeenCalledWith({
+        search: "아딸 튀",
+      });
+    });
+  });
+
+  test("confirms before replacing an existing food input with a recommendation", async () => {
+    const user = userEvent.setup();
+    foodRecommendationMocks.listFoodRecommendations.mockResolvedValue([
+      {
+        id: "recommendation-1",
+        source: "아딸",
+        foods: [{ name: "떡볶이" }, { name: "튀김" }],
+      },
+    ]);
+    render(<QueryProvider><FoodPageClient /></QueryProvider>);
+
+    await user.type(screen.getByLabelText("먹은 것 이름"), "커피");
+    await user.click(screen.getByLabelText("이전 기록 불러오기 (선택)"));
+    await user.click(await screen.findByRole("button", { name: "아딸 · 떡볶이 · 튀김" }));
+
+    expect(screen.getByDisplayValue("커피")).toBeInTheDocument();
+    const dialog = screen.getByRole("dialog", { name: "추천 불러오기" });
+    expect(dialog).toHaveTextContent("현재 입력을 추천 내용으로 바꿀까요?");
+
+    await user.click(screen.getByRole("button", { name: "바꾸기" }));
+
+    expect(screen.queryByDisplayValue("커피")).not.toBeInTheDocument();
+    expect(screen.getByDisplayValue("아딸")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("떡볶이")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("튀김")).toBeInTheDocument();
   });
 
   test("adds and removes a food input", async () => {

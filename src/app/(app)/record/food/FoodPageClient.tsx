@@ -9,6 +9,7 @@ import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
+import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 import DatePicker from "@/components/common/form/DatePicker";
 import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
@@ -16,8 +17,11 @@ import TextInput from "@/components/common/form/TextInput";
 import TimePicker from "@/components/common/form/TimePicker";
 import BoxLoading from "@/components/common/loading/BoxLoading";
 
+import type { TFoodRecommendation } from "@/api/foodRecommendations/type";
+
 import { MdClose } from "react-icons/md";
 
+import FoodRecommendationPicker from "./_component/FoodRecommendationPicker";
 import styles from "./foodPageClient.module.scss";
 
 type TFoodFormItem = {
@@ -41,6 +45,8 @@ export default function FoodPageClient() {
   const [foods, setFoods] = useState<TFoodFormItem[]>(() => [createFoodFormItem()]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
+  const [pendingRecommendation, setPendingRecommendation] =
+    useState<TFoodRecommendation | null>(null);
   const { mutateAsync: createFoodRecord, isPending: isSaving } = useCreateFoodRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
   const { data: record, isLoading: isLoadingRecord, isError: isRecordError } = useHealthRecord(editId ?? "");
@@ -112,6 +118,36 @@ export default function FoodPageClient() {
     setFoods((currentFoods) => currentFoods.filter((food) => food.id !== id));
   }
 
+  function handleSelectRecommendation(recommendation: TFoodRecommendation) {
+    const hasCurrentInput = Boolean(source.trim())
+      || foods.some((food) => food.name.trim() || food.amount.trim());
+
+    if (hasCurrentInput) {
+      setPendingRecommendation(recommendation);
+      return;
+    }
+
+    applyRecommendation(recommendation);
+  }
+
+  function handleCloseRecommendationConfirm() {
+    setPendingRecommendation(null);
+  }
+
+  function handleConfirmRecommendation() {
+    if (!pendingRecommendation) {
+      return;
+    }
+
+    applyRecommendation(pendingRecommendation);
+    setPendingRecommendation(null);
+  }
+
+  function applyRecommendation(recommendation: TFoodRecommendation) {
+    setSource(recommendation.source ?? "");
+    setFoods(recommendation.foods.map((food) => createFoodFormItem(food)));
+  }
+
   async function handleSubmit() {
     if (!recordedOn || !recordedAt || !hasFood) {
       return;
@@ -167,6 +203,12 @@ export default function FoodPageClient() {
           </FormRow>
           <FormRow label="시간" htmlFor="food-recorded-at">
             <TimePicker id="food-recorded-at" onChange={setRecordedAt} value={recordedAt} />
+          </FormRow>
+          <FormRow label="이전 기록 불러오기 (선택)" htmlFor="food-recommendation-search">
+            <FoodRecommendationPicker
+              id="food-recommendation-search"
+              onSelect={handleSelectRecommendation}
+            />
           </FormRow>
           <FormRow label="가게·브랜드 (선택)" htmlFor="food-source">
             <TextInput
@@ -232,17 +274,33 @@ export default function FoodPageClient() {
       </div>
 
       {!isEditing && <BottomNavigation />}
+
+      <ConfirmModal
+        isOpen={Boolean(pendingRecommendation)}
+        title="추천 불러오기"
+        message="현재 입력을 추천 내용으로 바꿀까요?"
+        onClose={handleCloseRecommendationConfirm}
+        cancelButton={{
+          label: "취소",
+          onClick: handleCloseRecommendationConfirm,
+        }}
+        confirmButton={{
+          label: "바꾸기",
+          color: "primary",
+          onClick: handleConfirmRecommendation,
+        }}
+      />
     </main>
   );
 }
 
-function createFoodFormItem(): TFoodFormItem {
+function createFoodFormItem(food?: { name: string; amount?: string }): TFoodFormItem {
   nextFoodItemId += 1;
 
   return {
     id: nextFoodItemId,
-    name: "",
-    amount: "",
+    name: food?.name ?? "",
+    amount: food?.amount ?? "",
   };
 }
 

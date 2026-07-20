@@ -30,6 +30,43 @@
     }
   }
 
+  .record-settings-section {
+    margin-bottom: 32px;
+
+    h2 {
+      color: $text-secondary;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 10px;
+      border-top: 1px solid $border;
+      border-bottom: 1px solid $border;
+      padding: 16px 0;
+      color: $text;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+
+      &:focus-visible {
+        outline: 3px solid rgb(106 155 195 / 34%);
+        outline-offset: 3px;
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+        flex: none;
+        color: $text-secondary;
+      }
+    }
+  }
+
   .account-details {
     margin: 10px 0 0;
     border-top: 1px solid $border;

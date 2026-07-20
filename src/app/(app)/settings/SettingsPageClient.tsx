@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 import { useAuthSession } from "@/components/auth/AuthGate";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
+
+import { MdChevronRight } from "react-icons/md";
 
 import styles from "./settingsPageClient.module.scss";
 
@@ -54,6 +57,17 @@ export function SettingsPageClient() {
       </header>
 
       <div className={styles["settings-content"]}>
+        <section
+          className={styles["record-settings-section"]}
+          aria-labelledby="record-settings-section-title"
+        >
+          <h2 id="record-settings-section-title">기록 설정</h2>
+          <Link href="/settings/food-recommendations">
+            <span>음식 추천 목록</span>
+            <MdChevronRight aria-hidden="true" />
+          </Link>
+        </section>
+
         <section
           className={styles["account-section"]}
           aria-labelledby="account-section-title"
