@@ -49,6 +49,7 @@ describe("SettingsPageClient", () => {
       "href",
       "/settings/food-recommendations",
     );
+    expect(screen.getByText("저장된 음식 조합을 확인하고 삭제해요")).toBeInTheDocument();
     expect(screen.getByText("owner@example.com")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "설정" })).toHaveAttribute("aria-current", "page");
 

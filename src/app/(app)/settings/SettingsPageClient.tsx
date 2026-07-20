@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import { useAuthSession } from "@/components/auth/AuthGate";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
-import Button from "@/components/common/button/Button";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 
 import { MdChevronRight } from "react-icons/md";
@@ -16,6 +15,7 @@ const SIGN_OUT_ERROR_MESSAGE = "로그아웃하지 못했습니다. 다시 시�
 
 export function SettingsPageClient() {
   const { email, signOut } = useAuthSession();
+
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
@@ -58,40 +58,57 @@ export function SettingsPageClient() {
 
       <div className={styles["settings-content"]}>
         <section
-          className={styles["record-settings-section"]}
+          className={styles["settings-section"]}
           aria-labelledby="record-settings-section-title"
         >
           <h2 id="record-settings-section-title">기록 설정</h2>
-          <Link href="/settings/food-recommendations">
-            <span>음식 추천 목록</span>
-            <MdChevronRight aria-hidden="true" />
-          </Link>
+          <div className={styles["settings-group"]}>
+            <Link
+              className={styles["settings-link"]}
+              href="/settings/food-recommendations"
+              aria-labelledby="food-recommendations-title"
+              aria-describedby="food-recommendations-description"
+            >
+              <span className={styles["setting-copy"]}>
+                <span
+                  className={styles["setting-title"]}
+                  id="food-recommendations-title"
+                >
+                  음식 추천 목록
+                </span>
+                <span
+                  className={styles["setting-description"]}
+                  id="food-recommendations-description"
+                >
+                  저장된 음식 조합을 확인하고 삭제해요
+                </span>
+              </span>
+              <MdChevronRight aria-hidden="true" />
+            </Link>
+          </div>
         </section>
 
         <section
-          className={styles["account-section"]}
+          className={styles["settings-section"]}
           aria-labelledby="account-section-title"
         >
           <h2 id="account-section-title">계정</h2>
-          <dl className={styles["account-details"]}>
-            <div>
-              <dt>로그인 계정</dt>
-              <dd>{email}</dd>
-            </div>
-          </dl>
+          <div className={styles["settings-group"]}>
+            <dl className={styles["account-details"]}>
+              <div>
+                <dt>로그인 계정</dt>
+                <dd>{email}</dd>
+              </div>
+            </dl>
+            <button
+              className={styles["logout-button"]}
+              type="button"
+              onClick={handleOpenLogoutModal}
+            >
+              로그아웃
+            </button>
+          </div>
         </section>
-
-        <div className={styles["logout-action"]}>
-          <Button
-            color="danger"
-            fill="outline"
-            size="large"
-            isFullWidth
-            onClick={handleOpenLogoutModal}
-          >
-            로그아웃
-          </Button>
-        </div>
       </div>
 
       <BottomNavigation />
