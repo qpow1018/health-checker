@@ -8,6 +8,8 @@ import {
   useHealthRecord,
   useUpdateHealthRecord,
 } from "@/queries/healthRecordsQuery";
+import type { TFoodRecommendation } from "@/api/foodRecommendations/type";
+import type { TFoodFormItem } from "@/app/(app)/record/food/_type/foodForm";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 import toast from "@/utils/toast";
 
@@ -20,19 +22,10 @@ import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import TimePicker from "@/components/common/form/TimePicker";
 import BoxLoading from "@/components/common/loading/BoxLoading";
-
-import type { TFoodRecommendation } from "@/api/foodRecommendations/type";
-
-import { MdAdd, MdClose } from "react-icons/md";
-
+import FoodItemsField from "./_component/FoodItemsField";
 import FoodRecommendationPicker from "./_component/FoodRecommendationPicker";
-import styles from "./foodPageClient.module.scss";
 
-type TFoodFormItem = {
-  id: number;
-  name: string;
-  amount: string;
-};
+import styles from "./foodPageClient.module.scss";
 
 export default function FoodPageClient() {
   const router = useRouter();
@@ -130,25 +123,6 @@ export default function FoodPageClient() {
         <BoxLoading />
       </main>
     );
-  }
-
-  function handleAddFood() {
-    setFoods((currentFoods) => [
-      ...currentFoods,
-      createFoodFormItem(undefined, getNextFoodItemId(currentFoods)),
-    ]);
-  }
-
-  function handleChangeFood(id: number, key: "name" | "amount", value: string) {
-    setFoods((currentFoods) =>
-      currentFoods.map((food) =>
-        food.id === id ? { ...food, [key]: value } : food,
-      ),
-    );
-  }
-
-  function handleRemoveFood(id: number) {
-    setFoods((currentFoods) => currentFoods.filter((food) => food.id !== id));
   }
 
   function handleSelectRecommendation(recommendation: TFoodRecommendation) {
@@ -281,67 +255,7 @@ export default function FoodPageClient() {
           </FormRow>
 
           <FormRow label="먹은 것">
-            <div className={styles["food-items"]}>
-              {foods.map((food, index) => (
-                <div className={styles["food-item"]} key={food.id}>
-                  <div className={styles["food-action-slot"]}>
-                    {index === foods.length - 1 && (
-                      <button
-                        aria-label="먹은 것 추가"
-                        className={`${styles["food-action-button"]} ${styles["add-food-button"]}`}
-                        onClick={handleAddFood}
-                        title="먹은 것 추가"
-                        type="button"
-                      >
-                        <MdAdd aria-hidden="true" />
-                      </button>
-                    )}
-                  </div>
-
-                  <label
-                    className={styles["sr-only"]}
-                    htmlFor={`food-name-${food.id}`}
-                  >
-                    먹은 것 이름
-                  </label>
-                  <TextInput
-                    id={`food-name-${food.id}`}
-                    onChange={(value) =>
-                      handleChangeFood(food.id, "name", value)
-                    }
-                    placeholder="먹은 것"
-                    value={food.name}
-                  />
-                  <label
-                    className={styles["sr-only"]}
-                    htmlFor={`food-amount-${food.id}`}
-                  >
-                    양
-                  </label>
-                  <TextInput
-                    id={`food-amount-${food.id}`}
-                    onChange={(value) =>
-                      handleChangeFood(food.id, "amount", value)
-                    }
-                    placeholder="양"
-                    value={food.amount}
-                  />
-                  <div className={styles["food-action-slot"]}>
-                    {foods.length > 1 && (
-                      <button
-                        aria-label="먹은 것 삭제"
-                        className={`${styles["food-action-button"]} ${styles["remove-food-button"]}`}
-                        onClick={() => handleRemoveFood(food.id)}
-                        title="먹은 것 삭제"
-                        type="button"
-                      >
-                        <MdClose aria-hidden="true" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <FoodItemsField foods={foods} onChange={setFoods} />
           </FormRow>
 
           <Button
@@ -390,10 +304,6 @@ function createFoodFormItem(
     name: food?.name ?? "",
     amount: food?.amount ?? "",
   };
-}
-
-function getNextFoodItemId(foods: TFoodFormItem[]) {
-  return foods.reduce((maxId, food) => Math.max(maxId, food.id), 0) + 1;
 }
 
 function formatTimeString(date: Date) {

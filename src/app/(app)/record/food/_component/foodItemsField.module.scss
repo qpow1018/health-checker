@@ -1,0 +1,86 @@
+.food-items-field {
+  display: grid;
+  gap: 8px;
+
+  .food-item {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) minmax(76px, 0.35fr) 40px;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .food-action-slot {
+    display: flex;
+    width: 40px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .food-action-button {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 40px;
+    border: 1px solid transparent;
+    border-radius: $radius;
+    padding: 0;
+    cursor: pointer;
+    transition:
+      background $transition,
+      border-color $transition,
+      color $transition;
+
+    &:focus-visible {
+      outline: 3px solid rgb(106 155 195 / 34%);
+      outline-offset: 2px;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .add-food-button {
+    border-color: $primary-soft;
+    background: $primary-soft;
+    color: $primary-strong;
+
+    &:active {
+      background: $primary-200;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background: $primary-200;
+      }
+    }
+  }
+
+  .remove-food-button {
+    border-color: $danger-soft;
+    background: $danger-soft;
+    color: $danger;
+
+    &:active {
+      border-color: $danger;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: $danger;
+      }
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
