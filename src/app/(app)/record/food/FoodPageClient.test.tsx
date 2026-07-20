@@ -188,7 +188,7 @@ describe("FoodPageClient", () => {
       source: "카페",
       foods: [
         { name: "커피", amount: "2잔" },
-        { name: "토스트", amount: "" },
+        { name: "토스트" },
       ],
     });
     expect(toastMocks.success).toHaveBeenCalledWith("기록을 저장했습니다.");

@@ -16,7 +16,10 @@ import TimePicker from "@/components/common/form/TimePicker";
 
 import type { TFoodRecommendation } from "@/api/foodRecommendations/type";
 import type { TFoodFormValue } from "@/app/(app)/record/food/_type/foodForm";
-import { createFoodFormItem } from "@/app/(app)/record/food/_util/foodForm";
+import {
+  getFoodFormDetails,
+  getFoodRecommendationFormItems,
+} from "@/app/(app)/record/food/_util/foodForm";
 
 import FoodItemsField from "./FoodItemsField";
 import FoodRecommendationPicker from "./FoodRecommendationPicker";
@@ -70,11 +73,7 @@ export default function FoodRecordForm(props: {
 
   function applyRecommendation(recommendation: TFoodRecommendation) {
     setSource(recommendation.source ?? "");
-    setFoods(
-      recommendation.foods.map((food, index) =>
-        createFoodFormItem(food, index + 1),
-      ),
-    );
+    setFoods(getFoodRecommendationFormItems(recommendation));
   }
 
   async function handleSubmit() {
@@ -83,24 +82,14 @@ export default function FoodRecordForm(props: {
     }
 
     try {
-      const foodValues = foods.map(({ name, amount }) => ({ name, amount }));
+      const details = getFoodFormDetails(source, foods);
 
       if (editId) {
-        const normalizedSource = source.trim();
-
         await updateHealthRecord({
           id: editId,
           date: recordedOn,
           time: recordedAt,
-          details: {
-            ...(normalizedSource && { source: normalizedSource }),
-            foods: foodValues
-              .filter((food) => food.name.trim())
-              .map((food) => ({
-                name: food.name.trim(),
-                ...(food.amount.trim() && { amount: food.amount.trim() }),
-              })),
-          },
+          details,
         });
         toast.success("기록을 수정했습니다.");
         router.back();
@@ -110,8 +99,8 @@ export default function FoodRecordForm(props: {
       await createFoodRecord({
         date: recordedOn,
         time: recordedAt,
-        source,
-        foods: foodValues,
+        source: details.source,
+        foods: details.foods,
       });
       toast.success("기록을 저장했습니다.");
       router.back();

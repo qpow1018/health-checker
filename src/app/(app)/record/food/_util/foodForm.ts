@@ -3,9 +3,11 @@ import type {
   TFoodFormValue,
 } from "@/app/(app)/record/food/_type/foodForm";
 import type {
+  TFoodDetailsV1,
   TFoodItemV1,
   THealthRecordRow,
 } from "@/api/healthRecords/type";
+import type { TFoodRecommendation } from "@/api/foodRecommendations/type";
 import { formatDateString, getCurrentRecordDateTime } from "@/utils/date";
 
 export function createEmptyFoodFormValue(): TFoodFormValue {
@@ -64,6 +66,36 @@ export function createFoodFormItem(
     name: food?.name ?? "",
     amount: food?.amount ?? "",
   };
+}
+
+export function getFoodFormDetails(
+  source: string,
+  foods: TFoodFormItem[],
+): TFoodDetailsV1 {
+  const normalizedSource = source.trim();
+  const normalizedFoods = foods.flatMap((food) => {
+    const name = food.name.trim();
+
+    if (!name) {
+      return [];
+    }
+
+    const amount = food.amount.trim();
+    return [{ name, ...(amount && { amount }) }];
+  });
+
+  return {
+    ...(normalizedSource && { source: normalizedSource }),
+    foods: normalizedFoods,
+  };
+}
+
+export function getFoodRecommendationFormItems(
+  recommendation: TFoodRecommendation,
+) {
+  return recommendation.foods.map((food, index) =>
+    createFoodFormItem(food, index + 1),
+  );
 }
 
 function formatTimeString(date: Date) {
