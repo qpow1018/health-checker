@@ -20,7 +20,6 @@
     h1 {
       margin: 0;
       font-size: 24px;
-      line-height: 1.22;
     }
   }
 
@@ -29,14 +28,12 @@
     color: $primary;
     font-size: 13px;
     font-weight: 800;
-    line-height: 1.4;
   }
 
   .topbar-description {
     margin: 8px 0 0;
     color: $text-secondary;
     font-size: 14px;
-    line-height: 1.5;
   }
 
   .section {
@@ -52,7 +49,6 @@
     h2 {
       margin: 0;
       font-size: 18px;
-      line-height: 1.3;
     }
 
     &:first-of-type {
@@ -90,7 +86,6 @@
       color: $text-secondary;
       font-size: 13px;
       font-weight: 800;
-      line-height: 1.4;
     }
   }
 
@@ -108,7 +103,6 @@
       margin: 0;
       color: $text-secondary;
       font-size: 14px;
-      line-height: 1.55;
     }
   }
 
