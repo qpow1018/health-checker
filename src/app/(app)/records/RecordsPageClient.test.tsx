@@ -18,6 +18,9 @@ const healthRecordMocks = vi.hoisted(() => ({
 const navigationMocks = vi.hoisted(() => ({
   replace: vi.fn(),
 }));
+const toastMocks = vi.hoisted(() => ({
+  error: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/records",
@@ -27,6 +30,12 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/api/healthRecords", () => ({
   listHealthRecords: healthRecordMocks.listHealthRecords,
+}));
+
+vi.mock("@/utils/toast", () => ({
+  default: {
+    error: toastMocks.error,
+  },
 }));
 
 describe("RecordsPageClient", () => {
@@ -199,6 +208,21 @@ describe("RecordsPageClient", () => {
     render(<QueryProvider><RecordsPageClient /></QueryProvider>);
 
     expect(screen.getByRole("status", { name: "기록을 불러오는 중" })).toBeInTheDocument();
+  });
+
+  test("keeps loading visible and shows a toast when records fail to load", async () => {
+    healthRecordMocks.listHealthRecords.mockRejectedValueOnce(new Error("network"));
+    render(<QueryProvider><RecordsPageClient /></QueryProvider>);
+
+    expect(screen.getByRole("status", { name: "기록을 불러오는 중" })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(toastMocks.error).toHaveBeenCalledWith(
+        "기록을 불러오지 못했습니다. 다시 시도해 주세요.",
+      );
+    });
+    expect(
+      screen.queryByText("기록을 불러오지 못했습니다. 다시 시도해 주세요."),
+    ).not.toBeInTheDocument();
   });
 
   test("shows recent wake records", async () => {

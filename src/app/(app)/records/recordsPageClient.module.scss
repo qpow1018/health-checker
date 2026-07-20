@@ -82,14 +82,6 @@
     }
   }
 
-  .error-message {
-    margin: 32px 0 0;
-    padding: 12px;
-    font-size: 14px;
-    background: $danger-soft;
-    color: $danger;
-  }
-
   .record-list {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

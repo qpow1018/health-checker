@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
+
 import BoxLoading from "@/components/common/loading/BoxLoading";
 import { useHealthRecords } from "@/queries/healthRecordsQuery";
+import toast from "@/utils/toast";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
@@ -44,21 +47,28 @@ export function RecordsPageClient() {
       ? requestedMonthKey
       : defaultMonthKey;
   const monthRange = getRecordMonthRange(selectedMonthKey);
-  const { data, error, isPending } = useHealthRecords(monthRange, !isPreviewMode);
+  const { data, isError, isPending } = useHealthRecords(monthRange, !isPreviewMode);
   const records = isPreviewMode
     ? PREVIEW_RECORDS.filter(
         (record) => getRecordMonthKey(new Date(record.recorded_at)) === selectedMonthKey,
       )
     : (data ?? []);
   const isLoading = !isPreviewMode && isPending;
-  const errorMessage = error ? "기록을 불러오지 못했습니다. 다시 시도해 주세요." : "";
+  const isRecordListReady = !isLoading && !isError;
+  const hasRecords = records.length > 0;
   const isCurrentMonth = selectedMonthKey === currentMonthKey;
   const filteredRecords =
     selectedCategory === "all"
       ? records
       : records.filter((record) => record.category === selectedCategory);
-
+  const hasFilteredRecords = filteredRecords.length > 0;
   const recordGroups = groupRecordsByDate(filteredRecords);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error("기록을 불러오지 못했습니다. 다시 시도해 주세요.");
+    }
+  }, [isError]);
 
   function handlePreviousMonth() {
     replaceSelectedMonth(getAdjacentRecordMonth(selectedMonthKey, -1));
@@ -136,17 +146,13 @@ export function RecordsPageClient() {
         ))}
       </div>
 
-      {isLoading && (
+      {!isRecordListReady && (
         <div role="status" aria-label="기록을 불러오는 중">
           <BoxLoading />
         </div>
       )}
 
-      {errorMessage && (
-        <p className={styles["error-message"]}>{errorMessage}</p>
-      )}
-
-      {!isLoading && !errorMessage && filteredRecords.length > 0 && (
+      {isRecordListReady && hasFilteredRecords && (
         <section className={styles["record-list"]} aria-label="최근 기록 목록">
           {recordGroups.map((group) => (
             <RecordDateSection
@@ -160,17 +166,14 @@ export function RecordsPageClient() {
         </section>
       )}
 
-      {!isLoading && !errorMessage && records.length === 0 && (
+      {isRecordListReady && !hasRecords && (
         <section className={styles["empty-state"]} aria-label="빈 기록">
           <p>선택한 달에 기록이 없어요.</p>
           <Link href="/record">기록하러 가기</Link>
         </section>
       )}
 
-      {!isLoading &&
-        !errorMessage &&
-        records.length > 0 &&
-        filteredRecords.length === 0 && (
+      {isRecordListReady && hasRecords && !hasFilteredRecords && (
           <section className={styles["empty-state"]} aria-label="빈 필터 결과">
             <p>선택한 종류의 기록이 없어요.</p>
             <button type="button" onClick={() => handleCategoryChange("all")}>
