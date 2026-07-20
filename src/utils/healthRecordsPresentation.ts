@@ -30,7 +30,15 @@ export function getRecordDescription(record: THealthRecordRow) {
   }
 
   if (record.category === "toilet") {
-    return getToiletTypeDescription(record.details.type);
+    if (record.details.type === "urine") {
+      return "소변";
+    }
+
+    if (record.details.type === "bowel") {
+      return "대변";
+    }
+
+    return undefined;
   }
 
   if (record.category === "condition" && typeof record.details.note === "string") {
@@ -67,31 +75,6 @@ export function getRecordDescription(record: THealthRecordRow) {
   return undefined;
 }
 
-export function groupRecordsByDate(records: THealthRecordRow[]) {
-  return records.reduce<TRecordDateGroup[]>((groups, record) => {
-    const date = new Date(record.recorded_at);
-    const dateKey = [date.getFullYear(), date.getMonth(), date.getDate()].join("-");
-    const currentGroup = groups.at(-1);
-
-    if (currentGroup?.dateKey === dateKey) {
-      currentGroup.records.push(record);
-      return groups;
-    }
-
-    groups.push({
-      dateKey,
-      dateLabel: new Intl.DateTimeFormat("ko-KR", {
-        month: "long",
-        day: "numeric",
-        weekday: "short",
-      }).format(date),
-      records: [record],
-    });
-
-    return groups;
-  }, []);
-}
-
 export function formatRecordTime(recordedAt: string) {
   const date = new Date(recordedAt);
 
@@ -101,24 +84,6 @@ export function formatRecordTime(recordedAt: string) {
   }).format(date);
 }
 
-function getToiletTypeDescription(value: unknown) {
-  if (value === "urine") {
-    return "소변";
-  }
-
-  if (value === "bowel") {
-    return "대변";
-  }
-
-  return undefined;
-}
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-
-type TRecordDateGroup = {
-  dateKey: string;
-  dateLabel: string;
-  records: THealthRecordRow[];
-};

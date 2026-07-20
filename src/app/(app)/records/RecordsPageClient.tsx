@@ -2,12 +2,12 @@
 
 import BoxLoading from "@/components/common/loading/BoxLoading";
 import { useHealthRecords } from "@/queries/healthRecordsQuery";
-import { groupRecordsByDate } from "@/utils/healthRecordsPresentation";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 import { PREVIEW_RECORDS } from "./_define/previewRecords";
+import { groupRecordsByDate } from "./_util/recordsGrouping";
 import {
   formatRecordMonth,
   getAdjacentRecordMonth,
