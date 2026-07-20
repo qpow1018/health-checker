@@ -1,17 +1,22 @@
 .today-records-dashboard {
   margin: 0 16px;
-  border: 1px solid rgba($primary, 0.16);
+  overflow: hidden;
+  border: 1px solid $gray-200;
   border-radius: calc($radius * 2);
-  padding: 16px;
-  background: linear-gradient(145deg, rgba($primary-soft, 0.78), #ffffff 72%);
-  box-shadow: 0 8px 24px rgba($primary-900, 0.07);
+  padding: 0 16px 6px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba($primary-900, 0.06);
 
   .dashboard-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    min-height: 28px;
+    min-height: 52px;
+    margin: 0 -16px;
+    padding: 0 16px;
+    border-bottom: 1px solid rgba($primary, 0.1);
+    background: rgba($primary-soft, 0.72);
 
     h2 {
       display: flex;
@@ -24,7 +29,7 @@
         min-width: 32px;
         border-radius: 999px;
         padding: 3px 8px;
-        background: rgba($primary, 0.12);
+        background: #ffffff;
         color: $primary-strong;
         font-size: 11px;
         font-weight: 700;
@@ -52,11 +57,7 @@
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    margin-top: 12px;
-    border: 1px solid rgba($primary, 0.1);
-    border-radius: calc($radius + 4px);
-    padding: 22px 12px 20px;
-    background: rgba(#ffffff, 0.78);
+    padding: 22px 12px 10px;
     color: $text-secondary;
     font-size: 12px;
     text-align: center;
@@ -88,11 +89,6 @@
   }
 
   .recent-record-list {
-    margin-top: 12px;
-    overflow: hidden;
-    border: 1px solid $gray-200;
-    border-radius: calc($radius + 4px);
-    background: rgba(#ffffff, 0.92);
     list-style: none;
 
     li + li {
@@ -101,11 +97,11 @@
 
     .recent-record-link {
       display: grid;
-      grid-template-columns: 54px minmax(0, 1fr) 18px;
-      align-items: center;
-      gap: 8px;
-      min-height: 52px;
-      padding: 9px 10px 9px 12px;
+      grid-template-columns: 58px minmax(0, 1fr) 16px;
+      align-items: start;
+      gap: 10px;
+      min-height: 48px;
+      padding: 10px 0;
       color: $text;
       transition: background $transition;
 
@@ -114,9 +110,11 @@
       }
 
       time {
-        color: $primary-strong;
+        padding-top: 3px;
+        color: $text-muted;
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 500;
+        white-space: nowrap;
       }
 
       .record-content {
@@ -131,19 +129,21 @@
         }
 
         strong {
-          font-size: 13px;
+          font-size: 14px;
+          font-weight: 600;
         }
 
         span {
           margin-top: 2px;
           color: $text-muted;
-          font-size: 11px;
+          font-size: 12px;
         }
       }
 
       > svg {
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
+        margin-top: 2px;
         color: $gray-400;
       }
     }

@@ -74,11 +74,32 @@ describe("RecordPageClient", () => {
 
     const actionSection = screen.getByRole("region", { name: "기록 버튼" });
     expect(actionSection).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "기상 시간" })).toBeInTheDocument();
+    const actionButtons = within(actionSection).getAllByRole("button");
+    expect(actionButtons.map((button) => button.textContent)).toEqual([
+      "먹은 것",
+      "화장실",
+      "기상 시간",
+      "운동",
+      "컨디션",
+    ]);
+
+    expect(screen.getByRole("button", { name: "먹은 것" })).toHaveAttribute(
+      "data-fill",
+      "soft",
+    );
+    expect(screen.getByRole("button", { name: "화장실" })).toHaveAttribute(
+      "data-size",
+      "large",
+    );
+    expect(screen.getByRole("button", { name: "기상 시간" })).toHaveAttribute(
+      "data-fill",
+      "outline",
+    );
+    expect(screen.getByRole("button", { name: "운동" })).toHaveAttribute(
+      "data-size",
+      "medium",
+    );
     expect(screen.queryByRole("button", { name: "잠든 시간" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "먹은 것" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "화장실" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "운동" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "컨디션" })).toBeInTheDocument();
 
     expect(screen.getByRole("navigation", { name: "하단 탭" })).toBeInTheDocument();

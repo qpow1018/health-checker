@@ -26,29 +26,34 @@ import styles from "./recordPageClient.module.scss";
 
 const RECORD_ACTIONS = [
   {
-    title: "기상 시간",
-    Icon: MdWbSunny,
-    href: "/record/wake",
-  },
-  {
     title: "먹은 것",
     Icon: MdRestaurant,
     href: "/record/food",
+    isFrequent: true,
   },
   {
     title: "화장실",
     Icon: MdOutlineWc,
     href: "/record/toilet",
+    isFrequent: true,
+  },
+  {
+    title: "기상 시간",
+    Icon: MdWbSunny,
+    href: "/record/wake",
+    isFrequent: false,
   },
   {
     title: "운동",
     Icon: MdDirectionsRun,
     href: "/record/exercise",
+    isFrequent: false,
   },
   {
     title: "컨디션",
     Icon: MdSentimentSatisfiedAlt,
     href: "/record/condition",
+    isFrequent: false,
   },
 ] as const;
 
@@ -125,25 +130,36 @@ export default function RecordPageClient() {
       />
 
       <section className={styles["action-section"]} aria-label="기록 버튼">
-        {RECORD_ACTIONS.map((action) => (
-          <Button
-            className={styles["record-action-button"]}
-            type="button"
-            color="primary"
-            fill="soft"
-            size="large"
-            isFullWidth
-            key={action.title}
-            onClick={() => handleClickRecordAction(action.href)}
-          >
-            <span className={styles["action-main"]}>
-              <span className={styles["action-icon"]}>
-                <action.Icon aria-hidden="true" />
+        {RECORD_ACTIONS.map((action) => {
+          const actionClassName = [
+            styles["record-action-button"],
+            styles[
+              action.isFrequent
+                ? "frequent-action-button"
+                : "occasional-action-button"
+            ],
+          ].join(" ");
+
+          return (
+            <Button
+              className={actionClassName}
+              type="button"
+              color={action.isFrequent ? "primary" : "gray"}
+              fill={action.isFrequent ? "soft" : "outline"}
+              size={action.isFrequent ? "large" : "medium"}
+              isFullWidth
+              key={action.title}
+              onClick={() => handleClickRecordAction(action.href)}
+            >
+              <span className={styles["action-main"]}>
+                <span className={styles["action-icon"]}>
+                  <action.Icon aria-hidden="true" />
+                </span>
+                <span className={styles["action-label"]}>{action.title}</span>
               </span>
-              <span className={styles["action-label"]}>{action.title}</span>
-            </span>
-          </Button>
-        ))}
+            </Button>
+          );
+        })}
       </section>
 
       <BottomNavigation />

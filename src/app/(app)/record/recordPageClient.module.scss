@@ -20,14 +20,13 @@
 
   .action-section {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 10px;
     margin-top: 22px;
     padding: 0 16px;
 
     .record-action-button {
       min-width: 0;
-      min-height: 96px;
       padding: 12px 6px;
       white-space: normal;
 
@@ -59,6 +58,38 @@
           font-size: 13px;
         }
 
+      }
+
+      &.frequent-action-button {
+        grid-column: span 3;
+        min-height: 96px;
+      }
+
+      &.occasional-action-button {
+        grid-column: span 2;
+        min-height: 76px;
+        padding: 10px 4px;
+
+        .action-main {
+          gap: 5px;
+
+          .action-icon {
+            width: 28px;
+            height: 28px;
+            background: $primary-soft;
+            color: $primary-strong;
+
+            svg {
+              width: 14px;
+              height: 14px;
+            }
+          }
+
+          .action-label {
+            color: $text-secondary;
+            font-size: 12px;
+          }
+        }
       }
 
       &:disabled {
