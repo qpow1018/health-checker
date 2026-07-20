@@ -1,4 +1,5 @@
 import type { THealthRecordRow } from "@/api/healthRecords/type";
+import type { TRecordCategoryFilter } from "@/app/(app)/records/_type/recordCategoryFilter";
 import Link from "next/link";
 
 import {
@@ -13,8 +14,9 @@ export default function RecordDateSection(props: {
   dateLabel: string;
   monthKey: string;
   records: THealthRecordRow[];
+  selectedCategory: TRecordCategoryFilter;
 }) {
-  const { dateLabel, monthKey, records } = props;
+  const { dateLabel, monthKey, records, selectedCategory } = props;
 
   return (
     <section className={styles["date-section"]}>
@@ -22,11 +24,16 @@ export default function RecordDateSection(props: {
 
       {records.map((record) => {
         const description = getRecordDescription(record);
+        const searchParams = new URLSearchParams({ month: monthKey });
+
+        if (selectedCategory !== "all") {
+          searchParams.set("category", selectedCategory);
+        }
 
         return (
           <Link
             className={styles["record-item"]}
-            href={`/records/${record.id}?month=${monthKey}`}
+            href={`/records/${record.id}?${searchParams.toString()}`}
             key={record.id}
           >
             <time

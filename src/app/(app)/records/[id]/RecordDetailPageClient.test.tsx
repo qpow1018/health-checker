@@ -10,6 +10,7 @@ const navigationMocks = vi.hoisted(() => ({
   back: vi.fn(),
   push: vi.fn(),
   replace: vi.fn(),
+  searchParams: "month=2026-06",
 }));
 const healthRecordMocks = vi.hoisted(() => ({
   deleteHealthRecord: vi.fn(),
@@ -18,7 +19,7 @@ const healthRecordMocks = vi.hoisted(() => ({
 
 vi.mock("next/navigation", () => ({
   useRouter: () => navigationMocks,
-  useSearchParams: () => new URLSearchParams("month=2026-06"),
+  useSearchParams: () => new URLSearchParams(navigationMocks.searchParams),
 }));
 
 vi.mock("@/api/healthRecords", () => ({
@@ -29,6 +30,7 @@ vi.mock("@/api/healthRecords", () => ({
 describe("RecordDetailPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    navigationMocks.searchParams = "month=2026-06";
     healthRecordMocks.getHealthRecord.mockResolvedValue({
       id: "record-4",
       user_id: "user-1",
@@ -68,5 +70,29 @@ describe("RecordDetailPageClient", () => {
 
     expect(healthRecordMocks.deleteHealthRecord).toHaveBeenCalledWith("record-4");
     expect(navigationMocks.replace).toHaveBeenCalledWith("/records?month=2026-06");
+  });
+
+  test("keeps the selected category while editing and deleting", async () => {
+    const user = userEvent.setup();
+    navigationMocks.searchParams = "month=2026-06&category=food";
+    healthRecordMocks.deleteHealthRecord.mockResolvedValue(undefined);
+    render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
+
+    await user.click(await screen.findByRole("button", { name: "수정" }));
+    expect(navigationMocks.push).toHaveBeenCalledWith(
+      "/record/food?edit=record-4&month=2026-06&category=food",
+    );
+
+    await user.click(screen.getByRole("button", { name: "삭제" }));
+    await user.click(
+      within(screen.getByRole("dialog", { name: "이 기록을 삭제할까요?" })).getByRole(
+        "button",
+        { name: "삭제" },
+      ),
+    );
+
+    expect(navigationMocks.replace).toHaveBeenCalledWith(
+      "/records?month=2026-06&category=food",
+    );
   });
 });

@@ -11,6 +11,7 @@ import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 import BoxLoading from "@/components/common/loading/BoxLoading";
 
 import { getRecordMonthKey, isRecordMonthKey } from "@/app/(app)/records/_util/recordsMonth";
+import { isRecordCategoryFilter } from "@/app/(app)/records/_util/recordCategoryFilter";
 import { formatRecordTime } from "@/utils/healthRecordsPresentation";
 import { getRecordDetailItems, getRecordEditPath } from "./_util/recordDetailPresentation";
 
@@ -29,7 +30,19 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
       setDeleteErrorMessage("");
       await deleteHealthRecord(recordId);
       const monthKey = searchParams.get("month");
-      router.replace(isRecordMonthKey(monthKey) ? `/records?month=${monthKey}` : "/records");
+      const category = searchParams.get("category");
+      const returnSearchParams = new URLSearchParams();
+
+      if (isRecordMonthKey(monthKey)) {
+        returnSearchParams.set("month", monthKey);
+      }
+
+      if (isRecordCategoryFilter(category) && category !== "all") {
+        returnSearchParams.set("category", category);
+      }
+
+      const query = returnSearchParams.toString();
+      router.replace(query ? `/records?${query}` : "/records");
     } catch {
       setIsDeleteModalOpen(false);
       setDeleteErrorMessage("기록을 삭제하지 못했습니다. 다시 시도해 주세요.");
@@ -61,7 +74,14 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
   const returnMonthKey = isRecordMonthKey(requestedMonthKey)
     ? requestedMonthKey
     : getRecordMonthKey(recordedAt);
-  const editHref = editPath ? `${editPath}&month=${returnMonthKey}` : undefined;
+  const requestedCategory = searchParams.get("category");
+  const returnCategory =
+    isRecordCategoryFilter(requestedCategory) && requestedCategory !== "all"
+      ? requestedCategory
+      : undefined;
+  const editHref = editPath
+    ? `${editPath}&month=${returnMonthKey}${returnCategory ? `&category=${returnCategory}` : ""}`
+    : undefined;
   const dateLabel = new Intl.DateTimeFormat("ko-KR", {
     year: "numeric",
     month: "long",
