@@ -3,6 +3,7 @@ import { Noto_Sans_KR } from "next/font/google";
 import "@/assets/scss/global.scss";
 
 import QueryProvider from "@/components/QueryProvider";
+import ToastContainer from "@/components/common/toast/ToastContainer";
 
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
@@ -39,7 +40,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={notoSansKr.className}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          {children}
+          <ToastContainer />
+        </QueryProvider>
       </body>
     </html>
   );
