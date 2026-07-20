@@ -39,10 +39,11 @@ describe("FoodPageClient", () => {
   test("shows the food record form", () => {
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
-    expect(screen.getByRole("main", { name: "음식 기록 화면" })).toBeInTheDocument();
+    expect(screen.getByRole("main", { name: "먹은 것 기록 화면" })).toBeInTheDocument();
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
     expect(screen.getByLabelText("시간")).toBeInTheDocument();
-    expect(screen.getByLabelText("음식 이름")).toBeInTheDocument();
+    expect(screen.getByLabelText("가게·브랜드 (선택)")).toBeInTheDocument();
+    expect(screen.getByLabelText("먹은 것 이름")).toBeInTheDocument();
     expect(screen.getByLabelText("양")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "저장" })).toBeDisabled();
   });
@@ -51,14 +52,14 @@ describe("FoodPageClient", () => {
     const user = userEvent.setup();
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
-    await user.click(screen.getByRole("button", { name: "음식 추가" }));
+    await user.click(screen.getByRole("button", { name: "먹은 것 추가" }));
 
-    expect(screen.getAllByLabelText("음식 이름")).toHaveLength(2);
-    expect(screen.getAllByRole("button", { name: "음식 삭제" })).toHaveLength(2);
+    expect(screen.getAllByLabelText("먹은 것 이름")).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: "먹은 것 삭제" })).toHaveLength(2);
 
-    await user.click(screen.getAllByRole("button", { name: "음식 삭제" })[1]);
+    await user.click(screen.getAllByRole("button", { name: "먹은 것 삭제" })[1]);
 
-    expect(screen.getAllByLabelText("음식 이름")).toHaveLength(1);
+    expect(screen.getAllByLabelText("먹은 것 이름")).toHaveLength(1);
   });
 
   test("saves the entered food items", async () => {
@@ -67,15 +68,17 @@ describe("FoodPageClient", () => {
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await selectTime(user);
-    await user.type(screen.getByLabelText("음식 이름"), "커피");
+    await user.type(screen.getByLabelText("가게·브랜드 (선택)"), "카페");
+    await user.type(screen.getByLabelText("먹은 것 이름"), "커피");
     await user.type(screen.getByLabelText("양"), "2잔");
-    await user.click(screen.getByRole("button", { name: "음식 추가" }));
-    await user.type(screen.getAllByLabelText("음식 이름")[1], "토스트");
+    await user.click(screen.getByRole("button", { name: "먹은 것 추가" }));
+    await user.type(screen.getAllByLabelText("먹은 것 이름")[1], "토스트");
     await user.click(screen.getByRole("button", { name: "저장" }));
 
     expect(healthRecordMocks.createFoodRecord).toHaveBeenCalledWith({
       date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
       time: "08:30",
+      source: "카페",
       foods: [
         { name: "커피", amount: "2잔" },
         { name: "토스트", amount: "" },
@@ -90,11 +93,11 @@ describe("FoodPageClient", () => {
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await selectTime(user);
-    await user.type(screen.getByLabelText("음식 이름"), "커피");
+    await user.type(screen.getByLabelText("먹은 것 이름"), "커피");
     await user.click(screen.getByRole("button", { name: "저장" }));
 
     expect(
-      await screen.findByText("음식 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
+      await screen.findByText("먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
     ).toBeInTheDocument();
   });
 
@@ -104,8 +107,8 @@ describe("FoodPageClient", () => {
 
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
-    expect(screen.getByRole("main", { name: "음식 기록 수정 화면" })).toBeInTheDocument();
-    expect(screen.queryByLabelText("음식 이름")).not.toBeInTheDocument();
+    expect(screen.getByRole("main", { name: "먹은 것 기록 수정 화면" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("먹은 것 이름")).not.toBeInTheDocument();
   });
 
   test("loads an existing record and saves it through the edit flow", async () => {
@@ -116,7 +119,7 @@ describe("FoodPageClient", () => {
       user_id: "user-1",
       category: "food",
       recorded_at: "2026-07-14T23:30:00.000Z",
-      details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
+      details: { source: "카페", foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
       details_version: 1,
       created_at: "2026-07-14T23:30:00.000Z",
       updated_at: "2026-07-14T23:30:00.000Z",
@@ -125,9 +128,10 @@ describe("FoodPageClient", () => {
 
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
-    expect(await screen.findByRole("main", { name: "음식 기록 수정 화면" })).toBeInTheDocument();
+    expect(await screen.findByRole("main", { name: "먹은 것 기록 수정 화면" })).toBeInTheDocument();
     expect(await screen.findByDisplayValue("커피")).toBeInTheDocument();
     expect(screen.getByDisplayValue("토스트")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("카페")).toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: "하단 탭" })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "수정 완료" }));
@@ -136,7 +140,7 @@ describe("FoodPageClient", () => {
       id: "record-4",
       date: "2026-07-15",
       time: "08:30",
-      details: { foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
+      details: { source: "카페", foods: [{ name: "커피", amount: "2잔" }, { name: "토스트" }] },
     });
     expect(routerMocks.back).toHaveBeenCalled();
   });

@@ -41,6 +41,7 @@ export type TFoodItemV1 = {
 };
 
 export type TFoodDetailsV1 = {
+  source?: string;
   foods: TFoodItemV1[];
 };
 
@@ -71,6 +72,7 @@ export type TReqCreateToiletRecord = {
 export type TReqCreateFoodRecord = {
   date: string;
   time: string;
+  source?: string;
   foods: TFoodItemV1[];
 };
 

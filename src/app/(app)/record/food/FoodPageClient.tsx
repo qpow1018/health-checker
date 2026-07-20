@@ -37,6 +37,7 @@ export default function FoodPageClient() {
   const [defaultRecordDateTime] = useState(getCurrentRecordDateTime);
   const [recordedOn, setRecordedOn] = useState(defaultRecordDateTime.date);
   const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
+  const [source, setSource] = useState("");
   const [foods, setFoods] = useState<TFoodFormItem[]>(() => [createFoodFormItem()]);
   const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
@@ -65,14 +66,15 @@ export default function FoodPageClient() {
 
     setRecordedOn(formatDateString(date));
     setRecordedAt(formatTimeString(date));
+    setSource(typeof record.details.source === "string" ? record.details.source : "");
     setFoods(recordFoods.length > 0 ? recordFoods : [createFoodFormItem()]);
     setIsEditFormReady(true);
   }, [isEditing, record]);
 
   if (isEditing && isLoadingRecord) {
     return (
-      <main className={styles["food-page-client"]} aria-label="음식 기록 수정 화면">
-        <AppHeader title="음식 기록 수정" />
+      <main className={styles["food-page-client"]} aria-label="먹은 것 기록 수정 화면">
+        <AppHeader title="먹은 것 기록 수정" />
         <BoxLoading />
       </main>
     );
@@ -80,8 +82,8 @@ export default function FoodPageClient() {
 
   if (isEditing && (isRecordError || !record || record.category !== "food")) {
     return (
-      <main className={styles["food-page-client"]} aria-label="음식 기록 수정 화면">
-        <AppHeader title="음식 기록 수정" />
+      <main className={styles["food-page-client"]} aria-label="먹은 것 기록 수정 화면">
+        <AppHeader title="먹은 것 기록 수정" />
         <p className={styles["notice-message"]}>수정할 기록을 찾을 수 없습니다.</p>
       </main>
     );
@@ -89,8 +91,8 @@ export default function FoodPageClient() {
 
   if (isEditing && !isEditFormReady) {
     return (
-      <main className={styles["food-page-client"]} aria-label="음식 기록 수정 화면">
-        <AppHeader title="음식 기록 수정" />
+      <main className={styles["food-page-client"]} aria-label="먹은 것 기록 수정 화면">
+        <AppHeader title="먹은 것 기록 수정" />
         <BoxLoading />
       </main>
     );
@@ -121,11 +123,16 @@ export default function FoodPageClient() {
       const foodValues = foods.map(({ name, amount }) => ({ name, amount }));
 
       if (editId) {
+        const normalizedSource = source.trim();
+
         await updateHealthRecord({
           id: editId,
           date: recordedOn,
           time: recordedAt,
-          details: { foods: foodValues.filter((food) => food.name.trim()).map((food) => ({ name: food.name.trim(), ...(food.amount.trim() && { amount: food.amount.trim() }) })) },
+          details: {
+            ...(normalizedSource && { source: normalizedSource }),
+            foods: foodValues.filter((food) => food.name.trim()).map((food) => ({ name: food.name.trim(), ...(food.amount.trim() && { amount: food.amount.trim() }) })),
+          },
         });
         router.back();
         return;
@@ -134,17 +141,18 @@ export default function FoodPageClient() {
       await createFoodRecord({
         date: recordedOn,
         time: recordedAt,
+        source,
         foods: foodValues,
       });
       router.back();
     } catch {
-      setErrorMessage(isEditing ? "음식 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "음식 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      setErrorMessage(isEditing ? "먹은 것 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
   return (
-    <main className={styles["food-page-client"]} aria-label={isEditing ? "음식 기록 수정 화면" : "음식 기록 화면"}>
-      <AppHeader title={isEditing ? "음식 기록 수정" : "먹은 음식"} />
+    <main className={styles["food-page-client"]} aria-label={isEditing ? "먹은 것 기록 수정 화면" : "먹은 것 기록 화면"}>
+      <AppHeader title={isEditing ? "먹은 것 기록 수정" : "먹은 것 기록"} />
 
       <div className={styles["food-page-content"]}>
         <form
@@ -160,17 +168,25 @@ export default function FoodPageClient() {
           <FormRow label="시간" htmlFor="food-recorded-at">
             <TimePicker id="food-recorded-at" onChange={setRecordedAt} value={recordedAt} />
           </FormRow>
-          <FormRow label="음식">
+          <FormRow label="가게·브랜드 (선택)" htmlFor="food-source">
+            <TextInput
+              id="food-source"
+              onChange={setSource}
+              placeholder="예: 아딸, 맥도날드"
+              value={source}
+            />
+          </FormRow>
+          <FormRow label="먹은 것">
             <div className={styles["food-items"]}>
               {foods.map((food) => (
                 <div className={styles["food-item"]} key={food.id}>
                   <label className={styles["sr-only"]} htmlFor={`food-name-${food.id}`}>
-                    음식 이름
+                    먹은 것 이름
                   </label>
                   <TextInput
                     id={`food-name-${food.id}`}
                     onChange={(value) => handleChangeFood(food.id, "name", value)}
-                    placeholder="음식 이름"
+                    placeholder="음식, 음료, 영양제"
                     value={food.name}
                   />
                   <label className={styles["sr-only"]} htmlFor={`food-amount-${food.id}`}>
@@ -184,10 +200,10 @@ export default function FoodPageClient() {
                   />
                   {foods.length > 1 && (
                     <button
-                      aria-label="음식 삭제"
+                      aria-label="먹은 것 삭제"
                       className={styles["remove-food-button"]}
                       onClick={() => handleRemoveFood(food.id)}
-                      title="음식 삭제"
+                      title="먹은 것 삭제"
                       type="button"
                     >
                       <MdClose aria-hidden="true" />
@@ -196,7 +212,7 @@ export default function FoodPageClient() {
                 </div>
               ))}
               <Button color="gray" fill="outline" onClick={handleAddFood} size="medium" type="button">
-                음식 추가
+                먹은 것 추가
               </Button>
             </div>
           </FormRow>

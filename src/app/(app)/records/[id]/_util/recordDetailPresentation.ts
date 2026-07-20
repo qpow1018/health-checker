@@ -12,6 +12,7 @@ export function getRecordDetailItems(record: THealthRecordRow) {
   }
 
   if (record.category === "food" && Array.isArray(record.details.foods)) {
+    const source = typeof record.details.source === "string" && record.details.source.trim();
     const foods = record.details.foods.flatMap((food) => {
       if (!isRecord(food) || typeof food.name !== "string" || !food.name.trim()) {
         return [];
@@ -21,7 +22,13 @@ export function getRecordDetailItems(record: THealthRecordRow) {
       return [`${food.name.trim()}${amount ? ` · ${amount}` : ""}`];
     });
 
-    return foods.length > 0 ? [{ label: "음식", value: foods.join("\n") }] : [];
+    const items = foods.length > 0 ? [{ label: "먹은 것", value: foods.join("\n") }] : [];
+
+    if (source) {
+      items.unshift({ label: "가게·브랜드", value: source });
+    }
+
+    return items;
   }
 
   if (record.category === "exercise" && Array.isArray(record.details.exercises)) {

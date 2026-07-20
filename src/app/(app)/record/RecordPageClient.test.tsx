@@ -42,7 +42,7 @@ describe("RecordPageClient", () => {
     render(<QueryProvider><RecordPageClient /></QueryProvider>);
 
     await user.click(screen.getByRole("button", { name: "기상 시간" }));
-    await user.click(screen.getByRole("button", { name: "먹은 음식" }));
+    await user.click(screen.getByRole("button", { name: "먹은 것" }));
     await user.click(screen.getByRole("button", { name: "화장실" }));
     await user.click(screen.getByRole("button", { name: "운동" }));
     await user.click(screen.getByRole("button", { name: "컨디션" }));
@@ -76,7 +76,7 @@ describe("RecordPageClient", () => {
     expect(actionSection).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "기상 시간" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "잠든 시간" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "먹은 음식" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "먹은 것" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "화장실" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "운동" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "컨디션" })).toBeInTheDocument();
