@@ -15,7 +15,6 @@ import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
 import DatePicker from "@/components/common/form/DatePicker";
-import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import TimePicker from "@/components/common/form/TimePicker";
@@ -45,7 +44,6 @@ export default function ExercisePageClient() {
   const [exercises, setExercises] = useState<TExerciseFormItem[]>(() => [
     createExerciseFormItem(),
   ]);
-  const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const { mutateAsync: createExerciseRecord, isPending: isSaving } =
     useCreateExerciseRecord();
@@ -158,8 +156,6 @@ export default function ExercisePageClient() {
       return;
     }
 
-    setErrorMessage("");
-
     try {
       const exerciseValues = exercises.map(({ name, amount }) => ({ name, amount }));
 
@@ -190,7 +186,7 @@ export default function ExercisePageClient() {
       toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
-      setErrorMessage(
+      toast.error(
         isEditing
           ? "운동 기록을 수정하지 못했습니다. 다시 시도해 주세요."
           : "운동 기록을 저장하지 못했습니다. 다시 시도해 주세요.",
@@ -294,7 +290,6 @@ export default function ExercisePageClient() {
           >
             {isEditing ? "수정 완료" : "저장"}
           </Button>
-          {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
       </div>
 

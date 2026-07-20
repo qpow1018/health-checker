@@ -19,6 +19,7 @@ const foodRecommendationMocks = vi.hoisted(() => ({
   listFoodRecommendations: vi.fn(),
 }));
 const toastMocks = vi.hoisted(() => ({
+  error: vi.fn(),
   success: vi.fn(),
 }));
 
@@ -42,6 +43,7 @@ vi.mock("@/api/foodRecommendations", () => ({
 
 vi.mock("@/utils/toast", () => ({
   default: {
+    error: toastMocks.error,
     success: toastMocks.success,
   },
 }));
@@ -167,7 +169,7 @@ describe("FoodPageClient", () => {
     expect(routerMocks.back).toHaveBeenCalled();
   });
 
-  test("shows an error when saving fails", async () => {
+  test("shows an error toast when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createFoodRecord.mockRejectedValue(new Error("save failed"));
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
@@ -176,9 +178,14 @@ describe("FoodPageClient", () => {
     await user.type(screen.getByLabelText("먹은 것 이름"), "커피");
     await user.click(screen.getByRole("button", { name: "저장" }));
 
+    await waitFor(() => {
+      expect(toastMocks.error).toHaveBeenCalledWith(
+        "먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요.",
+      );
+    });
     expect(
-      await screen.findByText("먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
-    ).toBeInTheDocument();
+      screen.queryByText("먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
+    ).not.toBeInTheDocument();
   });
 
   test("keeps the form hidden while an existing record is loading", () => {

@@ -133,19 +133,4 @@
       outline-offset: -3px;
     }
   }
-
-  .error-message {
-    position: fixed;
-    z-index: calc($z-modal + 1);
-    top: max(20px, env(safe-area-inset-top));
-    left: 50%;
-    width: min(calc(100% - 32px), 360px);
-    margin: 0;
-    transform: translateX(-50%);
-    border-radius: $radius;
-    padding: 12px;
-    background: $danger-soft;
-    color: $danger;
-    font-size: 14px;
-  }
 }

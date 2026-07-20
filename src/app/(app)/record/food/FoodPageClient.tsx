@@ -12,7 +12,6 @@ import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigat
 import Button from "@/components/common/button/Button";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 import DatePicker from "@/components/common/form/DatePicker";
-import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import TextInput from "@/components/common/form/TextInput";
 import TimePicker from "@/components/common/form/TimePicker";
@@ -44,7 +43,6 @@ export default function FoodPageClient() {
   const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
   const [source, setSource] = useState("");
   const [foods, setFoods] = useState<TFoodFormItem[]>(() => [createFoodFormItem()]);
-  const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const [pendingRecommendation, setPendingRecommendation] =
     useState<TFoodRecommendation | null>(null);
@@ -154,8 +152,6 @@ export default function FoodPageClient() {
       return;
     }
 
-    setErrorMessage("");
-
     try {
       const foodValues = foods.map(({ name, amount }) => ({ name, amount }));
 
@@ -185,7 +181,7 @@ export default function FoodPageClient() {
       toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
-      setErrorMessage(isEditing ? "먹은 것 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      toast.error(isEditing ? "먹은 것 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "먹은 것 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
@@ -272,7 +268,6 @@ export default function FoodPageClient() {
           >
             {isEditing ? "수정 완료" : "저장"}
           </Button>
-          {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
       </div>
 

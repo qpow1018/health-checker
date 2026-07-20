@@ -6,22 +6,19 @@ import Link from "next/link";
 import { useAuthSession } from "@/components/auth/AuthGate";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
+import toast from "@/utils/toast";
 
 import { MdChevronRight } from "react-icons/md";
 
 import styles from "./settingsPageClient.module.scss";
-
-const SIGN_OUT_ERROR_MESSAGE = "로그아웃하지 못했습니다. 다시 시도해 주세요.";
 
 export function SettingsPageClient() {
   const { email, signOut } = useAuthSession();
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [signOutError, setSignOutError] = useState("");
 
   function handleOpenLogoutModal() {
-    setSignOutError("");
     setIsLogoutModalOpen(true);
   }
 
@@ -31,7 +28,6 @@ export function SettingsPageClient() {
     }
 
     setIsLogoutModalOpen(false);
-    setSignOutError("");
   }
 
   async function handleConfirmLogout() {
@@ -40,12 +36,11 @@ export function SettingsPageClient() {
     }
 
     setIsSigningOut(true);
-    setSignOutError("");
 
     try {
       await signOut();
     } catch {
-      setSignOutError(SIGN_OUT_ERROR_MESSAGE);
+      toast.error("로그아웃하지 못했습니다. 다시 시도해 주세요.");
       setIsSigningOut(false);
     }
   }
@@ -112,12 +107,6 @@ export function SettingsPageClient() {
       </div>
 
       <BottomNavigation />
-
-      {signOutError ? (
-        <p className={styles["error-message"]} role="status">
-          {signOutError}
-        </p>
-      ) : null}
 
       <ConfirmModal
         isOpen={isLogoutModalOpen}

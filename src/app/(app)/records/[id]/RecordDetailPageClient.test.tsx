@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -17,6 +17,7 @@ const healthRecordMocks = vi.hoisted(() => ({
   getHealthRecord: vi.fn(),
 }));
 const toastMocks = vi.hoisted(() => ({
+  error: vi.fn(),
   success: vi.fn(),
 }));
 
@@ -32,6 +33,7 @@ vi.mock("@/api/healthRecords", () => ({
 
 vi.mock("@/utils/toast", () => ({
   default: {
+    error: toastMocks.error,
     success: toastMocks.success,
   },
 }));
@@ -104,5 +106,23 @@ describe("RecordDetailPageClient", () => {
     expect(navigationMocks.replace).toHaveBeenCalledWith(
       "/records?month=2026-06&category=food",
     );
+  });
+
+  test("keeps the confirmation open and shows a toast when deletion fails", async () => {
+    const user = userEvent.setup();
+    healthRecordMocks.deleteHealthRecord.mockRejectedValueOnce(new Error("network"));
+    render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
+
+    await user.click(await screen.findByRole("button", { name: "삭제" }));
+    const dialog = screen.getByRole("dialog", { name: "이 기록을 삭제할까요?" });
+    await user.click(within(dialog).getByRole("button", { name: "삭제" }));
+
+    await waitFor(() => {
+      expect(toastMocks.error).toHaveBeenCalledWith(
+        "기록을 삭제하지 못했습니다. 다시 시도해 주세요.",
+      );
+    });
+    expect(dialog).toBeInTheDocument();
+    expect(navigationMocks.replace).not.toHaveBeenCalled();
   });
 });

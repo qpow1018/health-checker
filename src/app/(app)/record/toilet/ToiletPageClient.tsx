@@ -18,7 +18,6 @@ import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigat
 import Button from "@/components/common/button/Button";
 import ButtonGroup from "@/components/common/buttonGroup/ButtonGroup";
 import DatePicker from "@/components/common/form/DatePicker";
-import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import Textarea from "@/components/common/form/Textarea";
 import TimePicker from "@/components/common/form/TimePicker";
@@ -62,7 +61,6 @@ export default function ToiletPageClient() {
   const [wokeFromSleep, setWokeFromSleep] = useState<"yes" | "no">("no");
   const [stoolConsistency, setStoolConsistency] = useState<TToiletStoolConsistency>("loose");
   const [note, setNote] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const { mutateAsync: createToiletRecord, isPending: isSaving } = useCreateToiletRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
@@ -117,8 +115,6 @@ export default function ToiletPageClient() {
       return;
     }
 
-    setErrorMessage("");
-
     try {
       const details = createToiletDetails({
         type,
@@ -143,7 +139,7 @@ export default function ToiletPageClient() {
       toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
-      setErrorMessage(isEditing ? "화장실 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "화장실 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      toast.error(isEditing ? "화장실 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "화장실 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
@@ -218,7 +214,6 @@ export default function ToiletPageClient() {
           >
             {isEditing ? "수정 완료" : "저장"}
           </Button>
-          {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
       </div>
 

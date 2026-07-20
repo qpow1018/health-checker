@@ -11,7 +11,6 @@ import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
 import DatePicker from "@/components/common/form/DatePicker";
-import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import Textarea from "@/components/common/form/Textarea";
 import TimePicker from "@/components/common/form/TimePicker";
@@ -29,7 +28,6 @@ export default function ConditionPageClient() {
   const [recordedOn, setRecordedOn] = useState(defaultRecordDateTime.date);
   const [recordedAt, setRecordedAt] = useState(defaultRecordDateTime.time);
   const [note, setNote] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const { mutateAsync: createConditionRecord, isPending: isSaving } = useCreateConditionRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
@@ -77,8 +75,6 @@ export default function ConditionPageClient() {
       return;
     }
 
-    setErrorMessage("");
-
     try {
       const variables = {
         date: recordedOn,
@@ -97,7 +93,7 @@ export default function ConditionPageClient() {
       toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
-      setErrorMessage(isEditing ? "컨디션 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
+      toast.error(isEditing ? "컨디션 기록을 수정하지 못했습니다. 다시 시도해 주세요." : "컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
@@ -138,7 +134,6 @@ export default function ConditionPageClient() {
           >
             {isEditing ? "수정 완료" : "저장"}
           </Button>
-          {errorMessage && <FormMessage type="error">{errorMessage}</FormMessage>}
         </form>
       </div>
 

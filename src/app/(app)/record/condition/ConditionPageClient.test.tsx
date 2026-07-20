@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -12,6 +12,7 @@ const healthRecordMocks = vi.hoisted(() => ({
   updateHealthRecord: vi.fn(),
 }));
 const toastMocks = vi.hoisted(() => ({
+  error: vi.fn(),
   success: vi.fn(),
 }));
 
@@ -30,6 +31,7 @@ vi.mock("@/api/healthRecords", () => ({
 
 vi.mock("@/utils/toast", () => ({
   default: {
+    error: toastMocks.error,
     success: toastMocks.success,
   },
 }));
@@ -66,7 +68,7 @@ describe("ConditionPageClient", () => {
     expect(back).toHaveBeenCalled();
   });
 
-  test("shows an error when saving fails", async () => {
+  test("shows an error toast when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createConditionRecord.mockRejectedValue(new Error("save failed"));
     render(<QueryProvider><ConditionPageClient /></QueryProvider>);
@@ -74,8 +76,13 @@ describe("ConditionPageClient", () => {
     await user.type(screen.getByLabelText("불편했던 점"), "두통");
     await user.click(screen.getByRole("button", { name: "저장" }));
 
+    await waitFor(() => {
+      expect(toastMocks.error).toHaveBeenCalledWith(
+        "컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요.",
+      );
+    });
     expect(
-      await screen.findByText("컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
-    ).toBeInTheDocument();
+      screen.queryByText("컨디션 기록을 저장하지 못했습니다. 다시 시도해 주세요."),
+    ).not.toBeInTheDocument();
   });
 });

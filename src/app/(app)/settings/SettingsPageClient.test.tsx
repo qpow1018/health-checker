@@ -7,6 +7,9 @@ import { SettingsPageClient } from "./SettingsPageClient";
 const authSessionMocks = vi.hoisted(() => ({
   signOut: vi.fn(),
 }));
+const toastMocks = vi.hoisted(() => ({
+  error: vi.fn(),
+}));
 
 vi.mock("@/components/auth/AuthGate", () => ({
   useAuthSession: () => ({
@@ -17,6 +20,12 @@ vi.mock("@/components/auth/AuthGate", () => ({
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/settings",
+}));
+
+vi.mock("@/utils/toast", () => ({
+  default: {
+    error: toastMocks.error,
+  },
 }));
 
 function createDeferred() {
@@ -103,19 +112,16 @@ describe("SettingsPageClient", () => {
     const dialog = screen.getByRole("dialog", { name: "로그아웃" });
     await user.click(within(dialog).getByRole("button", { name: "로그아웃" }));
 
-    expect(await screen.findByRole("status")).toHaveTextContent(
-      "로그아웃하지 못했습니다. 다시 시도해 주세요.",
-    );
+    await waitFor(() => {
+      expect(toastMocks.error).toHaveBeenCalledWith(
+        "로그아웃하지 못했습니다. 다시 시도해 주세요.",
+      );
+    });
     expect(screen.getByRole("dialog", { name: "로그아웃" })).toBeInTheDocument();
 
     authSessionMocks.signOut.mockResolvedValueOnce(undefined);
     await user.click(within(dialog).getByRole("button", { name: "로그아웃" }));
 
     expect(authSessionMocks.signOut).toHaveBeenCalledTimes(2);
-    await waitFor(() => {
-      expect(
-        screen.queryByText("로그아웃하지 못했습니다. 다시 시도해 주세요."),
-      ).not.toBeInTheDocument();
-    });
   });
 });

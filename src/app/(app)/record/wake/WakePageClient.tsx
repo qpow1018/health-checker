@@ -11,7 +11,6 @@ import AppHeader from "@/components/common/appHeader/AppHeader";
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
 import DatePicker from "@/components/common/form/DatePicker";
-import FormMessage from "@/components/common/form/FormMessage";
 import FormRow from "@/components/common/form/FormRow";
 import TimePicker from "@/components/common/form/TimePicker";
 import BoxLoading from "@/components/common/loading/BoxLoading";
@@ -27,7 +26,6 @@ export default function WakePageClient() {
   const [defaultRecordDateTime] = useState(getCurrentRecordDateTime);
   const [wokeOn, setWokeOn] = useState(defaultRecordDateTime.date);
   const [wokeAt, setWokeAt] = useState(defaultRecordDateTime.time);
-  const [errorMessage, setErrorMessage] = useState("");
   const [isEditFormReady, setIsEditFormReady] = useState(!isEditing);
   const { mutateAsync: createWakeRecord, isPending: isSaving } = useCreateWakeRecord();
   const { mutateAsync: updateHealthRecord, isPending: isUpdating } = useUpdateHealthRecord();
@@ -74,8 +72,6 @@ export default function WakePageClient() {
       return;
     }
 
-    setErrorMessage("");
-
     try {
       if (editId) {
         await updateHealthRecord({ id: editId, date: wokeOn, time: wokeAt, details: { event: "woke" } });
@@ -88,7 +84,7 @@ export default function WakePageClient() {
       toast.success("기록을 저장했습니다.");
       router.back();
     } catch {
-      setErrorMessage(isEditing ? "기상 시간을 수정하지 못했습니다. 다시 시도해 주세요." : "기상 시간을 저장하지 못했습니다. 다시 시도해 주세요.");
+      toast.error(isEditing ? "기상 시간을 수정하지 못했습니다. 다시 시도해 주세요." : "기상 시간을 저장하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
@@ -121,9 +117,6 @@ export default function WakePageClient() {
           >
             {isEditing ? "수정 완료" : "저장"}
           </Button>
-          {errorMessage && (
-            <FormMessage type="error">{errorMessage}</FormMessage>
-          )}
         </form>
       </div>
 

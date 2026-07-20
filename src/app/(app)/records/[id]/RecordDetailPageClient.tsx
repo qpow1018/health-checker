@@ -22,13 +22,11 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
   const { data: record, isLoading, isError } = useHealthRecord(recordId);
   const { mutateAsync: deleteHealthRecord, isPending: isDeleting } = useDeleteHealthRecord();
 
   async function handleDelete() {
     try {
-      setDeleteErrorMessage("");
       await deleteHealthRecord(recordId);
       const monthKey = searchParams.get("month");
       const category = searchParams.get("category");
@@ -46,8 +44,7 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
       toast.success("기록을 삭제했습니다.");
       router.replace(query ? `/records?${query}` : "/records");
     } catch {
-      setIsDeleteModalOpen(false);
-      setDeleteErrorMessage("기록을 삭제하지 못했습니다. 다시 시도해 주세요.");
+      toast.error("기록을 삭제하지 못했습니다. 다시 시도해 주세요.");
     }
   }
 
@@ -109,7 +106,6 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
             </div>
           ))}
         </section>
-        {deleteErrorMessage && <p className={styles["error-message"]}>{deleteErrorMessage}</p>}
       </div>
 
       <div className={styles["fixed-actions"]}>

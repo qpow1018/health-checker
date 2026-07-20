@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -12,6 +12,7 @@ const healthRecordMocks = vi.hoisted(() => ({
   updateHealthRecord: vi.fn(),
 }));
 const toastMocks = vi.hoisted(() => ({
+  error: vi.fn(),
   success: vi.fn(),
 }));
 
@@ -30,6 +31,7 @@ vi.mock("@/api/healthRecords", () => ({
 
 vi.mock("@/utils/toast", () => ({
   default: {
+    error: toastMocks.error,
     success: toastMocks.success,
   },
 }));
@@ -65,7 +67,7 @@ describe("WakePageClient", () => {
     expect(back).toHaveBeenCalled();
   });
 
-  test("shows an error when saving fails", async () => {
+  test("shows an error toast when saving fails", async () => {
     const user = userEvent.setup();
     healthRecordMocks.createWakeRecord.mockRejectedValue(new Error("save failed"));
     render(<QueryProvider><WakePageClient /></QueryProvider>);
@@ -73,9 +75,14 @@ describe("WakePageClient", () => {
     await selectTime(user);
     await user.click(screen.getByRole("button", { name: "저장" }));
 
+    await waitFor(() => {
+      expect(toastMocks.error).toHaveBeenCalledWith(
+        "기상 시간을 저장하지 못했습니다. 다시 시도해 주세요.",
+      );
+    });
     expect(
-      await screen.findByText("기상 시간을 저장하지 못했습니다. 다시 시도해 주세요."),
-    ).toBeInTheDocument();
+      screen.queryByText("기상 시간을 저장하지 못했습니다. 다시 시도해 주세요."),
+    ).not.toBeInTheDocument();
   });
 
   test("moves back to the record page", async () => {
