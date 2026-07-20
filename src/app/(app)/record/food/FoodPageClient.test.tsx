@@ -62,7 +62,7 @@ describe("FoodPageClient", () => {
     expect(screen.getByLabelText("날짜")).toBeInTheDocument();
     expect(screen.getByLabelText("시간")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "기록 찾기" })).toBeInTheDocument();
-    expect(screen.getByLabelText("가게·브랜드 (선택)")).toBeInTheDocument();
+    expect(screen.getByLabelText("가게·브랜드")).toBeInTheDocument();
     expect(screen.getByLabelText("먹은 것 이름")).toBeInTheDocument();
     expect(screen.getByLabelText("양")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "저장" })).toBeDisabled();
@@ -175,7 +175,7 @@ describe("FoodPageClient", () => {
     render(<QueryProvider><FoodPageClient /></QueryProvider>);
 
     await selectTime(user);
-    await user.type(screen.getByLabelText("가게·브랜드 (선택)"), "카페");
+    await user.type(screen.getByLabelText("가게·브랜드"), "카페");
     await user.type(screen.getByLabelText("먹은 것 이름"), "커피");
     await user.type(screen.getByLabelText("양"), "2잔");
     await user.click(screen.getByRole("button", { name: "먹은 것 추가" }));

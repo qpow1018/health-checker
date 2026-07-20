@@ -23,7 +23,7 @@ import BoxLoading from "@/components/common/loading/BoxLoading";
 
 import type { TFoodRecommendation } from "@/api/foodRecommendations/type";
 
-import { MdClose } from "react-icons/md";
+import { MdAdd, MdClose } from "react-icons/md";
 
 import FoodRecommendationPicker from "./_component/FoodRecommendationPicker";
 import styles from "./foodPageClient.module.scss";
@@ -33,8 +33,6 @@ type TFoodFormItem = {
   name: string;
   amount: string;
 };
-
-let nextFoodItemId = 0;
 
 export default function FoodPageClient() {
   const router = useRouter();
@@ -75,12 +73,12 @@ export default function FoodPageClient() {
     }
 
     const date = new Date(record.recorded_at);
-    const recordFoods = record.details.foods.flatMap((food) => {
+    const recordFoods = record.details.foods.flatMap((food, index) => {
       if (!isRecord(food) || typeof food.name !== "string") return [];
 
       return [
         {
-          id: (nextFoodItemId += 1),
+          id: index + 1,
           name: food.name,
           amount: typeof food.amount === "string" ? food.amount : "",
         },
@@ -135,7 +133,10 @@ export default function FoodPageClient() {
   }
 
   function handleAddFood() {
-    setFoods((currentFoods) => [...currentFoods, createFoodFormItem()]);
+    setFoods((currentFoods) => [
+      ...currentFoods,
+      createFoodFormItem(undefined, getNextFoodItemId(currentFoods)),
+    ]);
   }
 
   function handleChangeFood(id: number, key: "name" | "amount", value: string) {
@@ -178,7 +179,11 @@ export default function FoodPageClient() {
 
   function applyRecommendation(recommendation: TFoodRecommendation) {
     setSource(recommendation.source ?? "");
-    setFoods(recommendation.foods.map((food) => createFoodFormItem(food)));
+    setFoods(
+      recommendation.foods.map((food, index) =>
+        createFoodFormItem(food, index + 1),
+      ),
+    );
   }
 
   async function handleSubmit() {
@@ -259,28 +264,40 @@ export default function FoodPageClient() {
             />
           </FormRow>
 
-          <FormRow
-            label="이전 기록 불러오기"
-          >
+          <FormRow label="이전 기록 불러오기">
             <FoodRecommendationPicker
               id="food-recommendation-search"
               onSelect={handleSelectRecommendation}
             />
           </FormRow>
 
-          <FormRow label="가게·브랜드 (선택)" htmlFor="food-source">
+          <FormRow label="가게·브랜드" htmlFor="food-source">
             <TextInput
               id="food-source"
               onChange={setSource}
-              placeholder="예: 아딸, 맥도날드"
+              placeholder="가게·브랜드"
               value={source}
             />
           </FormRow>
 
           <FormRow label="먹은 것">
             <div className={styles["food-items"]}>
-              {foods.map((food) => (
+              {foods.map((food, index) => (
                 <div className={styles["food-item"]} key={food.id}>
+                  <div className={styles["food-action-slot"]}>
+                    {index === foods.length - 1 && (
+                      <button
+                        aria-label="먹은 것 추가"
+                        className={`${styles["food-action-button"]} ${styles["add-food-button"]}`}
+                        onClick={handleAddFood}
+                        title="먹은 것 추가"
+                        type="button"
+                      >
+                        <MdAdd aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
+
                   <label
                     className={styles["sr-only"]}
                     htmlFor={`food-name-${food.id}`}
@@ -292,7 +309,7 @@ export default function FoodPageClient() {
                     onChange={(value) =>
                       handleChangeFood(food.id, "name", value)
                     }
-                    placeholder="음식, 음료, 영양제"
+                    placeholder="먹은 것"
                     value={food.name}
                   />
                   <label
@@ -309,28 +326,21 @@ export default function FoodPageClient() {
                     placeholder="양"
                     value={food.amount}
                   />
-                  {foods.length > 1 && (
-                    <button
-                      aria-label="먹은 것 삭제"
-                      className={styles["remove-food-button"]}
-                      onClick={() => handleRemoveFood(food.id)}
-                      title="먹은 것 삭제"
-                      type="button"
-                    >
-                      <MdClose aria-hidden="true" />
-                    </button>
-                  )}
+                  <div className={styles["food-action-slot"]}>
+                    {foods.length > 1 && (
+                      <button
+                        aria-label="먹은 것 삭제"
+                        className={`${styles["food-action-button"]} ${styles["remove-food-button"]}`}
+                        onClick={() => handleRemoveFood(food.id)}
+                        title="먹은 것 삭제"
+                        type="button"
+                      >
+                        <MdClose aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
-              <Button
-                color="gray"
-                fill="outline"
-                onClick={handleAddFood}
-                size="medium"
-                type="button"
-              >
-                먹은 것 추가
-              </Button>
             </div>
           </FormRow>
 
@@ -368,17 +378,22 @@ export default function FoodPageClient() {
   );
 }
 
-function createFoodFormItem(food?: {
-  name: string;
-  amount?: string;
-}): TFoodFormItem {
-  nextFoodItemId += 1;
-
+function createFoodFormItem(
+  food?: {
+    name: string;
+    amount?: string;
+  },
+  id = 1,
+): TFoodFormItem {
   return {
-    id: nextFoodItemId,
+    id,
     name: food?.name ?? "",
     amount: food?.amount ?? "",
   };
+}
+
+function getNextFoodItemId(foods: TFoodFormItem[]) {
+  return foods.reduce((maxId, food) => Math.max(maxId, food.id), 0) + 1;
 }
 
 function formatTimeString(date: Date) {
