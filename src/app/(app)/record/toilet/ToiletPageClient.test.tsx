@@ -42,6 +42,7 @@ describe("ToiletPageClient", () => {
         pressed: true,
       }),
     ).toBeInTheDocument();
+    expect(within(screen.getByRole("group", { name: "종류" })).getAllByRole("button")).toHaveLength(2);
     expect(
       within(screen.getByRole("group", { name: "급한 정도" })).getByRole("button", {
         name: "보통",

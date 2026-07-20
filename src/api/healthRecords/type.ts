@@ -8,7 +8,7 @@ export type TSleepDetailsV1 = {
   event: TSleepEvent;
 };
 
-export type TToiletType = "urine" | "bowel" | "both";
+export type TToiletType = "urine" | "bowel";
 
 export type TToiletUrgency = "ordinary" | "urgent";
 
@@ -26,11 +26,6 @@ export type TToiletDetailsV1 =
     })
   | (TToiletDetailsBase & {
       type: "bowel";
-      stoolConsistency: TToiletStoolConsistency;
-      note?: string;
-    })
-  | (TToiletDetailsBase & {
-      type: "both";
       stoolConsistency: TToiletStoolConsistency;
       note?: string;
     });

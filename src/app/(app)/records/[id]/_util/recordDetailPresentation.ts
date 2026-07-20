@@ -95,7 +95,6 @@ function getSleepEventValue(value: unknown) {
 function getToiletTypeValue(value: unknown) {
   if (value === "urine") return "소변";
   if (value === "bowel") return "대변";
-  if (value === "both") return "소변·대변";
   return "화장실";
 }
 

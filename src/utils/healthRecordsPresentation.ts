@@ -110,10 +110,6 @@ function getToiletTypeDescription(value: unknown) {
     return "대변";
   }
 
-  if (value === "both") {
-    return "소변·대변";
-  }
-
   return undefined;
 }
 
