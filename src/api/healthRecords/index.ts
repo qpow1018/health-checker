@@ -148,7 +148,9 @@ export async function listHealthRecords({ from, to }: TReqListHealthRecords) {
     .select("*")
     .gte("recorded_at", from)
     .lt("recorded_at", to)
-    .order("recorded_at", { ascending: false });
+    .order("recorded_at", { ascending: false })
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false });
 
   if (error) {
     throw error;

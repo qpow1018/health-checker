@@ -44,9 +44,11 @@ describe("healthRecords API", () => {
     });
   });
 
-  test("lists records within the selected month in reverse chronological order", async () => {
-    const order = vi.fn().mockResolvedValue({ data: [], error: null });
-    const lt = vi.fn().mockReturnValue({ order });
+  test("lists records with deterministic newest-first tie breakers", async () => {
+    const idOrder = vi.fn().mockResolvedValue({ data: [], error: null });
+    const createdAtOrder = vi.fn().mockReturnValue({ order: idOrder });
+    const recordedAtOrder = vi.fn().mockReturnValue({ order: createdAtOrder });
+    const lt = vi.fn().mockReturnValue({ order: recordedAtOrder });
     const gte = vi.fn().mockReturnValue({ lt });
     const select = vi.fn().mockReturnValue({ gte });
 
@@ -60,7 +62,13 @@ describe("healthRecords API", () => {
     expect(supabaseMocks.from).toHaveBeenCalledWith("health_records");
     expect(gte).toHaveBeenCalledWith("recorded_at", "2026-06-30T15:00:00.000Z");
     expect(lt).toHaveBeenCalledWith("recorded_at", "2026-07-31T15:00:00.000Z");
-    expect(order).toHaveBeenCalledWith("recorded_at", { ascending: false });
+    expect(recordedAtOrder).toHaveBeenCalledWith("recorded_at", {
+      ascending: false,
+    });
+    expect(createdAtOrder).toHaveBeenCalledWith("created_at", {
+      ascending: false,
+    });
+    expect(idOrder).toHaveBeenCalledWith("id", { ascending: false });
   });
 
   test("updates the selected record without changing its category", async () => {
