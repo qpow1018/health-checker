@@ -91,9 +91,10 @@ begin
 
   if created_record.category <> first_favorite.category
     or created_record.details <> first_favorite.details
-    or created_record.recorded_at < now() - interval '5 seconds'
+    or abs(extract(epoch from (created_record.recorded_at - now()))) > 180
+    or mod(extract(epoch from created_record.recorded_at)::bigint, 300) <> 0
   then
-    raise exception 'favorite did not create the expected current record';
+    raise exception 'favorite did not create the expected five-minute record';
   end if;
 
   second_favorite := public.create_record_favorite(created_record.id, '점심 커피');

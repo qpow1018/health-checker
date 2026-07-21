@@ -67,6 +67,7 @@ export function AuthGate({ children }: TAuthGateProps) {
         router.replace("/login");
       } catch {
         if (ignore) return;
+        queryClient.clear();
         setSession(null);
         setAuthState("blocked");
         router.replace("/login");

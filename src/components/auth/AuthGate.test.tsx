@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -129,6 +130,30 @@ describe("AuthGate", () => {
       expect(routerMocks.replace).toHaveBeenCalledWith("/login");
     });
     expect(screen.queryByRole("heading", { name: "보호된 화면" })).not.toBeInTheDocument();
+  });
+
+  test("clears cached health data when the access check fails", async () => {
+    const queryClient = new QueryClient();
+    queryClient.setQueryData(["health-records"], [{ id: "private-record" }]);
+    authApiMocks.getCurrentSession.mockResolvedValue({
+      user: {
+        email: "me@example.com",
+      },
+    });
+    authApiMocks.checkAllowedUser.mockRejectedValue(new Error("Access check failed"));
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthGate>
+          <ProtectedChild />
+        </AuthGate>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(routerMocks.replace).toHaveBeenCalledWith("/login");
+    });
+    expect(queryClient.getQueryData(["health-records"])).toBeUndefined();
   });
 
   test("signs out through auth context and returns to login", async () => {

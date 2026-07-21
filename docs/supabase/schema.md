@@ -164,7 +164,7 @@ v1 컬럼:
 - `create_record_favorite()` RPC만 기존 사용자 소유 기록에서 category와 details 사본을 만든다.
 - 즐겨찾기 이름은 1~60자의 공백이 아닌 문자열이다.
 - 사본은 health record v1과 같은 category별 상세값 검증을 통과해야 한다.
-- `create_health_record_from_favorite()` RPC는 즐겨찾기 사본으로 현재 시각의 독립된 건강 기록을 만든다.
+- `create_health_record_from_favorite()` RPC는 즐겨찾기 사본으로 현재 시각을 가장 가까운 5분 단위로 맞춘 독립된 건강 기록을 만든다. 실제 생성 시각은 `created_at`에 유지한다.
 - `reorder_record_favorites()` RPC는 사용자의 전체 즐겨찾기 ID를 검증한 뒤 순서를 한 트랜잭션에서 저장한다.
 - 관리 화면의 수정은 `title`과 `sort_order`로 제한하며 category와 details는 변경하지 않는다.
 
