@@ -3,9 +3,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { useHealthRecords } from "@/queries/healthRecordsQuery";
+import {
+  formatRecordDashboardDate,
+  getRecordDashboardDateRange,
+  getRecordDashboardMonthKey,
+} from "./_util/recordDashboard";
+
 import BottomNavigation from "@/components/common/bottomNavigation/BottomNavigation";
 import Button from "@/components/common/button/Button";
-import { useHealthRecords } from "@/queries/healthRecordsQuery";
+import TodayRecordsDashboard from "./_component/TodayRecordsDashboard";
+import RecordFavoritesSection from "./_component/RecordFavoritesSection";
 
 import {
   MdDirectionsRun,
@@ -14,13 +22,6 @@ import {
   MdSentimentSatisfiedAlt,
   MdWbSunny,
 } from "react-icons/md";
-
-import TodayRecordsDashboard from "./_component/TodayRecordsDashboard";
-import {
-  formatRecordDashboardDate,
-  getRecordDashboardDateRange,
-  getRecordDashboardMonthKey,
-} from "./_util/recordDashboard";
 
 import styles from "./recordPageClient.module.scss";
 
@@ -161,6 +162,8 @@ export default function RecordPageClient() {
           );
         })}
       </section>
+
+      <RecordFavoritesSection />
 
       <BottomNavigation />
     </main>

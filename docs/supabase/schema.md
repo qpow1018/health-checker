@@ -143,6 +143,37 @@ RLS 방향:
 - 모든 정책은 `is_allowed_user()`와 `(select auth.uid()) = user_id`를 함께 확인한다.
 - update 정책은 `USING`과 `WITH CHECK` 모두에서 소유자 조건을 확인한다.
 
+## `record_favorites`
+
+기존 건강 기록의 종류와 상세값을 사용자 이름과 함께 복사해 반복 기록에 사용한다. 원본 `health_records`와 생명주기를 분리하며, 원본 수정·삭제는 즐겨찾기에 영향을 주지 않는다.
+
+v1 컬럼:
+
+- `id uuid primary key default gen_random_uuid()`
+- `user_id uuid not null default auth.uid() references auth.users(id) on delete cascade`
+- `title text not null`
+- `category text not null`
+- `details jsonb not null`
+- `details_version integer not null`
+- `sort_order integer not null default 0`
+- `created_at timestamptz not null default now()`
+- `updated_at timestamptz not null default now()`
+
+저장과 실행 규칙:
+
+- `create_record_favorite()` RPC만 기존 사용자 소유 기록에서 category와 details 사본을 만든다.
+- 즐겨찾기 이름은 1~60자의 공백이 아닌 문자열이다.
+- 사본은 health record v1과 같은 category별 상세값 검증을 통과해야 한다.
+- `create_health_record_from_favorite()` RPC는 즐겨찾기 사본으로 현재 시각의 독립된 건강 기록을 만든다.
+- `reorder_record_favorites()` RPC는 사용자의 전체 즐겨찾기 ID를 검증한 뒤 순서를 한 트랜잭션에서 저장한다.
+- 관리 화면의 수정은 `title`과 `sort_order`로 제한하며 category와 details는 변경하지 않는다.
+
+RLS 방향:
+
+- 허용된 사용자는 자신의 즐겨찾기만 조회·생성·수정·삭제할 수 있다.
+- 모든 정책은 `is_allowed_user()`와 `(select auth.uid()) = user_id`를 함께 확인한다.
+- authenticated 역할에는 테이블 권한과 RPC 실행 권한을 명시적으로 부여한다.
+
 ## `food_recommendations`
 
 먹은 것 기록에서 다시 불러올 수 있는 사용자별 음식 조합을 저장한다. 원본 `health_records`와 생명주기를 분리하며, 추천 삭제는 기존 기록을 변경하지 않는다.

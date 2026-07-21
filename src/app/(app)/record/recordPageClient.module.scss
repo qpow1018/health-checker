@@ -1,6 +1,6 @@
 .record-page-client {
   min-height: 100svh;
-  padding-bottom: $bottom-nav-space;
+  padding-bottom: calc($bottom-nav-space + 24px);
 
   .topbar {
     padding: 20px 20px 18px;

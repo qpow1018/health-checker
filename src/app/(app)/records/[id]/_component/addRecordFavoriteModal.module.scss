@@ -1,0 +1,5 @@
+.favorite-form {
+  display: grid;
+  gap: 20px;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+}

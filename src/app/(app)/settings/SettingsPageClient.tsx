@@ -60,6 +60,28 @@ export function SettingsPageClient() {
           <div className={styles["settings-group"]}>
             <Link
               className={styles["settings-link"]}
+              href="/settings/favorites"
+              aria-labelledby="record-favorites-title"
+              aria-describedby="record-favorites-description"
+            >
+              <span className={styles["setting-copy"]}>
+                <span
+                  className={styles["setting-title"]}
+                  id="record-favorites-title"
+                >
+                  즐겨찾기 관리
+                </span>
+                <span
+                  className={styles["setting-description"]}
+                  id="record-favorites-description"
+                >
+                  이름과 순서를 바꾸고 삭제해요
+                </span>
+              </span>
+              <MdChevronRight aria-hidden="true" />
+            </Link>
+            <Link
+              className={styles["settings-link"]}
               href="/settings/food-recommendations"
               aria-labelledby="food-recommendations-title"
               aria-describedby="food-recommendations-description"

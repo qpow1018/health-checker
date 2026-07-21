@@ -16,6 +16,9 @@ const healthRecordMocks = vi.hoisted(() => ({
   deleteHealthRecord: vi.fn(),
   getHealthRecord: vi.fn(),
 }));
+const recordFavoriteMocks = vi.hoisted(() => ({
+  createRecordFavorite: vi.fn(),
+}));
 const toastMocks = vi.hoisted(() => ({
   error: vi.fn(),
   success: vi.fn(),
@@ -29,6 +32,10 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/api/healthRecords", () => ({
   deleteHealthRecord: healthRecordMocks.deleteHealthRecord,
   getHealthRecord: healthRecordMocks.getHealthRecord,
+}));
+
+vi.mock("@/api/recordFavorites", () => ({
+  createRecordFavorite: recordFavoriteMocks.createRecordFavorite,
 }));
 
 vi.mock("@/utils/toast", () => ({
@@ -52,6 +59,34 @@ describe("RecordDetailPageClient", () => {
       created_at: "2026-06-15T08:30:00.000Z",
       updated_at: "2026-06-15T08:30:00.000Z",
     });
+    recordFavoriteMocks.createRecordFavorite.mockResolvedValue({ id: "favorite-1" });
+  });
+
+  test("adds the current record to favorites with a title", async () => {
+    const user = userEvent.setup();
+    render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
+
+    await user.click(await screen.findByRole("button", { name: "즐겨찾기 추가" }));
+    const dialog = screen.getByRole("dialog", { name: "즐겨찾기에 추가" });
+    await user.type(within(dialog).getByRole("textbox", { name: "즐겨찾기 이름" }), "아침 커피");
+    await user.click(within(dialog).getByRole("button", { name: "추가" }));
+
+    expect(recordFavoriteMocks.createRecordFavorite).toHaveBeenCalledWith({
+      recordId: "record-4",
+      title: "아침 커피",
+    });
+    expect(toastMocks.success).toHaveBeenCalledWith("즐겨찾기에 추가했습니다.");
+    expect(screen.queryByRole("dialog", { name: "즐겨찾기에 추가" })).not.toBeInTheDocument();
+  });
+
+  test("orders the record actions as delete, edit, and add favorite", async () => {
+    render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
+
+    const actions = within(await screen.findByRole("group", { name: "기록 작업" }))
+      .getAllByRole("button");
+
+    expect(actions.map((button) => button.getAttribute("aria-label")))
+      .toEqual(["기록 삭제", "기록 수정", "즐겨찾기 추가"]);
   });
 
   test("keeps the selected month when opening the edit page", async () => {
@@ -59,7 +94,7 @@ describe("RecordDetailPageClient", () => {
     render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
 
     expect(await screen.findByRole("heading", { name: "기록 상세" })).toBeInTheDocument();
-    await user.click(await screen.findByRole("button", { name: "수정" }));
+    await user.click(await screen.findByRole("button", { name: "기록 수정" }));
 
     expect(navigationMocks.push).toHaveBeenCalledWith(
       "/record/food?edit=record-4&month=2026-06",
@@ -71,7 +106,7 @@ describe("RecordDetailPageClient", () => {
     healthRecordMocks.deleteHealthRecord.mockResolvedValue(undefined);
     render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
 
-    await user.click(await screen.findByRole("button", { name: "삭제" }));
+    await user.click(await screen.findByRole("button", { name: "기록 삭제" }));
     await user.click(
       within(screen.getByRole("dialog", { name: "이 기록을 삭제할까요?" })).getByRole(
         "button",
@@ -90,12 +125,12 @@ describe("RecordDetailPageClient", () => {
     healthRecordMocks.deleteHealthRecord.mockResolvedValue(undefined);
     render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
 
-    await user.click(await screen.findByRole("button", { name: "수정" }));
+    await user.click(await screen.findByRole("button", { name: "기록 수정" }));
     expect(navigationMocks.push).toHaveBeenCalledWith(
       "/record/food?edit=record-4&month=2026-06&category=food",
     );
 
-    await user.click(screen.getByRole("button", { name: "삭제" }));
+    await user.click(screen.getByRole("button", { name: "기록 삭제" }));
     await user.click(
       within(screen.getByRole("dialog", { name: "이 기록을 삭제할까요?" })).getByRole(
         "button",
@@ -113,7 +148,7 @@ describe("RecordDetailPageClient", () => {
     healthRecordMocks.deleteHealthRecord.mockRejectedValueOnce(new Error("network"));
     render(<QueryProvider><RecordDetailPageClient recordId="record-4" /></QueryProvider>);
 
-    await user.click(await screen.findByRole("button", { name: "삭제" }));
+    await user.click(await screen.findByRole("button", { name: "기록 삭제" }));
     const dialog = screen.getByRole("dialog", { name: "이 기록을 삭제할까요?" });
     await user.click(within(dialog).getByRole("button", { name: "삭제" }));
 

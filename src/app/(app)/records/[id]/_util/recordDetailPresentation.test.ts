@@ -2,7 +2,11 @@ import { describe, expect, test } from "vitest";
 
 import type { THealthRecordRow } from "@/api/healthRecords/type";
 
-import { getRecordDetailItems, getRecordEditPath } from "./recordDetailPresentation";
+import {
+  getRecordDetailItems,
+  getRecordEditHref,
+  getRecordEditPath,
+} from "./recordDetailPresentation";
 
 function createRecord(overrides: Partial<THealthRecordRow>): THealthRecordRow {
   return {
@@ -88,5 +92,16 @@ describe("recordDetailPresentation", () => {
       { label: "기록 종류", value: "취침" },
     ]);
     expect(getRecordEditPath(sleptRecord)).toBeUndefined();
+  });
+
+  test("builds the edit URL with a validated return context", () => {
+    const record = createRecord({ category: "food" });
+
+    expect(
+      getRecordEditHref(record, { category: "food", month: "2026-06" }),
+    ).toBe("/record/food?edit=record-1&month=2026-06&category=food");
+    expect(
+      getRecordEditHref(record, { category: "all", month: "invalid" }),
+    ).toBe("/record/food?edit=record-1&month=2026-07");
   });
 });

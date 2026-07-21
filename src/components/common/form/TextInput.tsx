@@ -26,6 +26,7 @@ export default function TextInput(props: {
   inputMode?: TTextInputMode;
   placeholder?: string;
   autoComplete?: string;
+  maxLength?: number;
   isDisabled?: boolean;
   className?: string;
 }) {
@@ -37,6 +38,7 @@ export default function TextInput(props: {
     inputMode,
     placeholder,
     autoComplete,
+    maxLength,
     isDisabled = false,
     className,
   } = props;
@@ -52,6 +54,7 @@ export default function TextInput(props: {
         disabled={isDisabled}
         id={id}
         inputMode={inputMode}
+        maxLength={maxLength}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         type={type}

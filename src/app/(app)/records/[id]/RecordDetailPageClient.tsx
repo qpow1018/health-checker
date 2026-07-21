@@ -2,28 +2,45 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import type { ReactNode } from "react";
+import {
+  MdDeleteOutline,
+  MdEdit,
+  MdOutlineBookmarkAdd,
+} from "react-icons/md";
 
-import { useDeleteHealthRecord, useHealthRecord } from "@/queries/healthRecordsQuery";
+import {
+  useDeleteHealthRecord,
+  useHealthRecord,
+} from "@/queries/healthRecordsQuery";
 
 import AppHeader from "@/components/common/appHeader/AppHeader";
-import Button from "@/components/common/button/Button";
 import ConfirmModal from "@/components/common/confirmModal/ConfirmModal";
 import BoxLoading from "@/components/common/loading/BoxLoading";
 
-import { getRecordMonthKey, isRecordMonthKey } from "@/app/(app)/records/_util/recordsMonth";
 import { isRecordCategoryFilter } from "@/app/(app)/records/_util/recordCategoryFilter";
-import { formatRecordTime } from "@/utils/healthRecordsPresentation";
+import { isRecordMonthKey } from "@/app/(app)/records/_util/recordsMonth";
 import toast from "@/utils/toast";
-import { getRecordDetailItems, getRecordEditPath } from "./_util/recordDetailPresentation";
+import AddRecordFavoriteModal from "./_component/AddRecordFavoriteModal";
+import RecordDetailContent from "./_component/RecordDetailContent";
+import { getRecordEditHref } from "./_util/recordDetailPresentation";
 
 import styles from "./recordDetailPageClient.module.scss";
 
-export default function RecordDetailPageClient({ recordId }: { recordId: string }) {
+export default function RecordDetailPageClient({
+  recordId,
+}: {
+  recordId: string;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isFavoriteModalOpen, setIsFavoriteModalOpen] = useState(false);
+
   const { data: record, isLoading, isError } = useHealthRecord(recordId);
-  const { mutateAsync: deleteHealthRecord, isPending: isDeleting } = useDeleteHealthRecord();
+  const { mutateAsync: deleteHealthRecord, isPending: isDeleting } =
+    useDeleteHealthRecord();
 
   async function handleDelete() {
     try {
@@ -50,88 +67,95 @@ export default function RecordDetailPageClient({ recordId }: { recordId: string 
 
   if (isLoading) {
     return (
-      <main className={styles["record-detail-page-client"]} aria-label="기록 상세 화면">
-        <AppHeader title="기록 상세" />
+      <RecordDetailPageLayout>
         <BoxLoading />
-      </main>
+      </RecordDetailPageLayout>
     );
   }
 
   if (!record || isError) {
     return (
-      <main className={styles["record-detail-page-client"]} aria-label="기록 상세 화면">
-        <AppHeader title="기록 상세" />
+      <RecordDetailPageLayout>
         <p className={styles["notice-message"]}>기록을 찾을 수 없습니다.</p>
-      </main>
+      </RecordDetailPageLayout>
     );
   }
 
-  const detailItems = getRecordDetailItems(record);
-  const editPath = getRecordEditPath(record);
-  const recordedAt = new Date(record.recorded_at);
-  const requestedMonthKey = searchParams.get("month");
-  const returnMonthKey = isRecordMonthKey(requestedMonthKey)
-    ? requestedMonthKey
-    : getRecordMonthKey(recordedAt);
-  const requestedCategory = searchParams.get("category");
-  const returnCategory =
-    isRecordCategoryFilter(requestedCategory) && requestedCategory !== "all"
-      ? requestedCategory
-      : undefined;
-  const editHref = editPath
-    ? `${editPath}&month=${returnMonthKey}${returnCategory ? `&category=${returnCategory}` : ""}`
-    : undefined;
-  const dateLabel = new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "short",
-  }).format(recordedAt);
+  const editHref = getRecordEditHref(record, {
+    category: searchParams.get("category"),
+    month: searchParams.get("month"),
+  });
 
   return (
-    <main className={styles["record-detail-page-client"]} aria-label="기록 상세 화면">
-      <AppHeader title="기록 상세" />
+    <RecordDetailPageLayout>
+      <RecordDetailContent record={record} />
 
-      <div className={styles["record-detail-content"]}>
-        <section className={styles["record-summary"]} aria-label="기록 일시">
-          <time dateTime={record.recorded_at}>{dateLabel}</time>
-          <strong>{formatRecordTime(record.recorded_at)}</strong>
-        </section>
-
-        <section className={styles["detail-list"]} aria-label="기록 내용">
-          {detailItems.map((item) => (
-            <div className={styles["detail-item"]} key={item.label}>
-              <dt>{item.label}</dt>
-              <dd>{item.value}</dd>
-            </div>
-          ))}
-        </section>
-      </div>
-
-      <div className={styles["fixed-actions"]}>
-        <Button
-          color="gray"
-          fill="outline"
-          isDisabled={!editHref}
-          isFullWidth
-          onClick={() => editHref && router.push(editHref)}
-          size="large"
+      <div
+        aria-label="기록 작업"
+        className={styles["fixed-actions"]}
+        role="group"
+      >
+        <button
+          aria-label="기록 삭제"
+          className={`${styles["action-icon-button"]} ${styles["delete-action"]}`}
+          onClick={() => setIsDeleteModalOpen(true)}
+          type="button"
         >
-          수정
-        </Button>
-        <Button color="danger" isFullWidth onClick={() => setIsDeleteModalOpen(true)} size="large">
-          삭제
-        </Button>
+          <MdDeleteOutline aria-hidden="true" />
+        </button>
+        <button
+          aria-label="기록 수정"
+          className={`${styles["action-icon-button"]} ${styles["edit-action"]}`}
+          disabled={!editHref}
+          onClick={() => editHref && router.push(editHref)}
+          type="button"
+        >
+          <MdEdit aria-hidden="true" />
+        </button>
+        <button
+          aria-label="즐겨찾기 추가"
+          className={`${styles["action-icon-button"]} ${styles["favorite-action"]}`}
+          onClick={() => setIsFavoriteModalOpen(true)}
+          type="button"
+        >
+          <MdOutlineBookmarkAdd aria-hidden="true" />
+        </button>
       </div>
+
+      <AddRecordFavoriteModal
+        isOpen={isFavoriteModalOpen}
+        onClose={() => setIsFavoriteModalOpen(false)}
+        recordId={recordId}
+      />
 
       <ConfirmModal
-        cancelButton={{ label: "취소", onClick: () => setIsDeleteModalOpen(false) }}
-        confirmButton={{ color: "danger", isLoading: isDeleting, label: "삭제", onClick: () => void handleDelete() }}
+        cancelButton={{
+          label: "취소",
+          onClick: () => setIsDeleteModalOpen(false),
+        }}
+        confirmButton={{
+          color: "danger",
+          isLoading: isDeleting,
+          label: "삭제",
+          onClick: () => void handleDelete(),
+        }}
         isOpen={isDeleteModalOpen}
         message="삭제한 기록은 되돌릴 수 없습니다."
         onClose={() => setIsDeleteModalOpen(false)}
         title="이 기록을 삭제할까요?"
       />
+    </RecordDetailPageLayout>
+  );
+}
+
+function RecordDetailPageLayout({ children }: { children: ReactNode }) {
+  return (
+    <main
+      className={styles["record-detail-page-client"]}
+      aria-label="기록 상세 화면"
+    >
+      <AppHeader title="기록 상세" />
+      {children}
     </main>
   );
 }

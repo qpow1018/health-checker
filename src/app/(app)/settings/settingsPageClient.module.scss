@@ -50,6 +50,10 @@
     text-decoration: none;
     transition: background $transition;
 
+    & + & {
+      border-top: 1px solid $border;
+    }
+
     &:hover {
       background: $primary-soft;
     }

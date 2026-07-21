@@ -15,6 +15,10 @@ const push = vi.fn();
 const healthRecordMocks = vi.hoisted(() => ({
   listHealthRecords: vi.fn(),
 }));
+const recordFavoriteMocks = vi.hoisted(() => ({
+  createHealthRecordFromFavorite: vi.fn(),
+  listRecordFavorites: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/record",
@@ -27,10 +31,48 @@ vi.mock("@/api/healthRecords", () => ({
   listHealthRecords: healthRecordMocks.listHealthRecords,
 }));
 
+vi.mock("@/api/recordFavorites", () => ({
+  createHealthRecordFromFavorite: recordFavoriteMocks.createHealthRecordFromFavorite,
+  listRecordFavorites: recordFavoriteMocks.listRecordFavorites,
+}));
+
 describe("RecordPageClient", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     healthRecordMocks.listHealthRecords.mockResolvedValue([]);
+    recordFavoriteMocks.listRecordFavorites.mockResolvedValue([]);
+  });
+
+  test("reviews a favorite and records it at the current time", async () => {
+    const user = userEvent.setup();
+    recordFavoriteMocks.listRecordFavorites.mockResolvedValue([
+      createFavorite("favorite-1", "아침 커피", "food", {
+        source: "카페",
+        foods: [{ name: "커피", amount: "1잔" }],
+      }),
+    ]);
+    recordFavoriteMocks.createHealthRecordFromFavorite.mockResolvedValue({ id: "record-5" });
+
+    render(<QueryProvider><RecordPageClient /></QueryProvider>);
+
+    const section = await screen.findByRole("region", { name: "즐겨찾기" });
+    const sectionTitle = within(section).getByRole("heading", { name: "즐겨찾기" });
+    expect(sectionTitle.nextElementSibling).toHaveTextContent(
+      "현재 시각으로 새 기록을 만들어요.",
+    );
+    const favoriteButton = await within(section).findByRole("button", { name: "아침 커피" });
+    expect(favoriteButton).toHaveAttribute("data-color", "accent");
+    expect(favoriteButton).toHaveAttribute("data-fill", "soft");
+    expect(favoriteButton).toHaveTextContent(/^아침 커피$/);
+    await user.click(favoriteButton);
+
+    const dialog = screen.getByRole("dialog", { name: "아침 커피" });
+    expect(within(dialog).getByText("가게·브랜드")).toBeInTheDocument();
+    expect(within(dialog).getAllByText("먹은 것")).toHaveLength(1);
+    await user.click(within(dialog).getByRole("button", { name: "지금 기록하기" }));
+
+    expect(recordFavoriteMocks.createHealthRecordFromFavorite).toHaveBeenCalledWith("favorite-1");
+    expect(screen.queryByRole("dialog", { name: "아침 커피" })).not.toBeInTheDocument();
   });
 
   afterEach(() => {
@@ -206,5 +248,24 @@ function createRecord(
     details_version: 1,
     created_at: recordedAt.toISOString(),
     updated_at: recordedAt.toISOString(),
+  };
+}
+
+function createFavorite(
+  id: string,
+  title: string,
+  category: string,
+  details: Record<string, unknown>,
+) {
+  return {
+    id,
+    user_id: "user-1",
+    title,
+    category,
+    details,
+    details_version: 1,
+    sort_order: 0,
+    created_at: "2026-07-20T08:00:00.000Z",
+    updated_at: "2026-07-20T08:00:00.000Z",
   };
 }

@@ -113,6 +113,42 @@ export type Database = {
         };
         Relationships: [];
       };
+      record_favorites: {
+        Row: {
+          category: string;
+          created_at: string;
+          details: Json;
+          details_version: number;
+          id: string;
+          sort_order: number;
+          title: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          category: string;
+          created_at?: string;
+          details: Json;
+          details_version: number;
+          id?: string;
+          sort_order?: number;
+          title: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          category?: string;
+          created_at?: string;
+          details?: Json;
+          details_version?: number;
+          id?: string;
+          sort_order?: number;
+          title?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       reference_sources: {
         Row: {
           created_at: string;
@@ -166,6 +202,33 @@ export type Database = {
       is_allowed_user: {
         Args: Record<string, never>;
         Returns: boolean;
+      };
+      is_valid_record_favorite_details_v1: {
+        Args: {
+          category_value: string;
+          details_value: Json;
+          details_version_value: number;
+        };
+        Returns: boolean;
+      };
+      create_record_favorite: {
+        Args: {
+          favorite_title_value: string;
+          record_id_value: string;
+        };
+        Returns: Database["public"]["Tables"]["record_favorites"]["Row"];
+      };
+      create_health_record_from_favorite: {
+        Args: {
+          favorite_id_value: string;
+        };
+        Returns: Database["public"]["Tables"]["health_records"]["Row"];
+      };
+      reorder_record_favorites: {
+        Args: {
+          favorite_ids: string[];
+        };
+        Returns: undefined;
       };
     };
     Enums: Record<string, never>;

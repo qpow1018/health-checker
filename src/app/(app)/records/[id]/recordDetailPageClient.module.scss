@@ -3,51 +3,6 @@
   padding-bottom: calc(88px + env(safe-area-inset-bottom));
   background: #ffffff;
 
-  .record-detail-content {
-    display: grid;
-    gap: 20px;
-    padding: 24px 16px;
-  }
-
-  .record-summary {
-    display: grid;
-    gap: 4px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid $border;
-
-    time {
-      color: $text-secondary;
-      font-size: 14px;
-    }
-
-    strong {
-      font-size: 24px;
-    }
-  }
-
-  .detail-list {
-    display: grid;
-    gap: 20px;
-
-    .detail-item {
-      display: grid;
-      gap: 6px;
-
-      dt {
-        color: $text-muted;
-        font-size: 13px;
-        font-weight: 600;
-      }
-
-      dd {
-        margin: 0;
-        color: $text;
-        font-size: 16px;
-        white-space: pre-wrap;
-      }
-    }
-  }
-
   .notice-message {
     margin: 32px 16px;
     color: $text-secondary;
@@ -60,12 +15,63 @@
     left: 0;
     z-index: $z-bottom-nav;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 48px 1fr 48px 48px;
     gap: 8px;
     width: min(100%, $app-max-width);
     margin: 0 auto;
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
     border-top: 1px solid $border;
     background: #ffffff;
+
+    .action-icon-button {
+      display: inline-flex;
+      width: 48px;
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: $radius;
+      cursor: pointer;
+      font-size: 22px;
+      transition:
+        opacity $transition,
+        transform $transition;
+
+      &:hover:not(:disabled) {
+        opacity: 0.8;
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(1px);
+      }
+
+      &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+    }
+
+    .delete-action {
+      grid-column: 1;
+      background: $danger-soft;
+      color: $danger;
+    }
+
+    .edit-action {
+      grid-column: 3;
+      background: $gray-200;
+      color: $gray-700;
+    }
+
+    .favorite-action {
+      grid-column: 4;
+      background: $accent-soft;
+      color: $accent-strong;
+    }
   }
 }
